@@ -10,16 +10,21 @@ class BalitaController extends Controller
 {
     public function index()
     {
-        $balita = Balita::with('orangTua.user')->get();
+        $balita = Balita::with([
+            'orangTua.user',
+            'pengukuran' => function ($query) {
+                $query->latest('tanggal_pengukuran')->limit(1);
+            }
+        ])->get();
 
-        return view('balita.index', compact('balita'));
+        return view('kader.monitoringbalita', compact('balita'));
     }
 
     public function create()
     {
         $orangTua = OrangTua::with('user')->get();
 
-        return view('balita.create', compact('orangTua'));
+        return view('kader.create', compact('orangTua'));
     }
 
     public function store(Request $request)
@@ -42,7 +47,8 @@ class BalitaController extends Controller
             'alamat' => $request->alamat,
         ]);
 
-        return redirect()->route('balita.index')
+        return redirect()
+            ->route('kader.monitoringbalita')
             ->with('success', 'Data balita berhasil ditambahkan.');
     }
 
@@ -52,7 +58,10 @@ class BalitaController extends Controller
 
         $orangTua = OrangTua::with('user')->get();
 
-        return view('balita.edit', compact('balita', 'orangTua'));
+        return view('kader.edit', compact(
+            'balita',
+            'orangTua'
+        ));
     }
 
     public function update(Request $request, $id)
@@ -77,7 +86,8 @@ class BalitaController extends Controller
             'alamat' => $request->alamat,
         ]);
 
-        return redirect()->route('balita.index')
+        return redirect()
+            ->route('kader.monitoringbalita')
             ->with('success', 'Data balita berhasil diubah.');
     }
 
@@ -87,7 +97,8 @@ class BalitaController extends Controller
 
         $balita->delete();
 
-        return redirect()->route('balita.index')
+        return redirect()
+            ->route('kader.monitoringbalita')
             ->with('success', 'Data balita berhasil dihapus.');
     }
 }

@@ -93,7 +93,7 @@
 
         <h1>Tambah Balita</h1>
 
-        <form action="{{ route('balita.store') }}" method="POST">
+        <form action="{{ route('kader.balita.store') }}" method="POST">
 
             @csrf
 
@@ -152,7 +152,7 @@
 
         </form>
 
-        <a href="{{ route('balita.index') }}" class="kembali">
+        <a href="{{ route('kader.monitoringbalita') }}" class="kembali">
             ← Kembali
         </a>
 
