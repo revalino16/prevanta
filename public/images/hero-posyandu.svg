@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5EFE6"/>
+      <stop offset="50%" stop-color="#EEDCC9"/>
+      <stop offset="100%" stop-color="#DFC5AC"/>
+    </linearGradient>
+    <linearGradient id="wallLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#E8DFD5" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="roseUniform" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E17B94"/>
+      <stop offset="100%" stop-color="#C25974"/>
+    </linearGradient>
+    <linearGradient id="kaderBatik" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE7EB"/>
+      <stop offset="100%" stop-color="#F8B4C4"/>
+    </linearGradient>
+    <linearGradient id="motherDress" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#557B83"/>
+      <stop offset="100%" stop-color="#395B64"/>
+    </linearGradient>
+    <linearGradient id="babyWrap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFDE7D"/>
+      <stop offset="100%" stop-color="#F8B500"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.12" flood-color="#5A3E2B"/>
+    </filter>
+  </defs>
+
+  <!-- Background Clinic Room Interior -->
+  <rect width="800" height="600" fill="url(#bgGrad)"/>
+  
+  <!-- Window / Light beam -->
+  <rect x="0" y="0" width="800" height="600" fill="url(#wallLight)"/>
+  <rect x="40" y="40" width="160" height="220" rx="8" fill="#F8FAFC" fill-opacity="0.8" stroke="#E2E8F0" stroke-width="3"/>
+  <line x1="120" y1="40" x2="120" y2="260" stroke="#CBD5E1" stroke-width="2"/>
+  <line x1="40" y1="150" x2="200" y2="150" stroke="#CBD5E1" stroke-width="2"/>
+
+  <!-- Posyandu Wall Posters & Growth Chart (KMS / Balita) -->
+  <g transform="translate(230, 45)">
+    <rect width="180" height="130" rx="6" fill="#FFFFFF" filter="url(#softShadow)"/>
+    <rect x="10" y="10" width="160" height="20" rx="3" fill="#FFE4E8"/>
+    <text x="90" y="24" font-family="'Instrument Sans', sans-serif" font-size="9" font-weight="bold" fill="#9F1239" text-anchor="middle">GRAFIK TUMBUH KEMBANG WHO</text>
+    <!-- Mini graph curve -->
+    <path d="M 20 105 Q 60 95, 90 70 T 160 38" fill="none" stroke="#E11D48" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 20 115 Q 60 108, 90 85 T 160 52" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-dasharray="3,3"/>
+    <path d="M 20 122 Q 60 115, 90 98 T 160 68" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="90" cy="70" r="4" fill="#BE123C"/>
+    <circle cx="160" cy="38" r="4" fill="#BE123C"/>
+  </g>
+
+  <g transform="translate(440, 55)">
+    <rect width="130" height="100" rx="6" fill="#FFFFFF" filter="url(#softShadow)"/>
+    <rect x="10" y="10" width="110" height="14" rx="3" fill="#DCFCE7"/>
+    <text x="65" y="21" font-family="'Instrument Sans', sans-serif" font-size="8" font-weight="bold" fill="#166534" text-anchor="middle">1000 HPK KEMENKES</text>
+    <rect x="15" y="34" width="45" height="45" rx="4" fill="#FEF3C7"/>
+    <circle cx="37" cy="52" r="14" fill="#F59E0B" fill-opacity="0.3"/>
+    <rect x="68" y="38" width="50" height="6" rx="2" fill="#E2E8F0"/>
+    <rect x="68" y="50" width="40" height="6" rx="2" fill="#E2E8F0"/>
+    <rect x="68" y="62" width="45" height="6" rx="2" fill="#E2E8F0"/>
+  </g>
+
+  <!-- Clinic Desk & Equipment -->
+  <path d="M 0 450 L 800 450 L 800 600 L 0 600 Z" fill="#8C5035" fill-opacity="0.12"/>
+  <rect x="20" y="420" width="760" height="24" rx="4" fill="#DEB887" filter="url(#softShadow)"/>
+  
+  <!-- Digital Baby Scale on Desk -->
+  <g transform="translate(70, 360)">
+    <ellipse cx="90" cy="55" rx="75" ry="18" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+    <rect x="50" y="50" width="80" height="18" rx="4" fill="#E2E8F0"/>
+    <rect x="70" y="54" width="40" height="10" rx="2" fill="#1E293B"/>
+    <text x="90" y="62" font-family="monospace" font-size="8" fill="#38BDF8" text-anchor="middle">8.45 kg</text>
+  </g>
+
+  <!-- CHARACTERS (Indonesian Mother holding baby, Posyandu Cadre & Midwife smiling) -->
+  <!-- 1. Posyandu Cadre / Bidan on the right -->
+  <g transform="translate(510, 140)" filter="url(#softShadow)">
+    <!-- Hijab / Headscarf (Soft Dusty Rose) -->
+    <path d="M 70 80 C 40 80, 20 120, 25 170 C 30 200, 50 230, 80 235 C 110 230, 130 200, 135 170 C 140 120, 120 80, 70 80 Z" fill="#F4A7B9"/>
+    <!-- Face -->
+    <ellipse cx="80" cy="155" rx="32" ry="36" fill="#FCD5B5"/>
+    <!-- Friendly eyes & smile -->
+    <path d="M 62 148 Q 70 142, 78 148" fill="none" stroke="#5D3A1A" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 86 148 Q 94 142, 102 148" fill="none" stroke="#5D3A1A" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="64" cy="158" rx="4" ry="2.5" fill="#F87171" fill-opacity="0.5"/>
+    <ellipse cx="100" cy="158" rx="4" ry="2.5" fill="#F87171" fill-opacity="0.5"/>
+    <path d="M 74 168 Q 82 178, 90 168" fill="none" stroke="#881337" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Hijab drape -->
+    <path d="M 35 190 Q 80 250, 125 190 L 140 280 L 20 280 Z" fill="#E17B94"/>
+    <!-- Uniform Batik Posyandu -->
+    <path d="M 10 270 C 30 260, 130 260, 150 270 L 170 450 L -10 450 Z" fill="url(#roseUniform)"/>
+    <!-- Stethoscope -->
+    <path d="M 45 285 Q 80 370, 115 285" fill="none" stroke="#475569" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="80" cy="360" r="9" fill="#94A3B8" stroke="#334155" stroke-width="2"/>
+    <!-- ID Card Tag -->
+    <rect x="105" y="310" width="22" height="32" rx="3" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+    <rect x="110" y="315" width="12" height="4" fill="#BE123C"/>
+  </g>
+
+  <!-- 2. Mother holding baby on the left -->
+  <g transform="translate(190, 160)" filter="url(#softShadow)">
+    <!-- Mother Hair / Veil -->
+    <path d="M 80 75 C 45 75, 25 110, 30 160 C 35 195, 55 220, 85 225 C 115 220, 135 195, 140 160 C 145 110, 125 75, 80 75 Z" fill="#E2A384"/>
+    <!-- Face -->
+    <ellipse cx="85" cy="150" rx="30" ry="34" fill="#FCE0C8"/>
+    <!-- Eyes looking down lovingly at baby -->
+    <path d="M 68 145 Q 76 150, 82 146" fill="none" stroke="#452711" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 90 146 Q 96 150, 104 145" fill="none" stroke="#452711" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 78 165 Q 86 172, 94 165" fill="none" stroke="#9A3412" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="70" cy="155" rx="4" ry="2" fill="#F87171" fill-opacity="0.4"/>
+    <ellipse cx="102" cy="155" rx="4" ry="2" fill="#F87171" fill-opacity="0.4"/>
+    <!-- Mother Clothing -->
+    <path d="M 20 250 C 40 235, 130 235, 150 250 L 180 430 L -10 430 Z" fill="url(#motherDress)"/>
+    
+    <!-- Baby in Arms -->
+    <g transform="translate(60, 210)">
+      <!-- Yellow cozy baby blanket -->
+      <path d="M 20 50 C 10 20, 90 10, 110 50 C 120 80, 110 130, 70 140 C 30 145, 10 100, 20 50 Z" fill="url(#babyWrap)"/>
+      <!-- Baby Head -->
+      <circle cx="55" cy="45" r="25" fill="#FFE2C6"/>
+      <!-- Cute baby hair tuft -->
+      <path d="M 52 20 Q 56 12, 60 21" fill="none" stroke="#5D3A1A" stroke-width="2" stroke-linecap="round"/>
+      <!-- Baby smiling face -->
+      <path d="M 44 42 Q 48 46, 52 42" fill="none" stroke="#5D3A1A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M 58 42 Q 62 46, 66 42" fill="none" stroke="#5D3A1A" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="43" cy="48" r="3" fill="#F43F5E" fill-opacity="0.5"/>
+      <circle cx="67" cy="48" r="3" fill="#F43F5E" fill-opacity="0.5"/>
+      <path d="M 50 52 Q 55 58, 60 52" fill="none" stroke="#BE123C" stroke-width="2" stroke-linecap="round"/>
+      <!-- Baby hands -->
+      <circle cx="42" cy="70" r="7" fill="#FFE2C6"/>
+      <circle cx="70" cy="72" r="7" fill="#FFE2C6"/>
+    </g>
+    
+    <!-- Mother arms holding baby -->
+    <path d="M 25 280 Q 70 330, 125 310" fill="none" stroke="#395B64" stroke-width="24" stroke-linecap="round"/>
+    <ellipse cx="125" cy="305" rx="12" ry="9" fill="#FCE0C8"/>
+  </g>
+
+  <!-- Green Decorative Leaf Plant on side for warm atmosphere -->
+  <g transform="translate(710, 310)">
+    <ellipse cx="40" cy="110" rx="30" ry="40" fill="#6B7280" fill-opacity="0.3"/>
+    <path d="M 15 110 L 25 200 L 55 200 L 65 110 Z" fill="#D97706"/>
+    <!-- Foliage leaves -->
+    <path d="M 40 110 Q 0 80, -20 50 Q 10 40, 40 100" fill="#15803D"/>
+    <path d="M 40 100 Q 80 70, 95 30 Q 70 30, 40 90" fill="#16A34A"/>
+    <path d="M 40 90 Q 20 40, 25 -10 Q 45 10, 42 80" fill="#22C55E"/>
+    <path d="M 40 100 Q 55 50, 70 10 Q 60 30, 42 95" fill="#15803D"/>
+  </g>
+
+  <!-- Soft vignette / warm glow overlay -->
+  <rect width="800" height="600" fill="#F43F5E" fill-opacity="0.03"/>
+</svg>
