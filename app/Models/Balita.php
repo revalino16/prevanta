@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Balita extends Model
 {
     protected $table = 'balita';
+
     public $timestamps = false;
+
     protected $fillable = [
         'orang_tua_id',
         'nama',
@@ -17,9 +19,22 @@ class Balita extends Model
         'alamat',
     ];
 
+
     public function orangTua()
     {
-        return $this->belongsTo(OrangTua::class, 'orang_tua_id');
+        return $this->belongsTo(
+            OrangTua::class,
+            'orang_tua_id'
+        );
+    }
+
+
+    public function pengukuran()
+    {
+        return $this->hasMany(
+            Pengukuran::class,
+            'balita_id'
+        );
     }
 
     public function pengukuran()

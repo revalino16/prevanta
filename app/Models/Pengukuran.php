@@ -27,9 +27,4 @@ class Pengukuran extends Model
     {
         return $this->belongsTo(Balita::class, 'balita_id');
     }
-
-    public function kader()
-    {
-        return $this->belongsTo(Users::class, 'kader_id');
-    }
 }
