@@ -56,14 +56,29 @@ Route::middleware(['auth', 'role:orang_tua'])
 // Role database: kader
 // =====================================================
 
-Route::middleware(['auth', 'role:kader'])
-    ->prefix('kader')
+// Kader
+Route::prefix('kader')
     ->name('kader.')
     ->group(function () {
 
         Route::get('/dashboard', [KaderController::class, 'dashboard'])
             ->name('dashboard');
 
-        Route::resource('balita', BalitaController::class);
+        Route::get('/monitoring-balita', [BalitaController::class, 'index'])
+            ->name('monitoringbalita');
 
+        Route::get('/tambah-balita', [BalitaController::class, 'create'])
+            ->name('balita.tambah');
+
+        Route::post('/tambah-balita', [BalitaController::class, 'store'])
+            ->name('balita.store');
+
+        Route::get('/balita/{id}/edit', [BalitaController::class, 'edit'])
+            ->name('balita.edit');
+
+        Route::put('/balita/{id}', [BalitaController::class, 'update'])
+            ->name('balita.update');
+
+        Route::delete('/balita/{id}', [BalitaController::class, 'destroy'])
+            ->name('balita.destroy');
     });
