@@ -7,6 +7,7 @@ use App\Models\Jadwal;
 use App\Models\Pengukuran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class KaderController extends Controller
 {

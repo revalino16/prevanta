@@ -36,4 +36,9 @@ class Balita extends Model
             'balita_id'
         );
     }
+
+    public function pengukuran()
+    {
+        return $this->hasMany(Pengukuran::class, 'balita_id');
+    }
 }
