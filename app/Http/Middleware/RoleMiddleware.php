@@ -21,8 +21,11 @@ class RoleMiddleware
         if (! in_array($request->user()->role, $roles)) {
             // Redirect to their proper home if they have wrong role
             $role = $request->user()->role;
-            if ($role === 'kader' || $role === 'bidan') {
+            if ($role === 'kader') {
                 return redirect()->route('kader.dashboard');
+            }
+            if ($role === 'bidan') {
+                return redirect()->route('bidan.dashboard');
             }
             return redirect()->route('orangtua.anakku');
         }

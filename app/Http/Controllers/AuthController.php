@@ -6,6 +6,7 @@ use App\Models\Users;
 use App\Models\OrangTua;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -85,7 +86,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => [
                 'required',
-                'regex:/^[a-zA-Z\s]+$/',
+                'regex:/^[a-zA-Z\s\.\'\-]+$/',
                 'max:100'
             ],
 
@@ -123,7 +124,7 @@ class AuthController extends Controller
             ],
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
-            'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
+            'name.regex' => 'Nama hanya boleh mengandung huruf, spasi, titik, tanda petik, atau tanda hubung.',
             'name.max' => 'Nama maksimal 100 karakter.',
 
             'nik.required' => 'NIK wajib diisi.',
@@ -150,40 +151,25 @@ class AuthController extends Controller
 
 
         // =================================================
-        // BUAT DATA USER
+        // SIMPAN DATA USER & ORANG TUA (TRANSAKSI)
         // =================================================
 
-        $user = Users::create([
-            'nama' => $request->name,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'password' => Hash::make($request->password),
+        DB::transaction(function () use ($request) {
+            $user = Users::create([
+                'nama' => $request->name,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'password' => Hash::make($request->password),
+                'role' => 'orang_tua',
+            ]);
 
-            // Sesuai enum database:
-            // kader, bidan, orang_tua
-            'role' => 'orang_tua',
-        ]);
-
-
-        // =================================================
-        // BUAT DATA ORANG TUA
-        // =================================================
-
-        OrangTua::create([
-            'users_id' => $user->id,
-            'nik' => $request->nik,
-
-            // Form:
-            // laki-laki / perempuan
-            //
-            // Database:
-            // L / P
-            'jenis_kelamin' => $request->jenis_kelamin === 'laki-laki'
-                ? 'L'
-                : 'P',
-
-            'hubungan_dengan_balita' => $request->hubungan_dengan_balita,
-        ]);
+            OrangTua::create([
+                'users_id' => $user->id,
+                'nik' => $request->nik,
+                'jenis_kelamin' => $request->jenis_kelamin === 'laki-laki' ? 'L' : 'P',
+                'hubungan_dengan_balita' => $request->hubungan_dengan_balita,
+            ]);
+        });
 
 
         // =================================================

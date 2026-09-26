@@ -126,7 +126,6 @@
             align-items: center;
             gap: 11px;
             padding: 20px 20px 16px;
-            border-bottom: 1px solid var(--line);
         }
 
  .brand-icon {
@@ -229,33 +228,6 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-        }
-
-        .mode-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px 13px;
-            border-radius: 10px;
-            background: var(--loc-green-tint);
-            border: 1px solid var(--loc-green-line);
-            color: var(--loc-green);
-            font-size: 12.5px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-        }
-
-        .mode-btn .mode-left {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
-
-        .mode-btn .mode-switch {
-            font-size: 12px;
         }
 
         .logout-btn {
@@ -603,7 +575,10 @@
                 <span>Jadwal</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a
+                href="{{ route('kader.edukasi') }}"
+                class="nav-item {{ request()->routeIs('kader.edukasi*') ? 'active' : '' }}"
+            >
                 <i class="fa-solid fa-book-open-reader nav-icon"></i>
                 <span>Edukasi</span>
             </a>
@@ -611,14 +586,6 @@
         </nav>
 
         <div class="sidebar-bottom">
-
-            <button type="button" class="mode-btn">
-                <span class="mode-left">
-                    <i class="fa-solid fa-mobile-screen"></i>
-                    Mode Mobile/Kader
-                </span>
-                <i class="fa-solid fa-right-left mode-switch"></i>
-            </button>
 
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
