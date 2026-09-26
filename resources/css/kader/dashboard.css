@@ -1,0 +1,444 @@
+/* ============================================================
+   DASHBOARD KADER — dashboard.css
+   ============================================================ */
+
+/* ── Hero Banner ─────────────────────────────────────────── */
+
+.hero-banner {
+    background: linear-gradient(135deg, #9B2A4A 0%, #C85A7A 55%, #E0899E 100%);
+    border-radius: var(--radius-lg);
+    padding: 32px 36px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 220px;
+    height: 220px;
+    background: rgba(255,255,255,.07);
+    border-radius: 50%;
+}
+
+.hero-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    right: 80px;
+    width: 160px;
+    height: 160px;
+    background: rgba(255,255,255,.05);
+    border-radius: 50%;
+}
+
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    padding: 5px 12px;
+    margin-bottom: 14px;
+}
+
+.hero-tag i {
+    font-size: 9px;
+}
+
+.hero-title {
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-size: 13.5px;
+    opacity: .85;
+    line-height: 1.6;
+    max-width: 500px;
+    font-weight: 500;
+}
+
+/* ── Stat Cards ──────────────────────────────────────────── */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -10px rgba(60,30,24,.16);
+}
+
+.stat-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.stat-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    line-height: 1.4;
+}
+
+.stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.stat-icon.wine    { background: var(--wine-tint);    color: var(--wine-deep); }
+.stat-icon.amber   { background: var(--amber-tint);   color: var(--amber); }
+.stat-icon.red     { background: var(--red-tint);     color: var(--red); }
+.stat-icon.green   { background: var(--green-tint);   color: var(--green); }
+.stat-icon.blue    { background: var(--blue-tint);    color: var(--blue); }
+.stat-icon.orange  { background: #FFF4E6;             color: #E07B3A; }
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1;
+}
+
+.stat-value.highlight {
+    color: var(--red);
+}
+
+.stat-sub {
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* ── Chart Card ──────────────────────────────────────────── */
+
+.dash-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.dash-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+}
+
+.dash-card-eyebrow {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    color: var(--wine);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dash-card-title {
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--ink);
+}
+
+.dash-card-sub {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: .15s ease;
+}
+
+.btn-export:hover {
+    background: var(--line);
+}
+
+/* ── Chart Body ──────────────────────────────────────────── */
+
+.chart-body {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    min-height: 280px;
+}
+
+.chart-eval {
+    padding: 22px 24px;
+    border-right: 1px solid var(--line);
+}
+
+.chart-eval-title {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.chart-eval-title i {
+    color: var(--wine);
+}
+
+.trend-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.trend-badge.good {
+    background: var(--green-tint);
+    color: var(--green);
+    border: 1px solid var(--green-tint-line);
+}
+
+.trend-badge.bad {
+    background: var(--red-tint);
+    color: var(--red);
+    border: 1px solid var(--red-tint-line);
+}
+
+.trend-badge.neutral {
+    background: var(--amber-tint);
+    color: var(--amber);
+    border: 1px solid var(--amber-tint-line);
+}
+
+.chart-eval-desc {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    font-weight: 500;
+}
+
+.chart-eval-desc strong {
+    color: var(--ink);
+    font-weight: 800;
+}
+
+.chart-verified {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--green);
+    font-weight: 700;
+}
+
+.chart-wrap {
+    padding: 16px 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+}
+
+.chart-wrap canvas {
+    max-height: 240px;
+    width: 100% !important;
+}
+
+/* ── Tabel Kelompok Usia ─────────────────────────────────── */
+
+.usia-table-wrap {
+    padding: 0 24px 24px;
+}
+
+table.usia-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.usia-table thead th {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    color: var(--ink-faint);
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+.usia-table thead th.col-normal  { color: var(--green); }
+.usia-table thead th.col-pendek  { color: var(--amber); }
+.usia-table thead th.col-sangat  { color: var(--red); }
+.usia-table thead th.col-total   { color: var(--ink-soft); text-align: right; }
+
+.usia-table tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    vertical-align: middle;
+}
+
+.usia-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.usia-table .td-normal  { color: var(--green);  font-weight: 900; font-size: 15px; }
+.usia-table .td-pendek  { color: var(--amber);  font-weight: 900; font-size: 15px; }
+.usia-table .td-sangat  { color: var(--red);    font-weight: 900; font-size: 15px; }
+.usia-table .td-total   { text-align: right; font-weight: 900; font-size: 15px; }
+
+.row-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.row-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.row-dot.wine  { background: var(--wine); }
+.row-dot.green { background: var(--green); }
+
+.hpk-chip {
+    display: inline-block;
+    background: var(--red-tint);
+    color: var(--red);
+    border: 1px solid var(--red-tint-line);
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-left: 6px;
+    white-space: nowrap;
+}
+
+.usia-table tfoot td {
+    padding: 14px 12px;
+    border-top: 2px solid var(--line);
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--ink);
+}
+
+.usia-table tfoot .td-normal { color: var(--green); }
+.usia-table tfoot .td-pendek { color: var(--amber); }
+.usia-table tfoot .td-sangat { color: var(--red); }
+.usia-table tfoot .td-total  { text-align: right; }
+
+/* ── Alert 1000 HPK ──────────────────────────────────────── */
+
+.alert-hpk {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #FFF8EE;
+    border: 1px solid #F0DCAE;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 16px 24px 0;
+    font-size: 12.5px;
+    color: #7A4A0A;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.alert-hpk i {
+    color: var(--amber);
+    margin-top: 2px;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+
+.dash-footer {
+    margin-top: 24px;
+    padding: 18px 0 4px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    font-weight: 600;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 780px) {
+    .stat-grid   { grid-template-columns: repeat(2, 1fr); }
+    .chart-body  { grid-template-columns: 1fr; }
+    .chart-eval  { border-right: none; border-bottom: 1px solid var(--line); }
+    .hero-title  { font-size: 20px; }
+}

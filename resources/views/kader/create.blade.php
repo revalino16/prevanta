@@ -1,163 +1,415 @@
-<!DOCTYPE html>
-<html>
+@extends('kader.layouts.kader')
 
-<head>
-    <title>Tambah Balita</title>
+@section('title', 'Tambah Balita — Prevanta')
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fff0f5;
-            margin: 0;
-            padding: 40px;
-        }
+@push('styles')
+    @vite('resources/css/kader/create.css')
+@endpush
 
-        .container {
-            width: 500px;
-            margin: auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+@section('content')
 
-        h1 {
-            text-align: center;
-            color: #d63384;
-            margin-bottom: 30px;
-        }
+<main class="content">
 
-        label {
-            font-weight: bold;
-            color: #555;
-        }
+    <a href="{{ route('kader.monitoringbalita') }}" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        Kembali ke Daftar Balita
+    </a>
 
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 7px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
+    <div class="page-head">
 
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #ff8fab;
-        }
+        <div>
+            <h1>Tambah Balita</h1>
 
-        textarea {
-            height: 90px;
-            resize: vertical;
-        }
+            <p>
+                Lengkapi data balita baru dan hubungkan dengan orang tua yang terdaftar.
+            </p>
+        </div>
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #d63384;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #b82b70;
-        }
-
-        .kembali {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #d63384;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .kembali:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="container">
-
-        <h1>Tambah Balita</h1>
-
-        <form action="{{ route('kader.balita.store') }}" method="POST">
-
-            @csrf
-
-            <label>Nama Balita</label>
-            <input type="text" name="nama" required>
-
-            <br><br>
-
-            <label>NIK</label>
-            <input type="text" name="nik" required>
-
-            <br><br>
-
-            <label>Orang Tua</label>
-            <select name="orang_tua_id" required>
-
-                <option value="">
-                    -- Pilih Orang Tua --
-                </option>
-
-                @foreach ($orangTua as $ortu)
-                    <option value="{{ $ortu->id }}">
-                        {{ $ortu->user->nama ?? '-' }}
-                    </option>
-                @endforeach
-
-            </select>
-
-            <br><br>
-
-            <label>Tanggal Lahir</label>
-            <input type="date" name="tanggal_lahir" required>
-
-            <br><br>
-
-            <label>Jenis Kelamin</label>
-
-            <select name="jenis_kelamin" required>
-
-                <option value="">-- Pilih --</option>
-                <option value="L">Laki-laki</option>
-                <option value="P">Perempuan</option>
-
-            </select>
-
-            <br><br>
-
-            <label>Alamat</label>
-            <textarea name="alamat"></textarea>
-
-            <br><br>
-
-            <button type="submit">
-                Simpan
-            </button>
-
-        </form>
-
-        <a href="{{ route('kader.monitoringbalita') }}" class="kembali">
-            ← Kembali
-        </a>
+        <span class="session-chip">
+            <i class="fa-solid fa-shield-halved"></i>
+            Posyandu Mawar Melati - Desa Sukamaju &bull; Sesi Aktif Kader
+        </span>
 
     </div>
 
-</body>
+    @if (session('success'))
+        <div class="success-message">
+            {{ session('success') }}
+        </div>
+    @endif
 
-</html>
+    <div class="form-panel">
+
+        <div class="form-panel-head">
+
+            <div class="icon-circle">
+                <i class="fa-regular fa-face-smile"></i>
+            </div>
+
+            <div>
+                <h2>Formulir Pendaftaran Balita Baru</h2>
+
+                <p>
+                    Lengkapi data identitas anak secara akurat untuk integrasi buku KMS digital dan pemantauan gizi terpadu.
+                </p>
+            </div>
+
+        </div>
+
+        <form action="{{ route('kader.balita.store') }}" method="POST" id="tambahBalitaForm">
+
+            @csrf
+
+            {{-- NAMA BALITA --}}
+            <div class="form-group">
+
+                <div class="form-label-row">
+                    <label>
+                        Nama Balita <span class="req">*</span>
+                    </label>
+
+                    <span class="field-hint-top">
+                        Sesuai Dokumen Resmi
+                    </span>
+                </div>
+
+                <input
+                    type="text"
+                    name="nama"
+                    placeholder="Contoh: Muhammad Rayyan Al-Ghifari"
+                    value="{{ old('nama') }}"
+                    required
+                >
+
+                <div class="form-hint">
+                    <i class="fa-regular fa-circle-question"></i>
+                    Nama sesuai dengan akta kelahiran atau Kartu Keluarga (KK).
+                </div>
+
+            </div>
+
+            {{-- NIK BALITA --}}
+            <div class="form-group">
+
+                <div class="form-label-row">
+                    <label>
+                        NIK Balita <span class="req">*</span>
+                    </label>
+
+                    <span class="field-hint-top" id="nikCounter">
+                        0/16 Digit
+                    </span>
+                </div>
+
+                <div class="input-icon-wrap">
+
+                    <i class="fa-solid fa-id-card leading"></i>
+
+                    <input
+                        type="text"
+                        name="nik"
+                        id="nikInput"
+                        placeholder="Masukkan NIK balita (16 digit)"
+                        maxlength="16"
+                        inputmode="numeric"
+                        value="{{ old('nik') }}"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-hint">
+                    <i class="fa-regular fa-circle-question"></i>
+                    Nomor Induk Kependudukan 16 digit. Bila belum memiliki NIK, gunakan NIK Kepala Keluarga sementara.
+                </div>
+
+            </div>
+
+            {{-- PILIH ORANG TUA --}}
+            <div class="form-group">
+
+                <div class="form-label-row">
+
+                    <label>
+                        Pilih Orang Tua <span class="req">*</span>
+                    </label>
+
+                    <a href="#" class="link-add">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Daftarkan Orang Tua Baru
+                    </a>
+
+                </div>
+
+                <div class="ortu-search-box">
+
+                    <i class="fa-solid fa-magnifying-glass leading"></i>
+
+                    <input
+                        type="text"
+                        id="ortuSearchInput"
+                        placeholder="Cari nama orang tua..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        class="ortu-clear"
+                        id="ortuClearBtn"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                </div>
+
+                <div class="ortu-dropdown" id="ortuDropdown">
+
+                    @forelse ($orangTua as $ortu)
+
+                        <div
+                            class="ortu-option"
+                            data-id="{{ $ortu->id }}"
+                            data-nama="{{ $ortu->user->nama ?? '-' }}"
+                            data-alamat="{{ $ortu->alamat ?? '' }}"
+                            data-telepon="{{ $ortu->no_telepon ?? $ortu->telepon ?? '' }}"
+                        >
+
+                            <div class="ortu-avatar">
+                                {{ strtoupper(substr($ortu->user->nama ?? '-', 0, 1)) }}
+                            </div>
+
+                            <div class="ortu-option-name">
+                                {{ $ortu->user->nama ?? '-' }}
+                            </div>
+
+                        </div>
+
+                    @empty
+
+                        <div class="ortu-empty">
+                            Belum ada data orang tua terdaftar.
+                        </div>
+
+                    @endforelse
+
+                </div>
+
+                <div class="ortu-selected" id="ortuSelectedCard">
+
+                    <div
+                        class="ortu-avatar-lg"
+                        id="ortuSelectedAvatar"
+                    ></div>
+
+                    <div class="ortu-selected-info">
+
+                        <div class="ortu-selected-name">
+
+                            <span id="ortuSelectedName"></span>
+
+                            <span class="ortu-tag tag-chosen">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Orang Tua Terpilih
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="ortu-selected-meta"
+                            id="ortuSelectedMeta"
+                        ></div>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-ganti-ortu"
+                        id="btnGantiOrtu"
+                    >
+                        <i class="fa-solid fa-right-left"></i>
+                        Ganti Orang Tua
+                    </button>
+
+                </div>
+
+                <input
+                    type="hidden"
+                    name="orang_tua_id"
+                    id="orangTuaIdInput"
+                    value="{{ old('orang_tua_id') }}"
+                >
+
+            </div>
+
+            {{-- TANGGAL LAHIR + KALKULATOR USIA --}}
+            <div class="form-row-2">
+
+                <div class="form-group">
+
+                    <label>
+                        Tanggal Lahir <span class="req">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="tanggal_lahir"
+                        id="tanggalLahirInput"
+                        value="{{ old('tanggal_lahir') }}"
+                        required
+                    >
+
+                    <div class="form-hint">
+                        <i class="fa-regular fa-circle-question"></i>
+                        Pilih tanggal lahir anak sesuai surat keterangan lahir/akta.
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Kalkulator Usia Posyandu</label>
+
+                    <div class="usia-box">
+
+                        <span class="usia-value">
+                            <i class="fa-solid fa-cake-candles"></i>
+                            <span id="usiaValue">Usia: -</span>
+                        </span>
+
+                        <span
+                            class="usia-tag"
+                            id="usiaTag"
+                        >
+                            -
+                        </span>
+
+                    </div>
+
+                    <div class="form-hint">
+                        <i class="fa-regular fa-circle-question"></i>
+                        Digunakan sebagai parameter acuan grafik Z-Score KMS.
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- JENIS KELAMIN --}}
+            <div class="form-group">
+
+                <label>
+                    Jenis Kelamin <span class="req">*</span>
+                </label>
+
+                <div class="gender-toggle">
+
+                    <input
+                        type="radio"
+                        name="jenis_kelamin"
+                        id="genderL"
+                        value="L"
+                        {{ old('jenis_kelamin') === 'L' ? 'checked' : '' }}
+                        required
+                    >
+
+                    <label for="genderL" class="gender-btn">
+                        <i class="fa-solid fa-mars"></i>
+                        Laki-laki
+                    </label>
+
+                    <input
+                        type="radio"
+                        name="jenis_kelamin"
+                        id="genderP"
+                        value="P"
+                        {{ old('jenis_kelamin') === 'P' ? 'checked' : '' }}
+                    >
+
+                    <label for="genderP" class="gender-btn">
+                        <i class="fa-solid fa-venus"></i>
+                        Perempuan
+                    </label>
+
+                </div>
+
+            </div>
+
+            {{-- ALAMAT --}}
+            <div class="form-group">
+
+                <div class="form-label-row">
+
+                    <label>
+                        Alamat Lengkap Domisili <span class="req">*</span>
+                    </label>
+
+                    <label class="same-address-check">
+                        <input
+                            type="checkbox"
+                            id="sameAddressCheck"
+                        >
+                        Sama dengan alamat Orang Tua
+                    </label>
+
+                </div>
+
+                <textarea
+                    name="alamat"
+                    id="alamatTextarea"
+                    placeholder="Alamat lengkap tempat tinggal"
+                    required
+                >{{ old('alamat') }}</textarea>
+
+                <div class="form-hint">
+                    <i class="fa-regular fa-circle-question"></i>
+                    Pastikan RW/RT dicantumkan dengan jelas untuk penugasan kunjungan kader.
+                </div>
+
+            </div>
+
+            {{-- ERROR VALIDASI --}}
+            @if ($errors->any())
+                <div class="form-error-box">
+                    <div class="form-error-title">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        Periksa kembali data yang dimasukkan
+                    </div>
+
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ route('kader.monitoringbalita') }}"
+                    class="btn-cancel"
+                >
+                    Batal
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-submit"
+                >
+                    <i class="fa-solid fa-circle-check"></i>
+                    Simpan Balita
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+@endsection
+
+@push('scripts')
+    @vite('resources/js/kader/create.js')
+@endpush

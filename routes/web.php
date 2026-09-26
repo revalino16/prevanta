@@ -81,4 +81,13 @@ Route::prefix('kader')
 
         Route::delete('/balita/{id}', [BalitaController::class, 'destroy'])
             ->name('balita.destroy');
+
+        Route::get('/jadwal', [KaderController::class, 'jadwal'])
+            ->name('jadwal');
+
+        Route::post('/jadwal', [KaderController::class, 'jadwalStore'])
+            ->name('jadwal.store');
+
+        Route::delete('/jadwal/{id}', [KaderController::class, 'jadwalDestroy'])
+            ->name('jadwal.destroy');
     });
