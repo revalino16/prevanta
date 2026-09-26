@@ -30,31 +30,52 @@
         }
 
         :root {
-            --bg: #F4FAF6;
+
+            /* ---- netral & permukaan (krem hangat, bukan hijau) ---- */
+            --bg: #FBF9F6;
             --card: #FFFFFF;
 
-            --ink: #1F2937;
-            --ink-soft: #667085;
-            --ink-faint: #98A2B3;
+            --ink: #2A2420;
+            --ink-soft: #6B6259;
+            --ink-faint: #9C9289;
 
-            --line: #E4EEE8;
+            --line: #ECE3D8;
 
-            --primary: #176B5B;
-            --primary-dark: #176B5B;
-            --primary-light: #E8F6EE;
+            --radius-lg: 18px;
+            --shadow: 0 8px 24px -10px rgba(60, 30, 24, .12);
 
+            /* ---- warna utama: wine, menggantikan hijau sebagai primary ---- */
+            --primary: #7C2740;
+            --primary-dark: #5E1C31;
+            --primary-light: #FCEEF2;
+
+            /* ---- status hijau (khusus badge "Normal" / sukses, bukan warna dasar halaman) ---- */
             --green: #2FA36B;
+            --green-tint: #E8F6EE;
+            --green-tint-line: #CDE9D6;
             --green-light: #E8F6EE;
 
-            --blue: #3B82C4;
+            /* ---- status kuning/amber ---- */
+            --amber: #C9820A;
+            --amber-tint: #FBF1DE;
+            --amber-tint-line: #F0DCAE;
             --yellow: #F4B740;
-            --red: #E96A7A;
 
-            --sidebar-width: 250px;
+            /* ---- status biru ---- */
+            --blue: #3B82C4;
+            --blue-tint: #E7F1FA;
+            --blue-tint-line: #C6DEF2;
 
-            /* --- palet khusus sidebar & navbar (mengikuti desain Prevanta) --- */
-            --wine: #E06D7F;
-            --wine-dark: #E06D7F;
+            /* ---- status merah ---- */
+            --red: #E15D6F;
+            --red-tint: #FDECEF;
+            --red-tint-line: #F7CBD4;
+
+            --sidebar-width: 240px;
+
+            --wine: #C85A7A;
+            --wine-dark: #C85A7A;
+            --wine-deep: #9B2A4A;
             --wine-tint: #FCEEF2;
             --wine-tint-line: #F4D3DE;
             --loc-green: #2F7A4F;
@@ -84,55 +105,49 @@
             min-height: 100vh;
         }
 
-        /* ============ SIDEBAR (didesain ulang) ============ */
+        /* ============ SIDEBAR ============ */
 
         .sidebar {
             width: var(--sidebar-width);
             min-height: 100vh;
-
             background: var(--card);
-
             border-right: 1px solid var(--line);
-
             position: fixed;
             left: 0;
             top: 0;
             bottom: 0;
-
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-
             z-index: 100;
         }
 
         .brand {
             display: flex;
             align-items: center;
-
             gap: 11px;
-
-            padding: 22px 22px 18px;
-
+            padding: 20px 20px 16px;
             border-bottom: 1px solid var(--line);
         }
 
-        .brand-icon {
-            width: 38px;
-            height: 38px;
-            flex-shrink: 0;
+ .brand-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
 
-            border-radius: 11px;
+    border-radius: 11px;
 
-            background: linear-gradient(155deg, var(--wine) 0%, var(--wine-dark) 100%);
-            color: #fff;
+    overflow: hidden;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-            font-size: 16px;
-        }
+.brand-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
         .brand-text {
             line-height: 1.15;
@@ -152,91 +167,123 @@
         }
 
         .nav {
-            padding: 18px 14px;
+            padding: 16px 12px;
             flex: 1;
+            overflow-y: auto;
         }
 
-        .nav-label {
-            font-size: 11px;
-            font-weight: 600;
-
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 700;
             color: var(--ink-faint);
-
             text-transform: uppercase;
+            letter-spacing: .08em;
+            padding: 0 10px;
+            margin-bottom: 8px;
+            margin-top: 14px;
+        }
 
-            padding: 0 12px;
-            margin-bottom: 10px;
+        .nav-section-label:first-child {
+            margin-top: 0;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-
-            gap: 12px;
-
-            padding: 11px 13px;
-
-            margin-bottom: 5px;
-
+            gap: 11px;
+            padding: 10px 12px;
+            margin-bottom: 3px;
             border-radius: 10px;
-
             color: var(--ink-soft);
-
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 500;
-
-            transition: 0.2s;
+            transition: .18s ease;
         }
 
-        .nav-item i {
-            width: 20px;
+        .nav-item .nav-icon {
+            width: 18px;
             text-align: center;
+            font-size: 13px;
+            flex-shrink: 0;
         }
 
         .nav-item:hover {
             background: var(--wine-tint);
-            color: var(--wine-dark);
+            color: var(--wine-deep);
         }
 
         .nav-item.active {
-            background: linear-gradient(155deg, var(--wine) 0%, var(--wine-dark) 100%);
+            background: linear-gradient(135deg, #C85A7A 0%, #9B2A4A 100%);
             color: #fff;
             font-weight: 600;
-            box-shadow: 0 6px 16px -6px rgba(92, 24, 52, .5);
+            box-shadow: 0 4px 14px -4px rgba(156, 42, 74, .45);
+        }
+
+        .nav-item.active .nav-icon {
+            color: #fff;
         }
 
         .sidebar-bottom {
-            padding: 15px;
+            padding: 12px;
             border-top: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .logout-btn {
-            width: 100%;
-
-            border: none;
-            background: transparent;
-
+        .mode-btn {
             display: flex;
             align-items: center;
-
-            gap: 12px;
-
-            padding: 11px 13px;
-
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 13px;
             border-radius: 10px;
-
-            color: var(--ink-soft);
-
+            background: var(--loc-green-tint);
+            border: 1px solid var(--loc-green-line);
+            color: var(--loc-green);
+            font-size: 12.5px;
+            font-weight: 700;
             cursor: pointer;
-
-            font-size: 13.5px;
-
+            width: 100%;
             text-align: left;
         }
 
+        .mode-btn .mode-left {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .mode-btn .mode-switch {
+            font-size: 12px;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 13px;
+            border-radius: 10px;
+            color: var(--ink-soft);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: left;
+            transition: .18s ease;
+        }
+
         .logout-btn:hover {
-            background: #FDECEF;
+            background: var(--red-tint);
             color: var(--red);
+        }
+
+        .logout-btn .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 13px;
         }
 
         /* MAIN */
@@ -244,128 +291,132 @@
         .main {
             margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
-
             min-height: 100vh;
+            padding-top: 72px;
         }
 
-        /* ============ TOPBAR (didesain ulang) ============ */
+        /* ============ TOPBAR ============ */
 
         .topbar {
-            min-height: 76px;
-
+            height: 72px;
             background: var(--card);
-
             border-bottom: 1px solid var(--line);
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             gap: 16px;
-            flex-wrap: wrap;
-
-            padding: 14px 30px;
+            padding: 0 28px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            z-index: 90;
         }
 
-        .topbar-left {
+        .topbar-posyandu {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-
             background: var(--loc-green-tint);
             border: 1px solid var(--loc-green-line);
             color: var(--loc-green);
-
             padding: 8px 16px;
-
             border-radius: 999px;
-
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 18px;
+            flex-shrink: 0;
         }
 
-        .topbar-date {
+        .topbar-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
-
+            gap: 7px;
             color: var(--ink-soft);
-
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
         }
 
-        .topbar-date i {
+        .topbar-meta i {
             color: var(--ink-faint);
+            font-size: 12px;
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--line);
         }
 
         .topbar-bell {
             position: relative;
-
             border: none;
             background: transparent;
-
             color: var(--ink-soft);
-
-            font-size: 17px;
-
+            font-size: 16px;
             cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background .15s;
         }
 
-        .topbar-bell .dot {
-            position: absolute;
-            top: -5px;
-            right: -6px;
+        .topbar-bell:hover {
+            background: var(--bg);
+        }
 
+        .notif-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
             width: 15px;
             height: 15px;
-
             border-radius: 50%;
-
             background: var(--wine);
             color: #fff;
-
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border: 2px solid var(--card);
         }
 
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .user-avatar {
-            width: 38px;
-            height: 38px;
-
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-
-            background: linear-gradient(155deg, var(--wine) 0%, var(--wine-dark) 100%);
+            background: linear-gradient(135deg, #C85A7A 0%, #9B2A4A 100%);
             color: #fff;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
+            flex-shrink: 0;
         }
 
         .user-info {
             display: flex;
             flex-direction: column;
+            line-height: 1.25;
         }
 
         .user-name {
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--ink);
         }
 
         .user-role {
@@ -388,13 +439,10 @@
         }
 
         .eyebrow {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
-
-            letter-spacing: 1px;
-
-            color: var(--primary);
-
+            letter-spacing: 1.2px;
+            color: var(--wine);
             margin-bottom: 6px;
         }
 
@@ -412,39 +460,36 @@
 
         .btn {
             border: none;
-
             display: inline-flex;
             align-items: center;
             justify-content: center;
-
             gap: 8px;
-
-            padding: 10px 16px;
-
-            border-radius: 8px;
-
+            padding: 11px 18px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: 600;
-
+            font-weight: 700;
             cursor: pointer;
+            transition: .15s ease;
+            white-space: nowrap;
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: linear-gradient(135deg, #C85A7A 0%, #9B2A4A 100%);
             color: white;
+            box-shadow: 0 4px 14px -4px rgba(156, 42, 74, .4);
         }
 
         .btn-primary:hover {
-            background: #12594C;
+            background: linear-gradient(135deg, #b84d6c 0%, #8a2340 100%);
         }
 
         /* SUCCESS */
 
         .success-message {
-            background: var(--primary-light);
-            color: var(--primary);
+            background: var(--green-tint);
+            color: var(--green);
 
-            border: 1px solid #CDE9D6;
+            border: 1px solid var(--green-tint-line);
 
             padding: 12px 15px;
 
@@ -458,20 +503,52 @@
         /* RESPONSIVE */
 
         @media (max-width: 900px) {
+            :root { --sidebar-width: 210px; }
+            .content { padding: 20px; }
+            .topbar-meta { display: none; }
+        }
 
-            .sidebar {
-                width: 220px;
+        /* PAGE TRANSITION */
+        @view-transition {
+            navigation: auto;
+        }
+
+        .sidebar {
+            view-transition-name: sidebar-nav;
+        }
+
+        .topbar {
+            view-transition-name: topbar-nav;
+        }
+
+        ::view-transition-old(root) {
+            animation: page-out 0.15s ease both;
+        }
+
+        ::view-transition-new(root) {
+            animation: page-in 0.2s ease both;
+        }
+
+        @keyframes page-out {
+            from {
+                opacity: 1;
+                transform: translateY(0);
             }
-
-            .main {
-                margin-left: 220px;
-                width: calc(100% - 220px);
+            to {
+                opacity: 0;
+                transform: translateY(-4px);
             }
+        }
 
-            .content {
-                padding: 20px;
+        @keyframes page-in {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
             }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
     </style>
@@ -488,78 +565,67 @@
     {{-- SIDEBAR --}}
     <aside class="sidebar">
 
-        <div>
-
-            <div class="brand">
-
-                <div class="brand-icon">
-                    <i class="fa-solid fa-heart-pulse"></i>
-                </div>
-
-                <div class="brand-text">
-                    <div class="brand-name">Prevanta</div>
-                    <div class="brand-tagline">Cegah Stunting, Wujudkan<br>Generasi Emas Indonesia</div>
-                </div>
-
+        <div class="brand">
+            <div class="brand-icon">
+                <img src="{{ asset('images/logo.png') }}" alt="Prevanta">
             </div>
-
-
-            <nav class="nav">
-
-                <a
-                    href="{{ route('kader.dashboard') }}"
-                    class="nav-item {{ request()->routeIs('kader.dashboard') ? 'active' : '' }}"
-                >
-                    <i class="fa-solid fa-house"></i>
-                    <span>Dashboard</span>
-                </a>
-
-
-                <a
-                    href="{{ route('kader.monitoringbalita') }}"
-        class="nav-item {{ request()->routeIs('kader.monitoringbalita') ? 'active' : '' }}"
-                >
-                    <i class="fa-solid fa-child"></i>
-                    <span>Monitoring Balita</span>
-                </a>
-
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span>Jadwal</span>
-                </a>
-
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <i class="fa-solid fa-book-open"></i>
-                    <span>Edukasi</span>
-                </a>
-
-            </nav>
-
+            <div class="brand-text">
+                <div class="brand-name">Prevanta</div>
+                <div class="brand-tagline">Cegah Stunting, Wujudkan<br>Generasi Emas Indonesia</div>
+            </div>
         </div>
 
+        <nav class="nav">
+
+            <div class="nav-section-label">Menu Utama</div>
+
+            <a
+                href="{{ route('kader.dashboard') }}"
+                class="nav-item {{ request()->routeIs('kader.dashboard') ? 'active' : '' }}"
+            >
+                <i class="fa-solid fa-table-columns nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a
+                href="{{ route('kader.monitoringbalita') }}"
+                class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit') ? 'active' : '' }}"
+            >
+                <i class="fa-solid fa-child nav-icon"></i>
+                <span>Monitoring Balita</span>
+            </a>
+
+            <a
+                href="{{ route('kader.jadwal') }}"
+                class="nav-item {{ request()->routeIs('kader.jadwal') ? 'active' : '' }}"
+            >
+                <i class="fa-regular fa-calendar-days nav-icon"></i>
+                <span>Jadwal</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-book-open-reader nav-icon"></i>
+                <span>Edukasi</span>
+            </a>
+
+        </nav>
 
         <div class="sidebar-bottom">
 
+            <button type="button" class="mode-btn">
+                <span class="mode-left">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                    Mode Mobile/Kader
+                </span>
+                <i class="fa-solid fa-right-left mode-switch"></i>
+            </button>
+
             <form action="{{ route('logout') }}" method="POST">
-
                 @csrf
-
                 <button type="submit" class="logout-btn">
-
-                    <i class="fa-solid fa-right-from-bracket"></i>
-
-                    <span>Keluar</span>
-
+                    <i class="fa-solid fa-right-from-bracket nav-icon"></i>
+                    <span>Keluar Akun</span>
                 </button>
-
             </form>
 
         </div>
@@ -573,44 +639,35 @@
         {{-- TOPBAR --}}
         <header class="topbar">
 
-            <span class="topbar-left">
+            <span class="topbar-posyandu">
                 <i class="fa-solid fa-location-dot"></i>
-                {{-- Ganti dengan data posyandu aktif kader, mis. $posyandu->nama_posyandu . ' - ' . $posyandu->desa --}}
                 Posyandu Mawar Melati - Desa Sukamaju
             </span>
 
-
             <div class="topbar-right">
 
-                <span class="topbar-date">
+                <div class="topbar-meta">
                     <i class="fa-regular fa-calendar"></i>
                     <span id="today-label"></span>
-                </span>
+                    <span class="topbar-divider"></span>
+                    <span>Posko RW 03</span>
+                </div>
 
-                <button class="topbar-bell" type="button">
+                <button class="topbar-bell" type="button" title="Notifikasi">
                     <i class="fa-regular fa-bell"></i>
-                    {{-- Ganti angka ini dengan jumlah notifikasi sebenarnya --}}
-                    <span class="dot">3</span>
+                    <span class="notif-dot">3</span>
                 </button>
 
                 @auth
-
-                    <div class="user-avatar">
-                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                    <div class="topbar-user">
+                        <div class="user-avatar">
+                            {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ Auth::user()->nama }}</span>
+                            <span class="user-role">{{ ucfirst(Auth::user()->role) }}</span>
+                        </div>
                     </div>
-
-                    <div class="user-info">
-
-                        <span class="user-name">
-                            {{ Auth::user()->nama }}
-                        </span>
-
-                        <span class="user-role">
-                            {{ ucfirst(Auth::user()->role) }}
-                        </span>
-
-                    </div>
-
                 @endauth
 
             </div>
@@ -644,9 +701,9 @@
 
 </script>
 
-
 @stack('scripts')
 
 </body>
+
 
 </html>

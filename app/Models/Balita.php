@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Pengukuran;
 class Balita extends Model
 {
     protected $table = 'balita';
