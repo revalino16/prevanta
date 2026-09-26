@@ -106,7 +106,7 @@ public function index()
         $balita = Balita::findOrFail($id);
 
         $request->validate([
-            'orang_tua_id' => 'required',
+            'orang_tua_id' => 'required|exists:orang_tua,id',
             'nama' => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
             'nik' => 'required|digits:16|unique:balita,nik,' . $id,
             'tanggal_lahir' => 'required|date|before_or_equal:today',

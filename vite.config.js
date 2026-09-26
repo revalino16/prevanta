@@ -15,6 +15,8 @@ export default defineConfig({
                 'resources/css/kader/create.css',
                 'resources/js/kader/create.js',
                 'resources/css/kader/dashboard.css',
+                'resources/css/kader/jadwal.css',
+                'resources/css/kader/edukasi.css',
             ],
             refresh: true,
             fonts: [
