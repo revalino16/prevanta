@@ -19,11 +19,11 @@
         </div>
 
         <div class="hero-title">
-            Selamat Datang, Kader
+            Selamat Datang, {{ Auth::user()->role === 'bidan' ? 'Bidan' : 'Kader' }}
             @auth
                 Ibu {{ Auth::user()->nama }}!
             @else
-                Kader Posyandu!
+                Posyandu!
             @endauth
         </div>
 
