@@ -57,7 +57,8 @@ Route::middleware(['auth', 'role:orang_tua'])
 // =====================================================
 
 // Kader
-Route::prefix('kader')
+Route::middleware(['auth', 'role:kader'])
+    ->prefix('kader')
     ->name('kader.')
     ->group(function () {
 
