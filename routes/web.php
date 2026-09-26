@@ -58,12 +58,22 @@ Route::middleware(['auth', 'role:bidan'])
     ->name('bidan.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('bidan.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [KaderController::class, 'dashboard'])
+            ->name('dashboard');
+
+        Route::get('/monitoring-balita', [BalitaController::class, 'index'])
+            ->name('monitoringbalita');
+
+        Route::get('/balita/{balita}/kms', BalitaKmsController::class)
+            ->name('balita.kms');
+
+        Route::get('/verifikasi', [BalitaController::class, 'verifikasi'])
+            ->name('verifikasi');
+
+        Route::post('/verifikasi/{pengukuran}', [BalitaController::class, 'storeVerifikasi'])
+            ->name('verifikasi.store');
 
     });
-
 
 // =====================================================
 // KADER

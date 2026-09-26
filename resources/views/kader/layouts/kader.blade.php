@@ -551,37 +551,63 @@
 
             <div class="nav-section-label">Menu Utama</div>
 
-            <a
-                href="{{ route('kader.dashboard') }}"
-                class="nav-item {{ request()->routeIs('kader.dashboard') ? 'active' : '' }}"
-            >
-                <i class="fa-solid fa-table-columns nav-icon"></i>
-                <span>Dashboard</span>
-            </a>
+            @if(Auth::user()->role === 'bidan')
+                <a
+                    href="{{ route('bidan.dashboard') }}"
+                    class="nav-item {{ request()->routeIs('bidan.dashboard') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-table-columns nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
 
-            <a
-                href="{{ route('kader.monitoringbalita') }}"
-                class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit', 'kader.balita.kms') ? 'active' : '' }}"
-            >
-                <i class="fa-solid fa-child nav-icon"></i>
-                <span>Monitoring Balita</span>
-            </a>
+                <a
+                    href="{{ route('bidan.monitoringbalita') }}"
+                    class="nav-item {{ request()->routeIs('bidan.monitoringbalita', 'bidan.balita.kms') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-child nav-icon"></i>
+                    <span>Monitoring Balita</span>
+                </a>
 
-            <a
-                href="{{ route('kader.jadwal') }}"
-                class="nav-item {{ request()->routeIs('kader.jadwal') ? 'active' : '' }}"
-            >
-                <i class="fa-regular fa-calendar-days nav-icon"></i>
-                <span>Jadwal</span>
-            </a>
+                <a
+                    href="{{ route('bidan.verifikasi') }}"
+                    class="nav-item {{ request()->routeIs('bidan.verifikasi') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-clipboard-check nav-icon"></i>
+                    <span>Verifikasi Pengukuran</span>
+                </a>
+            @else
+                <a
+                    href="{{ route('kader.dashboard') }}"
+                    class="nav-item {{ request()->routeIs('kader.dashboard') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-table-columns nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
 
-            <a
-                href="{{ route('kader.edukasi') }}"
-                class="nav-item {{ request()->routeIs('kader.edukasi*') ? 'active' : '' }}"
-            >
-                <i class="fa-solid fa-book-open-reader nav-icon"></i>
-                <span>Edukasi</span>
-            </a>
+                <a
+                    href="{{ route('kader.monitoringbalita') }}"
+                    class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit', 'kader.balita.kms') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-child nav-icon"></i>
+                    <span>Monitoring Balita</span>
+                </a>
+
+                <a
+                    href="{{ route('kader.jadwal') }}"
+                    class="nav-item {{ request()->routeIs('kader.jadwal') ? 'active' : '' }}"
+                >
+                    <i class="fa-regular fa-calendar-days nav-icon"></i>
+                    <span>Jadwal</span>
+                </a>
+
+                <a
+                    href="{{ route('kader.edukasi') }}"
+                    class="nav-item {{ request()->routeIs('kader.edukasi*') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-book-open-reader nav-icon"></i>
+                    <span>Edukasi</span>
+                </a>
+            @endif
 
         </nav>
 

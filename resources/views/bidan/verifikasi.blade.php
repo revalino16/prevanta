@@ -1,6 +1,6 @@
 @extends('kader.layouts.kader')
 
-@section('title', 'Monitoring Balita — Prevanta')
+@section('title', 'Verifikasi Pengukuran — Prevanta')
 
 @section('content')
 
@@ -10,29 +10,19 @@
     <div class="page-head">
 
         <div>
-            <div class="eyebrow">E-POSYANDU TERINTEGRASI</div>
+            <div class="eyebrow">PANEL EVALUASI MEDIS BIDAN</div>
 
-            <h1>Monitoring Balita</h1>
+            <h1>Verifikasi Pengukuran Balita</h1>
 
             <p>
-                Kelola data antropometri, pantau kurva pertumbuhan balita, dan lakukan
-                tindakan intervensi gizi terpadu.
+                Tinjau dan lakukan verifikasi data antropometri serta status gizi balita hasil pencatatan Kader Posyandu.
             </p>
         </div>
 
         <div class="page-head-actions">
-            @if(Auth::user()->role === 'kader')
-                <a
-                    href="{{ route('kader.balita.tambah') }}"
-                    class="btn btn-primary"
-                >
-                    <i class="fa-solid fa-user-plus"></i>
-                    + Tambah Balita
-                </a>
-            @endif
             <button type="button" class="btn btn-outline">
                 <i class="fa-solid fa-download"></i>
-                Unduh Rekap Laporan
+                Unduh Rekap Verifikasi
             </button>
         </div>
 
@@ -48,103 +38,16 @@
     @endif
 
 
-    {{-- FILTER PANEL --}}
-    <div class="filter-panel">
-
-        <div class="filter-row">
-
-            <div class="tabs" id="tabs">
-
-                <button
-                    type="button"
-                    class="tab active"
-                    data-status=""
-                >
-                    Semua Status ({{ $balita->count() }})
-                </button>
-
-                <button
-                    type="button"
-                    class="tab"
-                    data-status="success"
-                >
-                    Normal ({{ $countNormal }})
-                </button>
-
-                <button
-                    type="button"
-                    class="tab"
-                    data-status="warning"
-                >
-                    Pendek ({{ $countPendek }})
-                </button>
-
-                <button
-                    type="button"
-                    class="tab"
-                    data-status="danger"
-                >
-                    Sangat Pendek ({{ $countSangatPendek }})
-                </button>
-
-            </div>
-
-            <button
-                type="button"
-                class="reset-link"
-                id="resetFilter"
-            >
-                <i class="fa-solid fa-rotate-left"></i>
-                Reset Filter
-            </button>
-
-        </div>
 
 
-        <div class="search-row">
-
-            <div class="search-box">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Cari nama balita atau NIK..."
-                >
-
-            </div>
-
-
-            <select id="genderFilter">
-
-                <option value="">
-                    Semua Gender
-                </option>
-
-                <option value="L">
-                    Laki-laki
-                </option>
-
-                <option value="P">
-                    Perempuan
-                </option>
-
-            </select>
-
-        </div>
-
-    </div>
-
-
-    {{-- MONITORING LIST --}}
+    {{-- MONITORING / VERIFIKASI LIST --}}
     <div class="monitoring-panel">
 
         <div class="panel-head">
 
             <div class="panel-title">
-                <i class="fa-regular fa-face-smile"></i>
-                Daftar Hasil Pengukuran Antropometri
+                <i class="fa-solid fa-clipboard-check"></i>
+                Daftar Hasil Pengukuran untuk Diverifikasi
             </div>
 
             <span
@@ -244,9 +147,6 @@
 
                                 </div>
 
-
-
-
                             </div>
 
                         </div>
@@ -333,9 +233,6 @@
 
                                 </div>
 
-
-
-
                             </div>
 
                         </div>
@@ -364,9 +261,6 @@
 
                                 </span>
 
-
-                                
-
                                 @if ($pengukuran->z_score ?? null)
                                     <div class="zscore-text">
                                         Z-Score: {{ $pengukuran->z_score }}
@@ -385,27 +279,20 @@
 
 
                         {{-- ACTION --}}
-                        <div class="row-actions">
+                        <div class="row-actions" style="display: flex; gap: 8px; align-items: center;">
 
-                            <a
-                                href="{{ route(Auth::user()->role === 'bidan' ? 'bidan.balita.kms' : 'kader.balita.kms', $item) }}"
-                                class="btn-kms"
-                            >
-                                <i class="fa-solid fa-chart-line"></i>
-                                Lihat KMS
-                            </a>
-
-                            @if(Auth::user()->role === 'kader')
-                                <a
-                                    href="{{ route('kader.balita.edit', $item->id) }}"
-                                    class="btn-edit"
-                                    title="Edit"
-                                >
-                                    <i
-                                        class="fa-solid fa-pen"
-                                        style="font-size: 11px;"
-                                    ></i>
-                                </a>
+                            @if ($pengukuran)
+                                <form method="POST" action="{{ route('bidan.verifikasi.store', $pengukuran->id) }}">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        style="background: linear-gradient(135deg, #2FA36B 0%, #1E7E4D 100%); color: #fff; border: none; padding: 8px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px -3px rgba(47, 163, 107, 0.35); transition: all 0.2s;"
+                                    >
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        Verifikasi
+                                    </button>
+                                </form>
                             @endif
 
                         </div>
@@ -421,11 +308,11 @@
                     <i class="fa-solid fa-child"></i>
 
                     <h3>
-                        Belum ada data balita
+                        Belum ada data balita untuk diverifikasi
                     </h3>
 
                     <p>
-                        Data balita yang terdaftar akan ditampilkan di sini.
+                        Data hasil pengukuran yang perlu diverifikasi akan muncul di sini.
                     </p>
 
                 </div>
