@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalitaController;
+use App\Http\Controllers\BalitaKmsController;
 use App\Http\Controllers\KaderController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,7 +10,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
 
 // =====================================================
 // AUTH ROUTES
@@ -28,11 +28,9 @@ Route::get('/registrasi', [AuthController::class, 'showRegister'])
 Route::post('/registrasi', [AuthController::class, 'register'])
     ->name('registrasi.post');
 
-
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
-
 
 // =====================================================
 // ORANG TUA
@@ -50,7 +48,6 @@ Route::middleware(['auth', 'role:orang_tua'])
 
     });
 
-
 // =====================================================
 // KADER
 // Role database: kader
@@ -67,6 +64,9 @@ Route::middleware(['auth', 'role:kader'])
 
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
             ->name('monitoringbalita');
+
+        Route::get('/balita/{balita}/kms', BalitaKmsController::class)
+            ->name('balita.kms');
 
         Route::get('/tambah-balita', [BalitaController::class, 'create'])
             ->name('balita.tambah');

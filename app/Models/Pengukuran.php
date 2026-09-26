@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pengukuran extends Model
 {
@@ -26,5 +27,10 @@ class Pengukuran extends Model
     public function balita()
     {
         return $this->belongsTo(Balita::class, 'balita_id');
+    }
+
+    public function verifikasi(): HasOne
+    {
+        return $this->hasOne(Verifikasi::class, 'pengukuran_id')->latestOfMany();
     }
 }
