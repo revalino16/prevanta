@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pengukuran;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Balita extends Model
 {
     protected $table = 'balita';
@@ -19,7 +20,6 @@ class Balita extends Model
         'alamat',
     ];
 
-
     public function orangTua()
     {
         return $this->belongsTo(
@@ -28,12 +28,21 @@ class Balita extends Model
         );
     }
 
-
     public function pengukuran()
     {
         return $this->hasMany(
             Pengukuran::class,
             'balita_id'
         );
+    }
+
+    public function imunisasi(): HasMany
+    {
+        return $this->hasMany(ImunisasiBalita::class, 'balita_id');
+    }
+
+    public function vitamin(): HasMany
+    {
+        return $this->hasMany(VitaminBalita::class, 'balita_id');
     }
 }

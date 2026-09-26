@@ -386,7 +386,7 @@
                         <div class="row-actions">
 
                             <a
-                                href="#"
+                                href="{{ route('kader.balita.kms', $item) }}"
                                 class="btn-kms"
                             >
                                 <i class="fa-solid fa-chart-line"></i>

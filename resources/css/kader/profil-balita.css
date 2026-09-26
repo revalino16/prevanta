@@ -1,0 +1,1030 @@
+.kms-page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    background: #fbf9f6;
+}
+
+.kms-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.kms-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 12px;
+    color: var(--wine-deep);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.kms-back-link:hover {
+    color: var(--primary-dark);
+}
+
+.kms-heading h1 {
+    margin-bottom: 4px;
+    font-size: 28px;
+    line-height: 1.15;
+}
+
+.kms-heading p {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    font-weight: 500;
+}
+
+.kms-record-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 246px;
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #b43a5a 0%, #8f2845 100%);
+    box-shadow: 0 6px 15px -7px rgba(124, 39, 64, .65);
+    color: #fff;
+    cursor: not-allowed;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.kms-record-button:disabled {
+    opacity: .82;
+}
+
+.child-profile-card,
+.growth-card,
+.measurement-card,
+.measurement-empty {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--card);
+    box-shadow: 0 8px 28px -24px rgba(62, 38, 31, .45);
+}
+
+.child-profile-card {
+    display: grid;
+    grid-template-columns: 148px minmax(0, 1fr);
+    gap: 24px;
+    padding: 20px;
+}
+
+.child-photo-wrap {
+    position: relative;
+    align-self: start;
+}
+
+.child-photo {
+    display: block;
+    width: 148px;
+    height: 148px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 6px 15px -8px rgba(42, 36, 32, .5);
+}
+
+.child-gender {
+    position: absolute;
+    right: -7px;
+    bottom: -6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 2px solid var(--card);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.child-gender-l {
+    background: #dff3df;
+    color: #25734a;
+}
+
+.child-gender-p {
+    background: var(--wine-tint);
+    color: var(--wine-deep);
+}
+
+.child-profile-content {
+    min-width: 0;
+}
+
+.child-profile-content h2 {
+    margin: 8px 0 13px;
+    font-size: 21px;
+    line-height: 1.2;
+}
+
+.child-details-grid {
+    display: grid;
+    grid-template-columns: minmax(180px, .9fr) minmax(220px, 1fr) minmax(220px, 1fr);
+    gap: 14px 24px;
+}
+
+.child-detail {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.child-detail-label {
+    color: var(--ink-faint);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+.child-detail strong {
+    overflow-wrap: anywhere;
+    color: var(--ink);
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+
+.child-detail strong span {
+    white-space: nowrap;
+}
+
+.child-status-detail {
+    justify-content: center;
+}
+
+.growth-status {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    max-width: 100%;
+    padding: 7px 13px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.growth-status-danger {
+    border-color: #efafba;
+    background: #ec8196;
+    color: #782139;
+}
+
+.growth-status-warning {
+    border-color: var(--amber-tint-line);
+    background: var(--amber-tint);
+    color: var(--amber);
+}
+
+.growth-status-success {
+    border-color: var(--green-tint-line);
+    background: var(--green-tint);
+    color: var(--green);
+}
+
+.growth-status-neutral {
+    border-color: var(--line);
+    background: var(--bg);
+    color: var(--ink-soft);
+}
+
+.follow-up {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 520px;
+    margin-top: 16px;
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.follow-up-danger {
+    border-color: #f3b8c2;
+    background: #fff0f2;
+}
+
+.follow-up-danger i {
+    color: #d83954;
+}
+
+.follow-up-warning {
+    border-color: var(--amber-tint-line);
+    background: var(--amber-tint);
+}
+
+.follow-up-warning i {
+    color: var(--amber);
+}
+
+.follow-up-success {
+    border-color: var(--green-tint-line);
+    background: var(--green-tint);
+}
+
+.follow-up-success i {
+    color: var(--green);
+}
+
+.follow-up strong {
+    color: var(--ink);
+}
+
+.growth-card {
+    padding: 20px;
+}
+
+.growth-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 22px;
+}
+
+.growth-card-head h2 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.growth-card-head h2 i {
+    color: var(--wine-deep);
+}
+
+.growth-card-head p {
+    max-width: 590px;
+    color: var(--ink-faint);
+    font-size: 11.5px;
+    line-height: 1.45;
+}
+
+.metric-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(112px, 1fr));
+    flex-shrink: 0;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 13px;
+    background: #f2efeb;
+}
+
+.metric-tab {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+.metric-tab span {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 700;
+}
+
+.metric-tab.is-active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 10px -5px rgba(124, 39, 64, .8);
+}
+
+.metric-tab:focus-visible,
+.history-tab:focus-visible {
+    outline: 3px solid rgba(180, 58, 90, .22);
+    outline-offset: 2px;
+}
+
+.chart-shell {
+    width: 100%;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.growth-chart-panel[hidden],
+.history-panel[hidden] {
+    display: none;
+}
+
+.chart-description {
+    margin-top: 14px;
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.growth-chart {
+    display: block;
+    width: 100%;
+    min-width: 720px;
+    height: auto;
+}
+
+.chart-zone-normal {
+    fill: #eaf6ee;
+}
+
+.chart-zone-warning {
+    fill: #fff6e7;
+}
+
+.chart-zone-danger {
+    fill: #fff0f3;
+}
+
+.chart-grid-line {
+    stroke: #eee7df;
+    stroke-width: 1;
+}
+
+.chart-threshold {
+    stroke-width: 1.4;
+    stroke-dasharray: 3 3;
+}
+
+.chart-threshold-green {
+    stroke: #83bd94;
+}
+
+.chart-threshold-amber {
+    stroke: #ddae62;
+}
+
+.chart-threshold-red {
+    stroke: #dc8292;
+}
+
+.chart-threshold-neutral {
+    stroke: #d9d1c8;
+}
+
+.chart-x-label,
+.chart-y-label,
+.chart-empty-title,
+.chart-empty-copy {
+    font-family: 'Inter', sans-serif;
+}
+
+.chart-x-label {
+    fill: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+.chart-y-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-anchor: end;
+}
+
+.chart-y-label-green {
+    fill: #287646;
+}
+
+.chart-y-label-amber {
+    fill: #916319;
+}
+
+.chart-y-label-red {
+    fill: #a9445a;
+}
+
+.chart-y-label-neutral {
+    fill: var(--ink-faint);
+}
+
+.chart-line {
+    fill: none;
+    stroke: #91455a;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 4;
+}
+
+.chart-point {
+    fill: #fff;
+    stroke: #91455a;
+    stroke-width: 4;
+}
+
+.chart-empty-title {
+    fill: var(--ink-soft);
+    font-size: 14px;
+    font-weight: 800;
+    text-anchor: middle;
+}
+
+.chart-empty-copy {
+    fill: var(--ink-faint);
+    font-size: 10.5px;
+    text-anchor: middle;
+}
+
+.chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px 22px;
+    margin-top: 2px;
+    padding: 12px 14px;
+    border-radius: 11px;
+    background: var(--bg);
+    flex-wrap: wrap;
+}
+
+.chart-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    font-weight: 700;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-line {
+    border: 2px solid #91455a;
+    background: #fff;
+}
+
+.legend-normal {
+    background: #dff1e5;
+}
+
+.legend-warning {
+    background: #f5d965;
+}
+
+.legend-danger {
+    background: #df6f84;
+}
+
+.legend-recorded {
+    background: #92c8a4;
+}
+
+.chart-note {
+    margin-top: 8px;
+    color: var(--ink-faint);
+    font-size: 9.5px;
+    font-weight: 600;
+}
+
+.history-tabs {
+    display: inline-flex;
+    align-self: flex-start;
+    gap: 3px;
+    padding: 4px;
+    border-radius: 12px;
+    background: #eeeae6;
+}
+
+.history-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 15px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--card);
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color .18s ease, color .18s ease;
+}
+
+.history-tab.is-active {
+    background: var(--primary);
+    color: #fff;
+}
+
+.measurement-history {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.measurement-card {
+    position: relative;
+    overflow: hidden;
+    padding: 19px 20px 20px;
+}
+
+.measurement-card::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 7px;
+    background: var(--wine);
+    content: '';
+}
+
+.measurement-card-danger::before {
+    background: #bb3b58;
+}
+
+.measurement-card-warning::before {
+    background: var(--amber);
+}
+
+.measurement-card-success::before {
+    background: var(--green);
+}
+
+.measurement-card-neutral::before {
+    background: var(--ink-faint);
+}
+
+.measurement-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-left: 3px;
+}
+
+.measurement-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.measurement-icon {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.measurement-head h2 {
+    margin-bottom: 3px;
+    font-size: 16px;
+}
+
+.measurement-head p {
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.measurement-verification {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 7px;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.measurement-verification-verified {
+    color: var(--green);
+}
+
+.measurement-verification-waiting {
+    color: var(--amber);
+}
+
+.measurement-verification-returned {
+    color: #b5314f;
+}
+
+.measurement-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.measurement-metric {
+    display: flex;
+    min-height: 130px;
+    flex-direction: column;
+    padding: 15px;
+    border-radius: 13px;
+    background: #f8f6f3;
+    overflow: hidden;
+}
+
+.metric-highlight {
+    position: relative;
+}
+
+.metric-highlight::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 62px;
+    height: 62px;
+    border-radius: 0 0 0 62px;
+    background: #f1c0ca;
+    content: '';
+}
+
+.metric-highlight-success::after {
+    background: #cde9d6;
+}
+
+.metric-highlight-warning::after {
+    background: #f0dcae;
+}
+
+.metric-highlight-neutral::after {
+    background: #ded9d3;
+}
+
+.metric-label-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--ink-soft);
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: .025em;
+}
+
+.metric-label-row i {
+    color: #b5314f;
+}
+
+.metric-label-row .metric-icon-green {
+    color: #148a63;
+}
+
+.metric-value {
+    margin-top: 8px;
+    color: var(--ink);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.metric-value small {
+    color: var(--ink-soft);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.metric-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 13px;
+    color: var(--ink-faint);
+    font-size: 9.5px;
+    font-weight: 700;
+}
+
+.metric-meta strong {
+    color: var(--ink);
+    font-size: 9.5px;
+    text-align: right;
+}
+
+.metric-meta-stack {
+    align-items: flex-end;
+}
+
+.metric-badge {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #e4ded8;
+    color: var(--ink-soft);
+    font-size: 9px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.metric-badge-danger {
+    background: #e98598;
+    color: #722037;
+}
+
+.metric-badge-warning {
+    background: var(--amber-tint-line);
+    color: #875a12;
+}
+
+.metric-badge-success {
+    background: var(--green-tint-line);
+    color: #1e7046;
+}
+
+.measurement-empty {
+    padding: 50px 20px;
+    color: var(--ink-faint);
+    text-align: center;
+}
+
+.measurement-empty > span {
+    display: inline-flex;
+    width: 52px;
+    height: 52px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 13px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    color: var(--wine-deep);
+    font-size: 19px;
+}
+
+.measurement-empty h2 {
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 16px;
+}
+
+.measurement-empty p {
+    font-size: 12px;
+}
+
+.health-history {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.health-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.health-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: var(--card);
+    box-shadow: 0 8px 28px -24px rgba(62, 38, 31, .45);
+}
+
+.health-summary-icon {
+    display: inline-flex;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+.health-summary-immunization .health-summary-icon {
+    background: #e7f5ed;
+    color: #218458;
+}
+
+.health-summary-vitamin .health-summary-icon {
+    background: #fff2d9;
+    color: #a66b13;
+}
+
+.health-summary-card div {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    column-gap: 10px;
+}
+
+.health-summary-card span {
+    grid-column: 1 / -1;
+    color: var(--ink-soft);
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.health-summary-card strong {
+    color: var(--ink);
+    font-size: 28px;
+    line-height: 1.15;
+}
+
+.health-summary-card small {
+    color: var(--ink-faint);
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.health-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.health-record {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 14px;
+    padding: 17px 18px;
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--green);
+    border-radius: 15px;
+    background: var(--card);
+}
+
+.health-record-vitamin {
+    border-left-color: #d89b36;
+}
+
+.health-record-icon {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #e7f5ed;
+    color: #218458;
+}
+
+.health-record-vitamin .health-record-icon {
+    background: #fff2d9;
+    color: #a66b13;
+}
+
+.health-record-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.health-record-type {
+    color: var(--ink-faint);
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.health-record h2 {
+    margin-top: 2px;
+    font-size: 15px;
+}
+
+.health-record-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--green-tint);
+    color: var(--green);
+    flex-shrink: 0;
+    font-size: 9.5px;
+    font-weight: 800;
+}
+
+.health-record-content > p {
+    margin-top: 7px;
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.health-record-meta {
+    display: flex;
+    gap: 8px 18px;
+    margin-top: 10px;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.health-record-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.health-empty {
+    width: 100%;
+}
+
+@media (max-width: 1180px) {
+    .child-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .growth-card-head {
+        flex-direction: column;
+    }
+
+    .metric-tabs {
+        width: 100%;
+    }
+
+    .measurement-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .kms-page {
+        gap: 16px;
+    }
+
+    .kms-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .kms-record-button {
+        align-self: flex-start;
+    }
+
+    .child-profile-card {
+        grid-template-columns: 1fr;
+    }
+
+    .child-photo-wrap {
+        width: 128px;
+    }
+
+    .child-photo {
+        width: 128px;
+        height: 128px;
+    }
+
+    .child-details-grid,
+    .measurement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metric-tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .measurement-head {
+        flex-direction: column;
+    }
+
+    .measurement-verification {
+        text-align: left;
+    }
+
+    .history-tabs {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .health-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .health-record {
+        grid-template-columns: 1fr;
+    }
+
+    .health-record-title {
+        flex-direction: column;
+    }
+}
