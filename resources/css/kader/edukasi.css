@@ -1,0 +1,514 @@
+/* ============================================================
+   EDUKASI TUMBUH KEMBANG — edukasi.css
+   ============================================================ */
+
+.edukasi-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Top Header ─────────────────────────────────────────────── */
+
+.edukasi-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.edukasi-head-left {
+    max-width: 680px;
+}
+
+.edukasi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FCEEF2;
+    border: 1px solid #F4D3DE;
+    color: #9B2A4A;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .02em;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+.edukasi-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #1F1A1C;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+}
+
+.edukasi-sub {
+    font-size: 14px;
+    color: #6B6259;
+    line-height: 1.5;
+}
+
+.btn-input-edukasi {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #9B2A4A;
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 11px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(155, 42, 74, 0.25);
+    transition: all 0.2s ease;
+    border: none;
+    white-space: nowrap;
+}
+
+.btn-input-edukasi:hover {
+    background: #801E39;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(155, 42, 74, 0.35);
+}
+
+.btn-input-edukasi i {
+    font-size: 14px;
+}
+
+/* ── Filter Pills Bar ────────────────────────────────────────── */
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.filter-pill {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #554D48;
+    background: #FFFFFF;
+    border: 1px solid #ECE3D8;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.filter-pill:hover {
+    background: #FDFBF8;
+    border-color: #D9CFC4;
+    color: #1F1A1C;
+}
+
+.filter-pill.active {
+    background: #9B2A4A;
+    color: #FFFFFF;
+    border-color: #9B2A4A;
+    box-shadow: 0 4px 12px rgba(155, 42, 74, 0.2);
+}
+
+/* ── Search Input Box ───────────────────────────────────────── */
+
+.search-wrap {
+    position: relative;
+    max-width: 440px;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.search-wrap i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9C9289;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #ECE3D8;
+    border-radius: 999px;
+    padding: 10px 16px 10px 42px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #2A2420;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+}
+
+.search-input::placeholder {
+    color: #A39A91;
+}
+
+.search-input:focus {
+    border-color: #9B2A4A;
+    box-shadow: 0 0 0 3px rgba(155, 42, 74, 0.1);
+}
+
+/* ── Section Title Bar ──────────────────────────────────────── */
+
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+    margin-bottom: 2px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #2A2420;
+}
+
+.section-title i {
+    color: #9B2A4A;
+    font-size: 18px;
+}
+
+.section-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: #776E65;
+}
+
+/* ── Card Grid ──────────────────────────────────────────────── */
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+@media (max-width: 1100px) {
+    .articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 680px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Article Card ───────────────────────────────────────────── */
+
+.article-card {
+    background: #FFFFFF;
+    border: 1px solid #ECE3D8;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 16px rgba(60, 30, 24, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -6px rgba(60, 30, 24, 0.12);
+    border-color: #DFD3C6;
+}
+
+.article-thumb-wrap {
+    position: relative;
+    width: 100%;
+    height: 195px;
+    background: #F4EBE3;
+    overflow: hidden;
+}
+
+.article-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.article-card:hover .article-thumb {
+    transform: scale(1.03);
+}
+
+/* Badges on image */
+.thumb-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.thumb-badge.imunisasi {
+    background: #C85A7A;
+    color: #FFFFFF;
+}
+
+.thumb-badge.gizi {
+    background: #EAF6EE;
+    color: #1F6D40;
+    border: 1px solid #C8EBD2;
+}
+
+.thumb-badge.stimulasi {
+    background: #DCFCE7;
+    color: #15803D;
+    border: 1px solid #BBF7D0;
+}
+
+.thumb-badge.istirahat {
+    background: rgba(30, 24, 22, 0.85);
+    color: #FFFFFF;
+    backdrop-filter: blur(4px);
+}
+
+.thumb-badge.sanitasi {
+    background: #E0F2FE;
+    color: #0369A1;
+    border: 1px solid #BAE6FD;
+}
+
+.thumb-badge.gtm {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FDE68A;
+}
+
+.thumb-badge.default {
+    background: #FCEEF2;
+    color: #9B2A4A;
+    border: 1px solid #F4D3DE;
+}
+
+/* Card Body */
+.article-body {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.article-card-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1F1A1C;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.article-card-desc {
+    font-size: 13px;
+    color: #6B6259;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Card Footer */
+.article-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #F4EFE9;
+    font-size: 12px;
+}
+
+.read-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #8C8279;
+    font-weight: 600;
+}
+
+.read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #9B2A4A;
+    font-weight: 800;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.read-link:hover {
+    color: #721932;
+    gap: 8px;
+}
+
+/* ── Modal Pop-up Baca Artikel ──────────────────────────────── */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 15, 13, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-backdrop.show {
+    display: flex;
+}
+
+.modal-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    max-width: 620px;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    position: relative;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ECE3D8;
+}
+
+.modal-header .thumb-badge {
+    position: static; /* Mengabaikan absolute dari .thumb-badge utama */
+    pointer-events: auto;
+}
+
+.modal-close-btn {
+    background: #F4EFE9;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6B6259;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    background: #E8E0D7;
+    color: #1F1A1C;
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.modal-img {
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-bottom: 18px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1F1A1C;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.modal-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: #8C8279;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F4EFE9;
+}
+
+.modal-content-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #443C37;
+    white-space: pre-line;
+}
+
+/* ── Empty State ────────────────────────────────────────────── */
+
+.empty-state {
+    background: #FFFFFF;
+    border: 1px dashed #D9CFC4;
+    border-radius: 20px;
+    padding: 48px 24px;
+    text-align: center;
+    color: #6B6259;
+}
+
+.empty-state i {
+    font-size: 40px;
+    color: #D9CFC4;
+    margin-bottom: 12px;
+}
+
+.empty-state h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #2A2420;
+    margin-bottom: 6px;
+}

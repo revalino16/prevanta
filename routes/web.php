@@ -52,6 +52,23 @@ Route::middleware(['auth', 'role:orang_tua'])
 
 
 // =====================================================
+// BIDAN
+// Role database: bidan
+// =====================================================
+
+Route::middleware(['auth', 'role:bidan'])
+    ->prefix('bidan')
+    ->name('bidan.')
+    ->group(function () {
+
+        Route::get('/dashboard', function () {
+            return view('bidan.dashboard');
+        })->name('dashboard');
+
+    });
+
+
+// =====================================================
 // KADER
 // Role database: kader
 // =====================================================
@@ -91,4 +108,16 @@ Route::middleware(['auth', 'role:kader'])
 
         Route::delete('/jadwal/{id}', [KaderController::class, 'jadwalDestroy'])
             ->name('jadwal.destroy');
+
+        Route::get('/edukasi', [KaderController::class, 'edukasi'])
+            ->name('edukasi');
+
+        Route::get('/tambah-edukasi', [KaderController::class, 'edukasiCreate'])
+            ->name('edukasi.create');
+
+        Route::post('/tambah-edukasi', [KaderController::class, 'edukasiStore'])
+            ->name('edukasi.store');
+
+        Route::delete('/edukasi/{id}', [KaderController::class, 'edukasiDestroy'])
+            ->name('edukasi.destroy');
     });
