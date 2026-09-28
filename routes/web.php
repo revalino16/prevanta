@@ -89,6 +89,12 @@ Route::middleware(['auth', 'role:kader'])
         Route::get('/balita/{balita}/kms', BalitaKmsController::class)
             ->name('balita.kms');
 
+        Route::get('/balita/{balita}/pengukuran', [Kader\PengukuranController::class, 'create'])
+            ->name('balita.pengukuran.create');
+
+        Route::post('/balita/{balita}/pengukuran', [Kader\PengukuranController::class, 'store'])
+            ->name('balita.pengukuran.store');
+
         Route::get('/tambah-balita', [BalitaController::class, 'create'])
             ->name('balita.tambah');
 
