@@ -3,7 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalitaController;
 use App\Http\Controllers\BalitaKmsController;
-use App\Http\Controllers\KaderController;
+use App\Http\Controllers\Bidan;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Kader;
+use App\Http\Controllers\OrangTua;
 use Illuminate\Support\Facades\Route;
 
 // Landing Page
@@ -15,7 +18,6 @@ Route::get('/', function () {
 // AUTH ROUTES
 // =====================================================
 
-// AUTH ROUTES
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
@@ -28,7 +30,6 @@ Route::get('/registrasi', [AuthController::class, 'showRegister'])
 Route::post('/registrasi', [AuthController::class, 'register'])
     ->name('registrasi.post');
 
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
@@ -41,11 +42,8 @@ Route::middleware(['auth', 'role:orang_tua'])
     ->prefix('orangtua')
     ->name('orangtua.')
     ->group(function () {
-
-        Route::get('/anakku', function () {
-            return view('orangtua.anakku');
-        })->name('anakku');
-
+        Route::get('/anakku', [OrangTua\AnakkuController::class, 'index'])
+            ->name('anakku');
     });
 
 // =====================================================
@@ -57,8 +55,7 @@ Route::middleware(['auth', 'role:bidan'])
     ->prefix('bidan')
     ->name('bidan.')
     ->group(function () {
-
-        Route::get('/dashboard', [KaderController::class, 'dashboard'])
+        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
@@ -67,12 +64,11 @@ Route::middleware(['auth', 'role:bidan'])
         Route::get('/balita/{balita}/kms', BalitaKmsController::class)
             ->name('balita.kms');
 
-        Route::get('/verifikasi', [BalitaController::class, 'verifikasi'])
+        Route::get('/verifikasi', [Bidan\VerifikasiController::class, 'index'])
             ->name('verifikasi');
 
-        Route::post('/verifikasi/{pengukuran}', [BalitaController::class, 'storeVerifikasi'])
+        Route::post('/verifikasi/{pengukuran}', [Bidan\VerifikasiController::class, 'store'])
             ->name('verifikasi.store');
-
     });
 
 // =====================================================
@@ -80,13 +76,11 @@ Route::middleware(['auth', 'role:bidan'])
 // Role database: kader
 // =====================================================
 
-// Kader
 Route::middleware(['auth', 'role:kader'])
     ->prefix('kader')
     ->name('kader.')
     ->group(function () {
-
-        Route::get('/dashboard', [KaderController::class, 'dashboard'])
+        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
@@ -110,24 +104,24 @@ Route::middleware(['auth', 'role:kader'])
         Route::delete('/balita/{id}', [BalitaController::class, 'destroy'])
             ->name('balita.destroy');
 
-        Route::get('/jadwal', [KaderController::class, 'jadwal'])
+        Route::get('/jadwal', [Kader\JadwalController::class, 'index'])
             ->name('jadwal');
 
-        Route::post('/jadwal', [KaderController::class, 'jadwalStore'])
+        Route::post('/jadwal', [Kader\JadwalController::class, 'store'])
             ->name('jadwal.store');
 
-        Route::delete('/jadwal/{id}', [KaderController::class, 'jadwalDestroy'])
+        Route::delete('/jadwal/{id}', [Kader\JadwalController::class, 'destroy'])
             ->name('jadwal.destroy');
 
-        Route::get('/edukasi', [KaderController::class, 'edukasi'])
+        Route::get('/edukasi', [Kader\EdukasiController::class, 'index'])
             ->name('edukasi');
 
-        Route::get('/tambah-edukasi', [KaderController::class, 'edukasiCreate'])
+        Route::get('/tambah-edukasi', [Kader\EdukasiController::class, 'create'])
             ->name('edukasi.create');
 
-        Route::post('/tambah-edukasi', [KaderController::class, 'edukasiStore'])
+        Route::post('/tambah-edukasi', [Kader\EdukasiController::class, 'store'])
             ->name('edukasi.store');
 
-        Route::delete('/edukasi/{id}', [KaderController::class, 'edukasiDestroy'])
+        Route::delete('/edukasi/{id}', [Kader\EdukasiController::class, 'destroy'])
             ->name('edukasi.destroy');
     });

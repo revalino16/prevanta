@@ -279,20 +279,30 @@
 
 
                         {{-- ACTION --}}
-                        <div class="row-actions" style="display: flex; gap: 8px; align-items: center;">
+                        <div class="row-actions">
 
                             @if ($pengukuran)
-                                <form method="POST" action="{{ route('bidan.verifikasi.store', $pengukuran->id) }}">
-                                    @csrf
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary"
-                                        style="background: linear-gradient(135deg, #2FA36B 0%, #1E7E4D 100%); color: #fff; border: none; padding: 8px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px -3px rgba(47, 163, 107, 0.35); transition: all 0.2s;"
-                                    >
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        Verifikasi
-                                    </button>
-                                </form>
+                                <button
+                                    type="button"
+                                    class="btn-verif-trigger"
+                                    data-pengukuran-id="{{ $pengukuran->id }}"
+                                    data-nama="{{ $item->nama }}"
+                                    data-nik="{{ $item->nik }}"
+                                    data-gender="{{ $item->jenis_kelamin }}"
+                                    data-tanggal-lahir="{{ \Carbon\Carbon::parse($item->tanggal_lahir)->isoFormat('D MMM YYYY') }}"
+                                    data-tanggal-ukur="{{ $pengukuran->tanggal_pengukuran }}"
+                                    data-bb="{{ $pengukuran->berat_badan ?? '-' }}"
+                                    data-tb="{{ $pengukuran->tinggi_badan ?? '-' }}"
+                                    data-lk="{{ $pengukuran->lingkar_kepala ?? '-' }}"
+                                    data-lila="{{ $pengukuran->lingkar_lengan_atas ?? '-' }}"
+                                    data-zscore="{{ $pengukuran->z_score ?? '-' }}"
+                                    data-status="{{ $pengukuran->status_pertumbuhan ?? '-' }}"
+                                    data-status-key="{{ $item->status_key }}"
+                                    onclick="openVerifModal(this)"
+                                >
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    Verifikasi
+                                </button>
                             @endif
 
                         </div>
@@ -325,6 +335,184 @@
 
 </main>
 
+
+{{-- ===================================================
+     MODAL VERIFIKASI
+     =================================================== --}}
+<div class="verif-backdrop" id="verifBackdrop" aria-hidden="true"></div>
+
+<div class="verif-modal" id="verifModal" role="dialog" aria-modal="true" aria-labelledby="verifModalTitle">
+
+    <div class="verif-modal-inner">
+
+        {{-- HEADER --}}
+        <div class="verif-modal-header">
+            <div class="verif-modal-icon">
+                <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <div>
+                <h2 class="verif-modal-title" id="verifModalTitle">Form Verifikasi Pengukuran</h2>
+                <p class="verif-modal-subtitle">Tinjau data, tentukan tindak lanjut, dan tambahkan catatan penyuluhan.</p>
+            </div>
+            <button type="button" class="verif-modal-close" onclick="closeVerifModal()" aria-label="Tutup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+
+        {{-- DATA BALITA --}}
+        <div class="verif-section-label">
+            <i class="fa-solid fa-child"></i>
+            Data Balita
+        </div>
+
+        <div class="verif-data-grid">
+
+            <div class="verif-data-item">
+                <div class="verif-data-label">Nama</div>
+                <div class="verif-data-value" id="vNama">—</div>
+            </div>
+
+            <div class="verif-data-item">
+                <div class="verif-data-label">NIK</div>
+                <div class="verif-data-value" id="vNik">—</div>
+            </div>
+
+            <div class="verif-data-item">
+                <div class="verif-data-label">Jenis Kelamin</div>
+                <div class="verif-data-value" id="vGender">—</div>
+            </div>
+
+            <div class="verif-data-item">
+                <div class="verif-data-label">Tanggal Lahir</div>
+                <div class="verif-data-value" id="vTanggalLahir">—</div>
+            </div>
+
+        </div>
+
+
+        {{-- DATA PENGUKURAN --}}
+        <div class="verif-section-label" style="margin-top: 20px;">
+            <i class="fa-solid fa-ruler"></i>
+            Hasil Pengukuran Kader
+        </div>
+
+        <div class="verif-ukur-grid">
+
+            <div class="verif-ukur-card">
+                <div class="verif-ukur-icon"><i class="fa-solid fa-weight-scale"></i></div>
+                <div class="verif-ukur-label">Berat Badan</div>
+                <div class="verif-ukur-value" id="vBb">—</div>
+                <div class="verif-ukur-unit">kg</div>
+            </div>
+
+            <div class="verif-ukur-card">
+                <div class="verif-ukur-icon"><i class="fa-solid fa-arrows-up-down"></i></div>
+                <div class="verif-ukur-label">PB / TB</div>
+                <div class="verif-ukur-value" id="vTb">—</div>
+                <div class="verif-ukur-unit">cm</div>
+            </div>
+
+            <div class="verif-ukur-card">
+                <div class="verif-ukur-icon"><i class="fa-solid fa-circle-dot"></i></div>
+                <div class="verif-ukur-label">Lingkar Kepala</div>
+                <div class="verif-ukur-value" id="vLk">—</div>
+                <div class="verif-ukur-unit">cm</div>
+            </div>
+
+            <div class="verif-ukur-card">
+                <div class="verif-ukur-icon"><i class="fa-solid fa-expand"></i></div>
+                <div class="verif-ukur-label">LILA</div>
+                <div class="verif-ukur-value" id="vLila">—</div>
+                <div class="verif-ukur-unit">cm</div>
+            </div>
+
+        </div>
+
+        <div class="verif-status-row">
+            <div class="verif-status-chip" id="vStatusChip">
+                <i class="fa-solid fa-chart-line"></i>
+                <span id="vStatusText">—</span>
+            </div>
+            <div class="verif-zscore" id="vZscore">Z-Score: —</div>
+        </div>
+
+
+        {{-- FORM VERIFIKASI --}}
+        <form
+            method="POST"
+            id="verifForm"
+            action=""
+        >
+            @csrf
+
+            <div class="verif-section-label" style="margin-top: 20px;">
+                <i class="fa-solid fa-clipboard-list"></i>
+                Keputusan Verifikasi
+            </div>
+
+
+            {{-- TINDAK LANJUT --}}
+            <div class="verif-field">
+                <label class="verif-field-label" for="tindak_lanjut">
+                    Tindak Lanjut <span class="req">*</span>
+                </label>
+                <div class="verif-tl-toggle">
+
+                    <input type="radio" name="tindak_lanjut" id="tlTidakPerlu" value="tidak_perlu" checked>
+                    <label for="tlTidakPerlu" class="tl-btn tl-no">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Tidak Perlu Tindak Lanjut
+                    </label>
+
+                    <input type="radio" name="tindak_lanjut" id="tlPerlu" value="perlu">
+                    <label for="tlPerlu" class="tl-btn tl-yes">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Perlu Tindak Lanjut
+                    </label>
+
+                </div>
+            </div>
+
+
+            {{-- CATATAN PENYULUHAN --}}
+            <div class="verif-field">
+                <label class="verif-field-label" for="catatan_penyuluhan">
+                    Catatan Penyuluhan
+                    <span class="verif-field-hint">Opsional</span>
+                </label>
+                <textarea
+                    name="catatan_penyuluhan"
+                    id="catatan_penyuluhan"
+                    class="verif-textarea"
+                    rows="4"
+                    placeholder="Tuliskan catatan penyuluhan, saran gizi, atau rekomendasi tindak lanjut..."
+                ></textarea>
+            </div>
+
+
+            {{-- ACTIONS --}}
+            <div class="verif-modal-actions">
+
+                <button type="button" class="verif-btn-cancel" onclick="closeVerifModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                    Batal
+                </button>
+
+                <button type="submit" class="verif-btn-submit" id="verifSubmitBtn">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Verifikasi Sekarang
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
 @endsection
 
 
@@ -335,4 +523,61 @@
 
 @push('scripts')
     @vite('resources/js/kader/monitoringbalita.js')
+
+    <script>
+        const verifRouteBase = '{{ url("bidan/verifikasi") }}';
+
+        function openVerifModal(btn) {
+            const id     = btn.dataset.pengukuranId;
+            const gender = btn.dataset.gender;
+
+            // Identitas
+            document.getElementById('vNama').textContent        = btn.dataset.nama;
+            document.getElementById('vNik').textContent         = btn.dataset.nik;
+            document.getElementById('vGender').textContent      = gender === 'L' ? 'Laki-laki' : 'Perempuan';
+            document.getElementById('vTanggalLahir').textContent = btn.dataset.tanggalLahir;
+
+            // Pengukuran
+            const bb   = btn.dataset.bb;
+            const tb   = btn.dataset.tb;
+            const lk   = btn.dataset.lk;
+            const lila = btn.dataset.lila;
+
+            document.getElementById('vBb').textContent   = bb   !== '-' ? bb   : '—';
+            document.getElementById('vTb').textContent   = tb   !== '-' ? tb   : '—';
+            document.getElementById('vLk').textContent   = lk   !== '-' ? lk   : '—';
+            document.getElementById('vLila').textContent = lila !== '-' ? lila : '—';
+
+            const statusText = btn.dataset.status;
+            const statusKey  = btn.dataset.statusKey;
+            document.getElementById('vStatusText').textContent = statusText;
+            const chip = document.getElementById('vStatusChip');
+            chip.className = 'verif-status-chip verif-status-chip--' + (statusKey || 'empty');
+
+            const zscore = btn.dataset.zscore;
+            document.getElementById('vZscore').textContent = zscore !== '-' ? 'Z-Score: ' + zscore : '';
+
+            // Reset form
+            document.getElementById('verifForm').action = verifRouteBase + '/' + id;
+            document.getElementById('tlTidakPerlu').checked = true;
+            document.getElementById('catatan_penyuluhan').value = '';
+
+            // Open
+            document.getElementById('verifBackdrop').classList.add('open');
+            document.getElementById('verifModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVerifModal() {
+            document.getElementById('verifBackdrop').classList.remove('open');
+            document.getElementById('verifModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('verifBackdrop').addEventListener('click', closeVerifModal);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeVerifModal();
+        });
+    </script>
 @endpush
