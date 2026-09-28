@@ -633,3 +633,556 @@
     }
 
 }
+
+
+/* =========================================================
+   TOMBOL VERIFIKASI (TRIGGER)
+   ========================================================= */
+
+.btn-verif-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #2FA36B 0%, #1E7E4D 100%);
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px -3px rgba(47, 163, 107, .35);
+    transition: all .2s ease;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.btn-verif-trigger:hover {
+    background: linear-gradient(135deg, #27915e 0%, #185f3c 100%);
+    box-shadow: 0 6px 18px -4px rgba(47, 163, 107, .45);
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MODAL — BACKDROP
+   ========================================================= */
+
+.verif-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 36, 32, .55);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.verif-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   MODAL — CONTAINER
+   ========================================================= */
+
+.verif-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 201;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    pointer-events: none;
+}
+
+.verif-modal.open {
+    pointer-events: auto;
+}
+
+.verif-modal-inner {
+    background: var(--card);
+    border-radius: 22px;
+    box-shadow: 0 24px 64px -16px rgba(42, 36, 32, .28);
+    width: 100%;
+    max-width: 620px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 0 0 28px;
+    opacity: 0;
+    transform: translateY(18px) scale(.97);
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.verif-modal.open .verif-modal-inner {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+
+/* =========================================================
+   MODAL — HEADER
+   ========================================================= */
+
+.verif-modal-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    background: var(--card);
+    border-radius: 22px 22px 0 0;
+    z-index: 1;
+}
+
+.verif-modal-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--wine) 0%, var(--wine-deep) 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px -4px rgba(156, 42, 74, .4);
+}
+
+.verif-modal-title {
+    font-size: 16.5px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.verif-modal-subtitle {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.verif-modal-close {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, color .15s ease;
+}
+
+.verif-modal-close:hover {
+    background: var(--red-tint);
+    border-color: var(--red-tint-line);
+    color: var(--red);
+}
+
+
+/* =========================================================
+   MODAL — SECTION LABEL
+   ========================================================= */
+
+.verif-section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--wine-deep);
+    margin: 22px 28px 12px;
+}
+
+.verif-section-label i {
+    color: var(--wine);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MODAL — DATA BALITA GRID
+   ========================================================= */
+
+.verif-data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 28px;
+    padding: 16px;
+    background: var(--wine-tint);
+    border: 1px solid var(--wine-tint-line);
+    border-radius: 14px;
+}
+
+.verif-data-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.verif-data-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ink-faint);
+}
+
+.verif-data-value {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--ink);
+}
+
+
+/* =========================================================
+   MODAL — PENGUKURAN CARDS
+   ========================================================= */
+
+.verif-ukur-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 0 28px;
+}
+
+.verif-ukur-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 12px 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.verif-ukur-card:hover {
+    border-color: var(--wine-tint-line);
+    box-shadow: 0 2px 8px -3px rgba(156, 42, 74, .12);
+}
+
+.verif-ukur-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--wine-tint);
+    color: var(--wine-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.verif-ukur-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ink-faint);
+}
+
+.verif-ukur-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.1;
+}
+
+.verif-ukur-unit {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-faint);
+}
+
+
+/* =========================================================
+   MODAL — STATUS ROW
+   ========================================================= */
+
+.verif-status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 28px 0;
+    flex-wrap: wrap;
+}
+
+.verif-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+
+.verif-status-chip--success {
+    background: var(--green-tint);
+    border-color: var(--green-tint-line);
+    color: var(--green);
+}
+
+.verif-status-chip--warning {
+    background: var(--amber-tint);
+    border-color: var(--amber-tint-line);
+    color: var(--amber);
+}
+
+.verif-status-chip--danger {
+    background: var(--red-tint);
+    border-color: var(--red-tint-line);
+    color: var(--red);
+}
+
+.verif-status-chip--info {
+    background: var(--wine-tint);
+    border-color: var(--wine-tint-line);
+    color: var(--wine-deep);
+}
+
+.verif-status-chip--empty {
+    background: #F2F0EE;
+    color: var(--ink-faint);
+}
+
+.verif-zscore {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ink-faint);
+}
+
+
+/* =========================================================
+   MODAL — FORM FIELDS
+   ========================================================= */
+
+.verif-field {
+    margin: 0 28px 18px;
+}
+
+.verif-field-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 10px;
+}
+
+.verif-field-label .req {
+    color: var(--wine);
+}
+
+.verif-field-hint {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 2px;
+}
+
+
+/* =========================================================
+   MODAL — TINDAK LANJUT TOGGLE
+   ========================================================= */
+
+.verif-tl-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.verif-tl-toggle input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+
+.tl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: 13px;
+    border: 2px solid var(--line);
+    background: var(--bg);
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .18s ease;
+    text-align: center;
+    font-family: inherit;
+}
+
+.tl-btn:hover {
+    border-color: var(--wine-tint-line);
+    background: var(--wine-tint);
+}
+
+.verif-tl-toggle input[type="radio"]:checked + .tl-btn.tl-no {
+    background: var(--green-tint);
+    border-color: var(--green);
+    color: var(--green);
+}
+
+.verif-tl-toggle input[type="radio"]:checked + .tl-btn.tl-yes {
+    background: var(--red-tint);
+    border-color: var(--red);
+    color: var(--red);
+}
+
+
+/* =========================================================
+   MODAL — TEXTAREA
+   ========================================================= */
+
+.verif-textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--bg);
+    font-size: 13.5px;
+    font-family: inherit;
+    color: var(--ink);
+    box-sizing: border-box;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.verif-textarea:focus {
+    border-color: var(--wine);
+    background: var(--card);
+}
+
+.verif-textarea::placeholder {
+    color: var(--ink-faint);
+}
+
+
+/* =========================================================
+   MODAL — ACTIONS
+   ========================================================= */
+
+.verif-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 4px 28px 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+}
+
+.verif-btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 800;
+    padding: 11px 18px;
+    border-radius: 11px;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s ease;
+}
+
+.verif-btn-cancel:hover {
+    background: var(--line);
+}
+
+.verif-btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--wine) 0%, var(--wine-deep) 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 11px 22px;
+    border-radius: 11px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 4px 14px -4px rgba(156, 42, 74, .45);
+    transition: all .18s ease;
+}
+
+.verif-btn-submit:hover {
+    background: linear-gradient(135deg, #b84d6c 0%, #8a2340 100%);
+    box-shadow: 0 6px 18px -4px rgba(156, 42, 74, .55);
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MODAL — RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .verif-modal-inner {
+        border-radius: 18px;
+    }
+
+    .verif-ukur-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .verif-data-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .verif-tl-toggle {
+        grid-template-columns: 1fr;
+    }
+
+    .verif-modal-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .verif-btn-cancel,
+    .verif-btn-submit {
+        justify-content: center;
+    }
+
+}

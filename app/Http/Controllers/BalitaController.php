@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Balita;
 use App\Models\OrangTua;
-use App\Models\Pengukuran;
-use App\Models\Verifikasi;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class BalitaController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $balita = Balita::with([
             'orangTua.user',
@@ -74,99 +73,14 @@ class BalitaController extends Controller
         ));
     }
 
-    public function verifikasi()
-    {
-        $balita = Balita::whereHas('pengukuran', function ($query) {
-            $query->whereDoesntHave('verifikasi')
-                ->orWhereHas('verifikasi', function ($q) {
-                    $q->where('status', 'menunggu');
-                });
-        })->with([
-            'orangTua.user',
-            'pengukuran' => function ($query) {
-                $query->whereDoesntHave('verifikasi')
-                    ->orWhereHas('verifikasi', function ($q) {
-                        $q->where('status', 'menunggu');
-                    })
-                    ->latest('tanggal_pengukuran');
-            },
-        ])->get();
-
-        $countNormal = 0;
-        $countPendek = 0;
-        $countSangatPendek = 0;
-
-        foreach ($balita as $item) {
-            $pengukuran = $item->pengukuran->first();
-            $item->latest_pengukuran = $pengukuran;
-
-            if (! $pengukuran) {
-                continue;
-            }
-
-            $status = strtolower($pengukuran->status_pertumbuhan ?? '');
-
-            if (str_contains($status, 'sangat pendek') || str_contains($status, 'sangat kurus')) {
-                $item->status_key = 'danger';
-                $item->highlight_label = 'Perlu Rujukan';
-                $countSangatPendek++;
-            } elseif (
-                str_contains($status, 'pendek') ||
-                str_contains($status, 'kurus') ||
-                str_contains($status, 'kurang')
-            ) {
-                $item->status_key = 'warning';
-                $item->highlight_label = 'Perlu Pemantauan';
-                $countPendek++;
-            } elseif (
-                str_contains($status, 'tinggi') ||
-                str_contains($status, 'gemuk') ||
-                str_contains($status, 'lebih')
-            ) {
-                $item->status_key = 'info';
-                $item->highlight_label = 'Perlu Pemantauan';
-                $countPendek++;
-            } elseif ($status === 'normal') {
-                $item->status_key = 'success';
-                $item->highlight_label = 'Sesuai KMS';
-                $countNormal++;
-            } else {
-                $item->status_key = null;
-                $item->highlight_label = 'Pemantauan Rutin';
-            }
-        }
-
-        return view('bidan.verifikasi', compact(
-            'balita', 'countNormal', 'countPendek', 'countSangatPendek'
-        ));
-    }
-
-    public function storeVerifikasi(Request $request, $pengukuranId)
-    {
-        $pengukuran = Pengukuran::findOrFail($pengukuranId);
-
-        Verifikasi::updateOrCreate(
-            ['pengukuran_id' => $pengukuran->id],
-            [
-                'bidan_id' => Auth::id() ?? 1,
-                'tanggal_verifikasi' => now('Asia/Jakarta'),
-                'status' => 'terverifikasi',
-            ]
-        );
-
-        return redirect()
-            ->back()
-            ->with('success', 'Hasil pengukuran balita '.$pengukuran->balita->nama.' berhasil diverifikasi.');
-    }
-
-    public function create()
+    public function create(): View
     {
         $orangTua = OrangTua::with('user')->get();
 
         return view('kader.create', compact('orangTua'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'orang_tua_id' => 'required|exists:orang_tua,id',
@@ -187,19 +101,15 @@ class BalitaController extends Controller
             ->with('success', 'Data balita berhasil ditambahkan.');
     }
 
-    public function edit($id)
+    public function edit(int|string $id): View
     {
         $balita = Balita::findOrFail($id);
-
         $orangTua = OrangTua::with('user')->get();
 
-        return view('kader.edit', compact(
-            'balita',
-            'orangTua'
-        ));
+        return view('kader.edit', compact('balita', 'orangTua'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int|string $id): RedirectResponse
     {
         $balita = Balita::findOrFail($id);
 
@@ -229,10 +139,9 @@ class BalitaController extends Controller
             ->with('success', 'Data balita berhasil diubah.');
     }
 
-    public function destroy($id)
+    public function destroy(int|string $id): RedirectResponse
     {
         $balita = Balita::findOrFail($id);
-
         $balita->delete();
 
         return redirect()

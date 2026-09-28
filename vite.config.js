@@ -9,6 +9,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/css/kader/layout.css',
                 'resources/css/kader/monitoringbalita.css',
                 'resources/js/kader/monitoringbalita.js',
                 'resources/css/kader/profil-balita.css',
