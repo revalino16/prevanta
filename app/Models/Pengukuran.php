@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pengukuran extends Model
@@ -17,6 +18,7 @@ class Pengukuran extends Model
         'tanggal_pengukuran',
         'berat_badan',
         'tinggi_badan',
+        'posisi_pengukuran',
         'lingkar_kepala',
         'lingkar_lengan_atas',
         'z_score',
@@ -24,7 +26,18 @@ class Pengukuran extends Model
         'foto_pertumbuhan',
     ];
 
-    public function balita()
+    protected function casts(): array
+    {
+        return [
+            'berat_badan' => 'decimal:2',
+            'tinggi_badan' => 'decimal:2',
+            'lingkar_kepala' => 'decimal:2',
+            'lingkar_lengan_atas' => 'decimal:2',
+            'z_score' => 'decimal:2',
+        ];
+    }
+
+    public function balita(): BelongsTo
     {
         return $this->belongsTo(Balita::class, 'balita_id');
     }
