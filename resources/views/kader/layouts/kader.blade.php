@@ -11,11 +11,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -121,25 +128,25 @@
             padding: 20px 20px 16px;
         }
 
-        .brand-icon {
-            width: 38px;
-            height: 38px;
-            flex-shrink: 0;
+ .brand-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
 
-            border-radius: 11px;
+    border-radius: 11px;
 
-            overflow: hidden;
+    overflow: hidden;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .brand-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.brand-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
         .brand-text {
             line-height: 1.15;
@@ -468,17 +475,9 @@
         /* RESPONSIVE */
 
         @media (max-width: 900px) {
-            :root {
-                --sidebar-width: 210px;
-            }
-
-            .content {
-                padding: 20px;
-            }
-
-            .topbar-meta {
-                display: none;
-            }
+            :root { --sidebar-width: 210px; }
+            .content { padding: 20px; }
+            .topbar-meta { display: none; }
         }
 
         /* PAGE TRANSITION */
@@ -507,7 +506,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-
             to {
                 opacity: 0;
                 transform: translateY(-4px);
@@ -519,12 +517,12 @@
                 opacity: 0;
                 transform: translateY(4px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
     </style>
 
     @stack('styles')
@@ -534,133 +532,169 @@
 
 <body>
 
-    <div class="app">
+<div class="app">
 
-        {{-- SIDEBAR --}}
-        <aside class="sidebar">
+    {{-- SIDEBAR --}}
+    <aside class="sidebar">
 
-            <div class="brand">
-                <div class="brand-icon">
-                    <img src="{{ asset('images/logo.png') }}" alt="Prevanta">
-                </div>
-                <div class="brand-text">
-                    <div class="brand-name">Prevanta</div>
-                    <div class="brand-tagline">Cegah Stunting, Wujudkan<br>Generasi Emas Indonesia</div>
-                </div>
+        <div class="brand">
+            <div class="brand-icon">
+                <img src="{{ asset('images/logo.png') }}" alt="Prevanta">
             </div>
+            <div class="brand-text">
+                <div class="brand-name">Prevanta</div>
+                <div class="brand-tagline">Cegah Stunting, Wujudkan<br>Generasi Emas Indonesia</div>
+            </div>
+        </div>
 
-            <nav class="nav">
+        <nav class="nav">
 
-                <div class="nav-section-label">Menu Utama</div>
+            <div class="nav-section-label">Menu Utama</div>
 
-                <a href="{{ route('kader.dashboard') }}"
-                    class="nav-item {{ request()->routeIs('kader.dashboard') ? 'active' : '' }}">
+            @if(Auth::user()->role === 'bidan')
+                <a
+                    href="{{ route('bidan.dashboard') }}"
+                    class="nav-item {{ request()->routeIs('bidan.dashboard') ? 'active' : '' }}"
+                >
                     <i class="fa-solid fa-table-columns nav-icon"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('kader.monitoringbalita') }}"
-                    class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit', 'kader.balita.kms') ? 'active' : '' }}">
+                <a
+                    href="{{ route('bidan.monitoringbalita') }}"
+                    class="nav-item {{ request()->routeIs('bidan.monitoringbalita', 'bidan.balita.kms') ? 'active' : '' }}"
+                >
                     <i class="fa-solid fa-child nav-icon"></i>
                     <span>Monitoring Balita</span>
                 </a>
 
-                <a href="{{ route('kader.jadwal') }}"
-                    class="nav-item {{ request()->routeIs('kader.jadwal') ? 'active' : '' }}">
+                <a
+                    href="{{ route('bidan.verifikasi') }}"
+                    class="nav-item {{ request()->routeIs('bidan.verifikasi') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-clipboard-check nav-icon"></i>
+                    <span>Verifikasi Pengukuran</span>
+                </a>
+            @else
+                <a
+                    href="{{ route('kader.dashboard') }}"
+                    class="nav-item {{ request()->routeIs('kader.dashboard') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-table-columns nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="{{ route('kader.monitoringbalita') }}"
+                    class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit', 'kader.balita.kms') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-child nav-icon"></i>
+                    <span>Monitoring Balita</span>
+                </a>
+
+                <a
+                    href="{{ route('kader.jadwal') }}"
+                    class="nav-item {{ request()->routeIs('kader.jadwal') ? 'active' : '' }}"
+                >
                     <i class="fa-regular fa-calendar-days nav-icon"></i>
                     <span>Jadwal</span>
                 </a>
 
-                <a href="{{ route('kader.edukasi') }}"
-                    class="nav-item {{ request()->routeIs('kader.edukasi*') ? 'active' : '' }}">
+                <a
+                    href="{{ route('kader.edukasi') }}"
+                    class="nav-item {{ request()->routeIs('kader.edukasi*') ? 'active' : '' }}"
+                >
                     <i class="fa-solid fa-book-open-reader nav-icon"></i>
                     <span>Edukasi</span>
                 </a>
+            @endif
 
-            </nav>
+        </nav>
 
-            <div class="sidebar-bottom">
+        <div class="sidebar-bottom">
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="logout-btn">
-                        <i class="fa-solid fa-right-from-bracket nav-icon"></i>
-                        <span>Keluar Akun</span>
-                    </button>
-                </form>
-
-            </div>
-
-        </aside>
-
-
-        {{-- MAIN --}}
-        <div class="main">
-
-            {{-- TOPBAR --}}
-            <header class="topbar">
-
-                <span class="topbar-posyandu">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Posyandu Mawar Melati - Desa Sukamaju
-                </span>
-
-                <div class="topbar-right">
-
-                    <div class="topbar-meta">
-                        <i class="fa-regular fa-calendar"></i>
-                        <span id="today-label"></span>
-                        <span class="topbar-divider"></span>
-                        <span>Posko RW 03</span>
-                    </div>
-
-                    <button class="topbar-bell" type="button" title="Notifikasi">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="notif-dot">3</span>
-                    </button>
-
-                    @auth
-                        <div class="topbar-user">
-                            <div class="user-avatar">
-                                {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
-                            </div>
-                            <div class="user-info">
-                                <span class="user-name">{{ Auth::user()->nama }}</span>
-                                <span class="user-role">{{ ucfirst(Auth::user()->role) }}</span>
-                            </div>
-                        </div>
-                    @endauth
-
-                </div>
-
-            </header>
-
-
-            @yield('content')
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket nav-icon"></i>
+                    <span>Keluar Akun</span>
+                </button>
+            </form>
 
         </div>
 
+    </aside>
+
+
+    {{-- MAIN --}}
+    <div class="main">
+
+        {{-- TOPBAR --}}
+        <header class="topbar">
+
+            <span class="topbar-posyandu">
+                <i class="fa-solid fa-location-dot"></i>
+                Posyandu Mawar Melati - Desa Sukamaju
+            </span>
+
+            <div class="topbar-right">
+
+                <div class="topbar-meta">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span id="today-label"></span>
+                    <span class="topbar-divider"></span>
+                    <span>Posko RW 03</span>
+                </div>
+
+                <button class="topbar-bell" type="button" title="Notifikasi">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-dot">3</span>
+                </button>
+
+                @auth
+                    <div class="topbar-user">
+                        <div class="user-avatar">
+                            {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ Auth::user()->nama }}</span>
+                            <span class="user-role">{{ ucfirst(Auth::user()->role) }}</span>
+                        </div>
+                    </div>
+                @endauth
+
+            </div>
+
+        </header>
+
+
+        @yield('content')
+
     </div>
 
+</div>
 
-    <script>
-        const todayLabel = document.getElementById('today-label');
 
-        if (todayLabel) {
+<script>
 
-            const today = new Date();
+    const todayLabel = document.getElementById('today-label');
 
-            todayLabel.textContent = today.toLocaleDateString('id-ID', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
+    if (todayLabel) {
 
-        }
-    </script>
+        const today = new Date();
 
-    @stack('scripts')
+        todayLabel.textContent = today.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
+    }
+
+</script>
+
+@stack('scripts')
 
 </body>
 
