@@ -5,6 +5,13 @@
 @section('content')
 
 <main class="content kms-page">
+    @if (session('success'))
+        <div class="kms-success-alert" role="status">
+            <i class="fa-solid fa-circle-check"></i>
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="kms-heading">
         <div>
             <a href="{{ route('kader.monitoringbalita') }}" class="kms-back-link">
@@ -16,15 +23,15 @@
             <p>Informasi dan perkembangan tumbuh kembang anak</p>
         </div>
 
-        <button
-            type="button"
-            class="kms-record-button"
-            disabled
-            title="Form pencatatan pengukuran belum tersedia"
-        >
-            <i class="fa-regular fa-circle-plus"></i>
-            Catat Pengukuran Hari Ini
-        </button>
+        @if (Auth::user()->role === 'kader')
+            <a
+                href="{{ route('kader.balita.pengukuran.create', $balita) }}"
+                class="kms-record-button"
+            >
+                <i class="fa-regular fa-circle-plus"></i>
+                Catat Pengukuran Hari Ini
+            </a>
+        @endif
     </div>
 
     <section class="child-profile-card" aria-labelledby="child-name">
@@ -241,63 +248,10 @@
         aria-label="Riwayat imunisasi dan vitamin"
         hidden
     >
-        <div class="health-summary">
-            <article class="health-summary-card health-summary-immunization">
-                <span class="health-summary-icon"><i class="fa-solid fa-syringe"></i></span>
-                <div>
-                    <span>Imunisasi Tercatat</span>
-                    <strong>{{ $healthSummary['immunizations'] }}</strong>
-                    <small>riwayat pemberian</small>
-                </div>
-            </article>
-
-            <article class="health-summary-card health-summary-vitamin">
-                <span class="health-summary-icon"><i class="fa-solid fa-capsules"></i></span>
-                <div>
-                    <span>Vitamin Tercatat</span>
-                    <strong>{{ $healthSummary['vitamins'] }}</strong>
-                    <small>riwayat pemberian</small>
-                </div>
-            </article>
-        </div>
-
-        <div class="health-list">
-            @forelse ($healthHistory as $record)
-                <article class="health-record health-record-{{ $record['tone'] }}">
-                    <span class="health-record-icon">
-                        <i class="fa-solid {{ $record['icon'] }}"></i>
-                    </span>
-
-                    <div class="health-record-content">
-                        <div class="health-record-title">
-                            <div>
-                                <span class="health-record-type">{{ $record['type'] }}</span>
-                                <h2>{{ $record['name'] }}</h2>
-                            </div>
-                            <span class="health-record-status">
-                                <i class="fa-solid fa-circle-check"></i>
-                                {{ $record['status'] }}
-                            </span>
-                        </div>
-
-                        @if ($record['description'])
-                            <p>{{ $record['description'] }}</p>
-                        @endif
-
-                        <div class="health-record-meta">
-                            <span><i class="fa-regular fa-calendar"></i>{{ $record['date'] }}</span>
-                            <span><i class="fa-regular fa-user"></i>Dicatat oleh {{ $record['recorder'] }}</span>
-                        </div>
-                    </div>
-                </article>
-            @empty
-                <div class="measurement-empty health-empty">
-                    <span><i class="fa-solid fa-shield-heart"></i></span>
-                    <h2>Belum ada riwayat imunisasi atau vitamin</h2>
-                    <p>Catatan pemberian imunisasi dan vitamin anak akan tampil di bagian ini.</p>
-                </div>
-            @endforelse
-        </div>
+        @include('kader.partials.health-history', [
+            'healthHistory' => $healthHistory,
+            'healthLastUpdated' => $healthLastUpdated,
+        ])
     </section>
 </main>
 

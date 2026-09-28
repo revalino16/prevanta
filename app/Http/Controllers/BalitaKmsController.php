@@ -38,6 +38,7 @@ class BalitaKmsController extends Controller
         $birthDate = Carbon::parse($balita->tanggal_lahir);
         $measurementHistory = $balita->pengukuran
             ->map(fn (Pengukuran $measurement): array => $this->measurementCard($measurement, $birthDate));
+        $healthHistory = $this->healthHistory($balita, $birthDate);
 
         return view('kader.profil-balita', [
             'balita' => $balita,
@@ -47,11 +48,8 @@ class BalitaKmsController extends Controller
             'latestMeasurement' => $measurementHistory->last(),
             'measurementHistory' => $measurementHistory->reverse()->values(),
             'growthCharts' => $this->growthCharts($balita->pengukuran, $birthDate),
-            'healthHistory' => $this->healthHistory($balita),
-            'healthSummary' => [
-                'immunizations' => $balita->imunisasi->count(),
-                'vitamins' => $balita->vitamin->count(),
-            ],
+            'healthHistory' => $healthHistory,
+            'healthLastUpdated' => $healthHistory->first()['date'] ?? null,
         ]);
     }
 
@@ -415,33 +413,45 @@ class BalitaKmsController extends Controller
     /**
      * @return Collection<int, array<string, mixed>>
      */
-    private function healthHistory(Balita $balita): Collection
+    private function healthHistory(Balita $balita, Carbon $birthDate): Collection
     {
-        $immunizations = $balita->imunisasi->map(fn (ImunisasiBalita $record): array => [
-            'id' => (int) $record->getKey(),
-            'type' => 'Imunisasi',
-            'tone' => 'immunization',
-            'icon' => 'fa-syringe',
-            'name' => $record->jenisImunisasi?->nama_imunisasi ?? 'Imunisasi',
-            'description' => $record->jenisImunisasi?->deskripsi,
-            'date' => $this->dateLabel(Carbon::parse($record->tanggal_pemberian)),
-            'timestamp' => Carbon::parse($record->tanggal_pemberian)->getTimestamp(),
-            'status' => $this->healthStatus($record->status),
-            'recorder' => $record->kader?->nama ?? 'Kader posyandu',
-        ]);
+        $immunizations = $balita->imunisasi->map(function (ImunisasiBalita $record) use ($birthDate): array {
+            $givenAt = Carbon::parse($record->tanggal_pemberian);
 
-        $vitamins = $balita->vitamin->map(fn (VitaminBalita $record): array => [
-            'id' => (int) $record->getKey(),
-            'type' => 'Vitamin',
-            'tone' => 'vitamin',
-            'icon' => 'fa-capsules',
-            'name' => $record->jenisVitamin?->nama_vitamin ?? 'Vitamin',
-            'description' => $record->jenisVitamin?->deskripsi,
-            'date' => $this->dateLabel(Carbon::parse($record->tanggal_pemberian)),
-            'timestamp' => Carbon::parse($record->tanggal_pemberian)->getTimestamp(),
-            'status' => $this->healthStatus($record->status),
-            'recorder' => $record->kader?->nama ?? 'Kader posyandu',
-        ]);
+            return [
+                'id' => (int) $record->getKey(),
+                'type' => 'Imunisasi',
+                'tone' => 'immunization',
+                'icon' => 'fa-syringe',
+                'name' => $record->jenisImunisasi?->nama_imunisasi ?? 'Imunisasi',
+                'description' => $record->jenisImunisasi?->deskripsi,
+                'date' => $this->dateLabel($givenAt),
+                'age' => $this->healthAgeLabel($birthDate, $givenAt),
+                'timestamp' => $givenAt->getTimestamp(),
+                'status' => $this->healthStatus($record->status),
+                'recorder' => $record->kader?->nama ?? 'Kader posyandu',
+                'recorderRole' => $this->healthRecorderRole($record->kader?->role),
+            ];
+        });
+
+        $vitamins = $balita->vitamin->map(function (VitaminBalita $record) use ($birthDate): array {
+            $givenAt = Carbon::parse($record->tanggal_pemberian);
+
+            return [
+                'id' => (int) $record->getKey(),
+                'type' => 'Vitamin',
+                'tone' => 'vitamin',
+                'icon' => 'fa-prescription-bottle-medical',
+                'name' => $record->jenisVitamin?->nama_vitamin ?? 'Vitamin',
+                'description' => $record->jenisVitamin?->deskripsi,
+                'date' => $this->dateLabel($givenAt),
+                'age' => $this->healthAgeLabel($birthDate, $givenAt),
+                'timestamp' => $givenAt->getTimestamp(),
+                'status' => $this->healthStatus($record->status),
+                'recorder' => $record->kader?->nama ?? 'Kader posyandu',
+                'recorderRole' => $this->healthRecorderRole($record->kader?->role),
+            ];
+        });
 
         return $immunizations
             ->concat($vitamins)
@@ -456,6 +466,31 @@ class BalitaKmsController extends Controller
         }
 
         return str((string) $status)->replace('_', ' ')->title()->toString();
+    }
+
+    private function healthAgeLabel(Carbon $birthDate, Carbon $date): string
+    {
+        $difference = $birthDate->diff($date);
+        $ageInMonths = ($difference->y * 12) + $difference->m;
+
+        if ($difference->days === 0) {
+            return '0 Hari (Saat Lahir)';
+        }
+
+        if ($ageInMonths === 0) {
+            return 'Usia '.$difference->days.' Hari';
+        }
+
+        return 'Usia '.$ageInMonths.' Bulan';
+    }
+
+    private function healthRecorderRole(?string $role): string
+    {
+        return match ($role) {
+            'bidan' => 'Bidan',
+            'kader' => 'Kader Posyandu',
+            default => 'Petugas Posyandu',
+        };
     }
 
     private function statusTone(?string $status): string
