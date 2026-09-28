@@ -84,7 +84,7 @@
 
                 <a
                     href="{{ route('kader.monitoringbalita') }}"
-                    class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit', 'kader.balita.kms') ? 'active' : '' }}"
+                    class="nav-item {{ request()->routeIs('kader.monitoringbalita', 'kader.balita.tambah', 'kader.balita.edit', 'kader.balita.kms', 'kader.balita.pengukuran.*') ? 'active' : '' }}"
                 >
                     <i class="fa-solid fa-child nav-icon"></i>
                     <span>Monitoring Balita</span>

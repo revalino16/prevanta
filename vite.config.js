@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/css/kader/monitoringbalita.css',
                 'resources/js/kader/monitoringbalita.js',
                 'resources/css/kader/profil-balita.css',
+                'resources/css/kader/pengukuran.css',
                 'resources/css/kader/create.css',
                 'resources/js/kader/create.js',
                 'resources/css/kader/dashboard.css',
