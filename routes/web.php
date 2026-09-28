@@ -7,6 +7,7 @@ use App\Http\Controllers\Bidan;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Kader;
 use App\Http\Controllers\OrangTua;
+use App\Http\Controllers\OrangTua\EdukasiController;
 use Illuminate\Support\Facades\Route;
 
 // Landing Page
@@ -44,7 +45,12 @@ Route::middleware(['auth', 'role:orang_tua'])
     ->group(function () {
         Route::get('/anakku', [OrangTua\AnakkuController::class, 'index'])
             ->name('anakku');
+
+        Route::get('/edukasi', [OrangTua\EdukasiController::class, 'index'])
+            ->name('edukasi');
     });
+
+
 
 // =====================================================
 // BIDAN
