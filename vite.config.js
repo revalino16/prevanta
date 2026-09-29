@@ -20,6 +20,7 @@ export default defineConfig({
                 'resources/css/kader/jadwal.css',
                 'resources/css/kader/edukasi.css',
                 'resources/css/orangtua/anakku.css',
+                'resources/css/orangtua/riwayat.css',
             ],
             refresh: true,
             fonts: [
