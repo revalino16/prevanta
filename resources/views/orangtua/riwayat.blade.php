@@ -105,7 +105,7 @@
                         <span>
                             <i class="fa-solid fa-child"></i>
 
-                            {{ $anak->tanggal_lahir->diffInMonths(now()) }}
+                            {{ number_format($anak->tanggal_lahir->diffInMonths(now()), 1, ',', '.') }}
                             Bulan
                         </span>
                     @endif
@@ -222,7 +222,7 @@
                                 Pemeriksaan
 
                                 @if($usiaSaatPengukuran !== null)
-                                    Usia {{ $usiaSaatPengukuran }} Bulan
+                                    Usia {{ number_format($usiaSaatPengukuran, 1, ',', '.') }} Bulan
                                 @endif
                             </h3>
 
