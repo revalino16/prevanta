@@ -195,22 +195,6 @@
                 </div>
             </div>
 
-            <fieldset class="measurement-position">
-                <legend>Posisi Saat Mengukur TB/PB <span>*</span></legend>
-                <p id="position-help">Posisi ini diperlukan agar koreksi dan Z-score dihitung dengan benar.</p>
-                <div class="position-options">
-                    <label>
-                        <input type="radio" name="posisi_pengukuran" value="terlentang" data-message-required="Posisi pengukuran wajib dipilih." {{ old('posisi_pengukuran', $recommendedPosition) === 'terlentang' ? 'checked' : '' }} required>
-                        <span><i class="fa-solid fa-bed"></i><strong>Terlentang</strong><small>Panjang badan (PB)</small></span>
-                    </label>
-                    <label>
-                        <input type="radio" name="posisi_pengukuran" value="berdiri" data-message-required="Posisi pengukuran wajib dipilih." {{ old('posisi_pengukuran', $recommendedPosition) === 'berdiri' ? 'checked' : '' }} required>
-                        <span><i class="fa-solid fa-child-reaching"></i><strong>Berdiri</strong><small>Tinggi badan (TB)</small></span>
-                    </label>
-                </div>
-                @error('posisi_pengukuran')<span class="field-error">{{ $message }}</span>@enderror
-            </fieldset>
-
             <div class="service-grid">
                 <div class="service-field">
                     <label for="jenis_imunisasi_id">Imunisasi <span>Opsional</span></label>
@@ -287,13 +271,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const measurementForm = document.getElementById('measurement-entry-form');
-    const dateInput = document.getElementById('tanggal_pengukuran');
-    const birthDate = new Date('{{ $balita->tanggal_lahir->toDateString() }}T00:00:00');
-    const positionHelp = document.getElementById('position-help');
-    const positionInputs = Array.from(document.querySelectorAll('input[name="posisi_pengukuran"]'));
     const photoInput = document.getElementById('foto_pertumbuhan');
     const photoFileName = document.getElementById('photo-file-name');
-    let positionChangedByUser = false;
 
     const getIndonesianValidationMessage = function (field) {
         const validity = field.validity;
@@ -338,48 +317,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof field.setCustomValidity === 'function') {
             field.setCustomValidity('');
         }
-
-        if (field.name === 'posisi_pengukuran') {
-            positionInputs.forEach(function (positionInput) {
-                positionInput.setCustomValidity('');
-            });
-        }
     });
-
-    positionInputs.forEach(function (input) {
-        input.addEventListener('change', function () {
-            positionChangedByUser = true;
-        });
-    });
-
-    const updatePositionRecommendation = function () {
-        const measurementDate = new Date(dateInput.value + 'T00:00:00');
-
-        if (Number.isNaN(measurementDate.getTime())) {
-            return;
-        }
-
-        const ageInDays = Math.floor((measurementDate - birthDate) / 86400000);
-        const recommendedPosition = ageInDays <= 730 ? 'terlentang' : 'berdiri';
-        const recommendationText = recommendedPosition === 'terlentang'
-            ? 'Untuk usia ini, posisi yang dianjurkan adalah terlentang (panjang badan).'
-            : 'Untuk usia ini, posisi yang dianjurkan adalah berdiri (tinggi badan).';
-
-        positionHelp.textContent = recommendationText + ' Sistem tetap mengoreksi selisih 0,7 cm bila posisi berbeda.';
-
-        if (!positionChangedByUser) {
-            const recommendedInput = positionInputs.find(function (input) {
-                return input.value === recommendedPosition;
-            });
-
-            if (recommendedInput) {
-                recommendedInput.checked = true;
-            }
-        }
-    };
-
-    dateInput.addEventListener('change', updatePositionRecommendation);
-    updatePositionRecommendation();
 
     photoInput.addEventListener('change', function () {
         const file = photoInput.files[0];

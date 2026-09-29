@@ -20,10 +20,10 @@ return new class extends Migration
             $table->enum('status_pertumbuhan', [
                 'normal',
                 'pendek',
-                'sangat pendek'
+                'sangat pendek',
             ])
-            ->nullable()
-            ->change();
+                ->nullable()
+                ->change();
         });
     }
 

@@ -261,7 +261,7 @@
 
                                 @if ($pengukuran)
 
-                                    {{ $pengukuran->tanggal_pengukuran }}
+                                    {{ \Carbon\Carbon::parse($pengukuran->tanggal_pengukuran)->translatedFormat('d F Y') }}
 
                                     <span
                                         class="highlight highlight-{{ $item->status_key }}"

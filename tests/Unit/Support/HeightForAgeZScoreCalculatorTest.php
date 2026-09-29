@@ -65,7 +65,7 @@ class HeightForAgeZScoreCalculatorTest extends TestCase
             'pendek' => [-2.01, 'pendek'],
             'batas normal bawah' => [-2.0, 'normal'],
             'batas normal atas' => [3.0, 'normal'],
-            'tinggi' => [3.01, 'tinggi'],
+            'di atas normal' => [3.01, 'normal'],
         ];
     }
 

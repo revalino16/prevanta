@@ -25,7 +25,9 @@ class BalitaKmsController extends Controller
     {
         $balita->load([
             'orangTua.user',
-            'pengukuran' => fn ($query) => $query->oldest('tanggal_pengukuran'),
+            'pengukuran' => fn ($query) => $query->whereHas('verifikasi', function ($q) {
+                $q->where('status', 'terverifikasi');
+            })->oldest('tanggal_pengukuran'),
             'pengukuran.verifikasi.bidan',
             'imunisasi' => fn ($query) => $query->latest('tanggal_pemberian'),
             'imunisasi.jenisImunisasi',
@@ -63,9 +65,9 @@ class BalitaKmsController extends Controller
      *     armCircumference: string,
      *     headCircumference: string,
      *     zScore: string,
-     *     status: string,
      *     tone: string,
      *     followUp: string,
+     *     counselingNote: ?string,
      *     verificationLabel: string,
      *     verificationTone: string
      * }
@@ -88,6 +90,7 @@ class BalitaKmsController extends Controller
             'status' => $measurement->status_pertumbuhan ?: 'Belum diklasifikasikan',
             'tone' => $tone,
             'followUp' => $this->followUpLabel($tone, $verification),
+            'counselingNote' => $verification?->catatan_penyuluhan,
             'verificationLabel' => $this->verificationLabel($verification),
             'verificationTone' => $this->verificationTone($verification),
         ];
@@ -127,7 +130,7 @@ class BalitaKmsController extends Controller
             })
             ->values();
 
-        $maxAge = $this->maximumAge($chartMeasurements->pluck('xValue'));
+        [$maxAge, $ageStep] = $this->ageBounds($chartMeasurements->pluck('xValue'));
         $points = $this->plotPoints($chartMeasurements, 0, $maxAge, -4, 3);
 
         return [
@@ -136,7 +139,7 @@ class BalitaKmsController extends Controller
             'description' => 'Z-Score tinggi badan menurut usia berdasarkan data pengukuran.',
             'points' => $points,
             'polyline' => $this->polyline($points),
-            'xTicks' => $this->ageTicks($maxAge),
+            'xTicks' => $this->ageTicks($maxAge, $ageStep),
             'yTicks' => $this->zScoreTicks(),
             'showsZones' => true,
             'emptyTitle' => 'Belum ada data Z-Score TB/U',
@@ -172,7 +175,7 @@ class BalitaKmsController extends Controller
             })
             ->values();
 
-        $maxAge = $this->maximumAge($chartMeasurements->pluck('xValue'));
+        [$maxAge, $ageStep] = $this->ageBounds($chartMeasurements->pluck('xValue'));
         [$minimumWeight, $maximumWeight] = $this->valueBounds($chartMeasurements->pluck('yValue'), 2, 0);
         $points = $this->plotPoints($chartMeasurements, 0, $maxAge, $minimumWeight, $maximumWeight);
 
@@ -182,7 +185,7 @@ class BalitaKmsController extends Controller
             'description' => 'Tren berat badan aktual menurut usia pada setiap pemeriksaan.',
             'points' => $points,
             'polyline' => $this->polyline($points),
-            'xTicks' => $this->ageTicks($maxAge),
+            'xTicks' => $this->ageTicks($maxAge, $ageStep),
             'yTicks' => $this->valueTicks($minimumWeight, $maximumWeight, 'kg'),
             'showsZones' => false,
             'emptyTitle' => 'Belum ada data berat badan',
@@ -291,25 +294,38 @@ class BalitaKmsController extends Controller
 
     /**
      * @param  Collection<int, float|int>  $ages
+     * @return array{0: float, 1: int}
      */
-    private function maximumAge(Collection $ages): float
+    private function ageBounds(Collection $ages): array
     {
         $oldestAge = (int) ($ages->max() ?? 0);
 
-        return (float) max(6, (int) (ceil($oldestAge / 6) * 6));
+        if ($oldestAge <= 6) {
+            $step = 1;
+            $maxAge = max(6, $oldestAge);
+        } elseif ($oldestAge <= 12) {
+            $step = 2;
+            $maxAge = (int) (ceil($oldestAge / 2) * 2);
+        } elseif ($oldestAge <= 24) {
+            $step = 3;
+            $maxAge = (int) (ceil($oldestAge / 3) * 3);
+        } else {
+            $step = 6;
+            $maxAge = max(12, (int) (ceil($oldestAge / 6) * 6));
+        }
+
+        return [(float) $maxAge, $step];
     }
 
     /**
      * @return array<int, array{x: float, label: string}>
      */
-    private function ageTicks(float $maximumAge): array
+    private function ageTicks(float $maximumAge, int $step): array
     {
-        return collect(range(0, 5))
-            ->map(function (int $index) use ($maximumAge): array {
-                $age = (int) round(($maximumAge / 5) * $index);
-
+        return collect(range(0, (int) $maximumAge, $step))
+            ->map(function (int $age) use ($maximumAge): array {
                 return [
-                    'x' => round(self::CHART_LEFT + (($index / 5) * (self::CHART_RIGHT - self::CHART_LEFT)), 2),
+                    'x' => round($this->scale((float) $age, 0, $maximumAge, self::CHART_LEFT, self::CHART_RIGHT), 2),
                     'label' => $age === 0 ? 'Lahir' : $age.' bln',
                 ];
             })
@@ -402,7 +418,11 @@ class BalitaKmsController extends Controller
             return ($start + $end) / 2;
         }
 
-        return $start + ((($value - $minimum) / ($maximum - $minimum)) * ($end - $start));
+        $minBound = min($minimum, $maximum);
+        $maxBound = max($minimum, $maximum);
+        $clampedValue = max($minBound, min($maxBound, $value));
+
+        return $start + ((($clampedValue - $minimum) / ($maximum - $minimum)) * ($end - $start));
     }
 
     private function axisValue(float $value): string
@@ -515,15 +535,11 @@ class BalitaKmsController extends Controller
         }
 
         if ($verification?->tindak_lanjut === 'perlu') {
-            return $verification->catatan_penyuluhan ?: 'Perlu tindak lanjut sesuai arahan bidan';
+            return 'Perlu tindak lanjut sesuai arahan bidan';
         }
 
         if ($verification?->status === 'terverifikasi') {
             return 'Tidak memerlukan tindak lanjut';
-        }
-
-        if ($verification?->status === 'dikembalikan') {
-            return $verification->catatan_penyuluhan ?: 'Data pengukuran perlu diperbaiki';
         }
 
         return match ($tone) {
@@ -545,9 +561,6 @@ class BalitaKmsController extends Controller
             'terverifikasi' => $bidanName
                 ? 'Terverifikasi oleh: '.$bidanName
                 : 'Terverifikasi oleh bidan',
-            'dikembalikan' => $bidanName
-                ? 'Dikembalikan oleh: '.$bidanName
-                : 'Dikembalikan oleh bidan',
             default => 'Menunggu verifikasi bidan',
         };
     }
@@ -556,7 +569,6 @@ class BalitaKmsController extends Controller
     {
         return match ($verification?->status) {
             'terverifikasi' => 'verified',
-            'dikembalikan' => 'returned',
             'menunggu' => 'waiting',
             default => 'neutral',
         };

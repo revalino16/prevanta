@@ -157,11 +157,7 @@
 
                             <div class="m-top">
 
-                                <i class="fa-regular fa-calendar"></i>
-
                                 @if ($pengukuran)
-
-                                    {{ $pengukuran->tanggal_pengukuran }}
 
                                     <span
                                         class="highlight highlight-{{ $item->status_key }}"

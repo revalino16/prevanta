@@ -111,13 +111,14 @@ class EdukasiController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'judul' => 'required|string|max:200',
+            'judul' => ['required', 'string', 'max:200', 'regex:/^[a-zA-Z0-9\s]+$/'],
             'kategori' => 'required|string|max:100',
             'konten' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
         ], [
             'judul.required' => 'Judul materi edukasi wajib diisi.',
             'judul.max' => 'Judul maksimal 200 karakter.',
+            'judul.regex' => 'Judul tidak boleh menggunakan simbol, hanya huruf dan angka.',
             'kategori.required' => 'Kategori materi wajib dipilih.',
             'konten.required' => 'Isi materi edukasi wajib diisi.',
             'gambar.image' => 'File sampul harus berupa gambar yang valid.',

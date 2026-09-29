@@ -43,40 +43,30 @@
 
 
     {{-- ══ FILTER PILLS ═══════════════════════════════════════════ --}}
-    <div class="filter-bar">
+    <div class="filter-bar" id="filterBar">
         @foreach ($kategoriList as $kat)
-            @php
-                $isActive = ($selectedKategori === $kat) || (empty($selectedKategori) && $kat === 'Semua Topik');
-                $url = route('kader.edukasi', array_merge(request()->except('page'), ['kategori' => $kat]));
-            @endphp
-            <a
-                href="{{ $url }}"
-                class="filter-pill {{ $isActive ? 'active' : '' }}"
+            <button
+                type="button"
+                class="filter-pill {{ $loop->first ? 'active' : '' }}"
+                data-filter="{{ $kat }}"
             >
                 {{ $kat }}
-            </a>
+            </button>
         @endforeach
     </div>
 
 
     {{-- ══ SEARCH INPUT ═══════════════════════════════════════════ --}}
-    <form method="GET" action="{{ route('kader.edukasi') }}" id="searchForm">
-        @if (request('kategori') && request('kategori') !== 'Semua Topik')
-            <input type="hidden" name="kategori" value="{{ request('kategori') }}">
-        @endif
-
-        <div class="search-wrap">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input
-                type="text"
-                name="q"
-                value="{{ request('q') }}"
-                placeholder="Cari materi edukasi..."
-                class="search-input"
-                id="searchEduInput"
-            >
-        </div>
-    </form>
+    <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+            type="text"
+            placeholder="Cari materi edukasi..."
+            class="search-input"
+            id="searchEduInput"
+            autocomplete="off"
+        >
+    </div>
 
 
     {{-- ══ SECTION TITLE ══════════════════════════════════════════ --}}
@@ -137,7 +127,7 @@
                     $readMinutes = max(2, ceil($wordCount / 60));
                 @endphp
 
-                <article class="article-card">
+                <article class="article-card" data-kategori="{{ $item->kategori ?? '' }}" data-judul="{{ strtolower($item->judul ?? '') }}">
                     {{-- THUMBNAIL --}}
                     <div class="article-thumb-wrap">
                         <img
@@ -248,16 +238,72 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Modal Element Handlers
+
+    // ── CLIENT-SIDE FILTER & SEARCH ────────────────────────────────
+    const cards      = Array.from(document.querySelectorAll('.article-card'));
+    const filterBtns = Array.from(document.querySelectorAll('#filterBar .filter-pill'));
+    const searchInput = document.getElementById('searchEduInput');
+    const sectionCount = document.querySelector('.section-count');
+    const articlesGrid = document.querySelector('.articles-grid');
+    const emptyState   = document.querySelector('.empty-state');
+
+    let activeKategori = 'Semua Topik';
+    let searchQuery    = '';
+
+    function applyFilters() {
+        let visible = 0;
+
+        cards.forEach(card => {
+            const kat   = card.dataset.kategori || '';
+            const judul = card.dataset.judul    || '';
+
+            const matchKat    = activeKategori === 'Semua Topik' || kat === activeKategori;
+            const matchSearch = searchQuery === ''
+                || judul.includes(searchQuery)
+                || kat.toLowerCase().includes(searchQuery);
+
+            const show = matchKat && matchSearch;
+            card.style.display = show ? '' : 'none';
+            if (show) { visible++; }
+        });
+
+        // Update count
+        if (sectionCount) {
+            sectionCount.textContent = visible + ' Panduan Rekomendasi';
+        }
+
+        // Toggle empty state
+        if (articlesGrid) { articlesGrid.style.display = visible > 0 ? '' : 'none'; }
+        if (emptyState)   { emptyState.style.display   = visible === 0 ? '' : 'none'; }
+    }
+
+    // Filter pill click — no page reload
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeKategori = btn.dataset.filter;
+            applyFilters();
+        });
+    });
+
+    // Search — live on every keystroke
+    searchInput?.addEventListener('input', () => {
+        searchQuery = searchInput.value.toLowerCase().trim();
+        applyFilters();
+    });
+
+
+    // ── MODAL ──────────────────────────────────────────────────────
     const modalBackdrop = document.getElementById('modalDetail');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCloseBtn  = document.getElementById('modalCloseBtn');
     const modalCloseBtn2 = document.getElementById('modalCloseBtn2');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBadge = document.getElementById('modalBadge');
-    const modalImg = document.getElementById('modalImg');
+    const modalTitle   = document.getElementById('modalTitle');
+    const modalBadge   = document.getElementById('modalBadge');
+    const modalImg     = document.getElementById('modalImg');
     const modalContent = document.getElementById('modalContent');
-    const modalTime = document.getElementById('modalTime');
-    const deleteForm = document.getElementById('deleteForm');
+    const modalTime    = document.getElementById('modalTime');
+    const deleteForm   = document.getElementById('deleteForm');
 
     const openModal = (data) => {
         modalTitle.textContent = data.title;
@@ -268,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modalContent.textContent = data.content;
         modalTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + data.time;
         deleteForm.action = '{{ url("/kader/edukasi") }}/' + data.id;
-
         modalBackdrop.classList.add('show');
         document.body.style.overflow = 'hidden';
     };
@@ -295,17 +340,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalCloseBtn?.addEventListener('click', closeModal);
     modalCloseBtn2?.addEventListener('click', closeModal);
-
-    modalBackdrop?.addEventListener('click', (e) => {
-        if (e.target === modalBackdrop) {
-            closeModal();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modalBackdrop.classList.contains('show')) {
-            closeModal();
-        }
+    modalBackdrop?.addEventListener('click', e => { if (e.target === modalBackdrop) closeModal(); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && modalBackdrop.classList.contains('show')) closeModal();
     });
 });
 </script>

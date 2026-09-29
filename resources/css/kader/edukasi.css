@@ -91,11 +91,13 @@
 }
 
 .filter-pill {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 8px 18px;
     border-radius: 999px;
     font-size: 13px;
     font-weight: 700;
+    font-family: inherit;
     color: #554D48;
     background: #FFFFFF;
     border: 1px solid #ECE3D8;

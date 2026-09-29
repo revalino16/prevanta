@@ -46,7 +46,6 @@ class PengukuranController extends Controller
             'vitaminTypes' => JenisVitamin::query()->orderBy('nama_vitamin')->get(),
             'defaultMeasurementDate' => $today->toDateString(),
             'maximumMeasurementDate' => $maximumMeasurementDate->toDateString(),
-            'recommendedPosition' => $birthDate->diffInDays($today) <= 730 ? 'terlentang' : 'berdiri',
             'measurementLimits' => AnthropometricMeasurementLimits::all(),
         ]);
     }
@@ -57,13 +56,16 @@ class PengukuranController extends Controller
         HeightForAgeZScoreCalculator $calculator,
     ): RedirectResponse {
         $validated = $request->validated();
+        $birthDate = Carbon::parse($balita->tanggal_lahir);
         $measurementDate = Carbon::createFromFormat('Y-m-d', $validated['tanggal_pengukuran']);
+        $posisiPengukuran = $birthDate->diffInDays($measurementDate) <= 730 ? 'terlentang' : 'berdiri';
+
         $zScore = $calculator->calculate(
             $balita->jenis_kelamin,
-            Carbon::parse($balita->tanggal_lahir),
+            $birthDate,
             $measurementDate,
             (float) $validated['tinggi_badan'],
-            $validated['posisi_pengukuran'],
+            $posisiPengukuran,
         );
         $photoPath = null;
 
@@ -76,7 +78,7 @@ class PengukuranController extends Controller
                 }
             }
 
-            DB::transaction(function () use ($validated, $balita, $calculator, $zScore, $photoPath, $request): void {
+            DB::transaction(function () use ($validated, $balita, $calculator, $zScore, $photoPath, $request, $posisiPengukuran): void {
                 $kaderId = (int) $request->user()->getAuthIdentifier();
 
                 Pengukuran::create([
@@ -85,9 +87,9 @@ class PengukuranController extends Controller
                     'tanggal_pengukuran' => $validated['tanggal_pengukuran'],
                     'berat_badan' => $validated['berat_badan'],
                     'tinggi_badan' => $validated['tinggi_badan'],
+                    'posisi_pengukuran' => $posisiPengukuran,
                     'lingkar_lengan_atas' => $validated['lingkar_lengan_atas'],
                     'lingkar_kepala' => $validated['lingkar_kepala'],
-                    'posisi_pengukuran' => $validated['posisi_pengukuran'],
                     'z_score' => $zScore,
                     'status_pertumbuhan' => $calculator->status($zScore),
                     'foto_pertumbuhan' => $photoPath,
@@ -109,7 +111,7 @@ class PengukuranController extends Controller
                         'jenis_vitamin_id' => $validated['jenis_vitamin_id'],
                         'kader_id' => $kaderId,
                         'tanggal_pemberian' => $validated['tanggal_pengukuran'],
-                        'status' => 'selesai',
+                        'status' => 'sudah_diberikan',
                     ]);
                 }
             });

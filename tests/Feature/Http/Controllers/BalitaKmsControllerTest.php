@@ -46,7 +46,7 @@ class BalitaKmsControllerTest extends TestCase
             'alamat' => "RT 03 <script>alert('xss')</script>",
         ]);
 
-        Pengukuran::create([
+        $firstMeasurement = Pengukuran::create([
             'balita_id' => $balita->id,
             'kader_id' => $kader->id,
             'tanggal_pengukuran' => '2025-08-10',
@@ -56,6 +56,12 @@ class BalitaKmsControllerTest extends TestCase
             'lingkar_lengan_atas' => 12.60,
             'z_score' => -2.70,
             'status_pertumbuhan' => 'Pendek',
+        ]);
+        Verifikasi::create([
+            'pengukuran_id' => $firstMeasurement->id,
+            'bidan_id' => $bidan->id,
+            'tanggal_verifikasi' => '2025-08-10',
+            'status' => 'terverifikasi',
         ]);
         $latestMeasurement = Pengukuran::create([
             'balita_id' => $balita->id,
@@ -98,7 +104,7 @@ class BalitaKmsControllerTest extends TestCase
             ->assertDontSee("<script>alert('xss')</script>", false);
     }
 
-    public function test_measurement_without_verification_is_identified_as_unverified(): void
+    public function test_measurement_without_verification_is_not_displayed(): void
     {
         $kader = $this->createUser('Siti Rahayu', 'kader');
         $parent = $this->createUser('Rina Pratama', 'orang_tua');
@@ -117,9 +123,8 @@ class BalitaKmsControllerTest extends TestCase
 
         $this->actingAs($kader)
             ->get(route('kader.balita.kms', $balita))
-            ->assertSeeText('Belum diverifikasi')
-            ->assertSeeText('Tidak memerlukan tindak lanjut')
-            ->assertDontSeeText('Pertumbuhan sesuai KMS');
+            ->assertSeeText('Belum ada riwayat pengukuran')
+            ->assertDontSeeText('03 September 2026');
     }
 
     public function test_page_renders_weight_charts_and_health_history_from_stored_data(): void
@@ -127,7 +132,7 @@ class BalitaKmsControllerTest extends TestCase
         $kader = $this->createUser('Siti Rahayu', 'kader');
         $parent = $this->createUser('Rina Pratama', 'orang_tua');
         $balita = $this->createBalitaFor($parent);
-        Pengukuran::create([
+        $m1 = Pengukuran::create([
             'balita_id' => $balita->id,
             'kader_id' => $kader->id,
             'tanggal_pengukuran' => '2025-09-20',
@@ -135,6 +140,12 @@ class BalitaKmsControllerTest extends TestCase
             'tinggi_badan' => 77.80,
             'z_score' => -1.20,
             'status_pertumbuhan' => 'normal',
+        ]);
+        Verifikasi::create([
+            'pengukuran_id' => $m1->id,
+            'bidan_id' => $kader->id,
+            'tanggal_verifikasi' => '2025-09-20',
+            'status' => 'terverifikasi',
         ]);
         $jenisImunisasi = JenisImunisasi::create([
             'nama_imunisasi' => 'Campak Rubella',
@@ -156,7 +167,7 @@ class BalitaKmsControllerTest extends TestCase
             'jenis_vitamin_id' => $jenisVitamin->id,
             'kader_id' => $kader->id,
             'tanggal_pemberian' => '2025-09-22',
-            'status' => 'selesai',
+            'status' => 'sudah_diberikan',
         ]);
 
         $response = $this->actingAs($kader)
@@ -177,8 +188,54 @@ class BalitaKmsControllerTest extends TestCase
             ->assertSeeTextInOrder(['Vitamin A Biru', 'Campak Rubella'])
             ->assertSeeText('Campak Rubella')
             ->assertSeeText('Vitamin A Biru')
-            ->assertSeeText('Sudah Diberikan')
-            ->assertSeeText('Selesai');
+            ->assertSeeText('Sudah Diberikan');
+    }
+
+    public function test_extreme_zscore_points_are_clamped_to_chart_bounds(): void
+    {
+        $kader = $this->createUser('Siti Rahayu', 'kader');
+        $parent = $this->createUser('Rina Pratama', 'orang_tua');
+        $balita = $this->createBalitaFor($parent);
+
+        $m1 = Pengukuran::create([
+            'balita_id' => $balita->id,
+            'kader_id' => $kader->id,
+            'tanggal_pengukuran' => '2025-09-20',
+            'berat_badan' => 8.45,
+            'tinggi_badan' => 77.80,
+            'z_score' => 6.00, // extreme high value (> +3 SD)
+            'status_pertumbuhan' => 'normal',
+        ]);
+        Verifikasi::create([
+            'pengukuran_id' => $m1->id,
+            'bidan_id' => $kader->id,
+            'tanggal_verifikasi' => '2025-09-20',
+            'status' => 'terverifikasi',
+        ]);
+
+        $m2 = Pengukuran::create([
+            'balita_id' => $balita->id,
+            'kader_id' => $kader->id,
+            'tanggal_pengukuran' => '2025-10-20',
+            'berat_badan' => 8.45,
+            'tinggi_badan' => 77.80,
+            'z_score' => -7.00, // extreme low value (< -4 SD)
+            'status_pertumbuhan' => 'sangat pendek',
+        ]);
+        Verifikasi::create([
+            'pengukuran_id' => $m2->id,
+            'bidan_id' => $kader->id,
+            'tanggal_verifikasi' => '2025-10-20',
+            'status' => 'terverifikasi',
+        ]);
+
+        $response = $this->actingAs($kader)
+            ->get(route('kader.balita.kms', $balita));
+
+        $response->assertOk();
+        // Top boundary (y=28) and bottom boundary (y=318)
+        $response->assertSee('cy="28"', false);
+        $response->assertSee('cy="318"', false);
     }
 
     public function test_unauthenticated_request_redirects_to_login(): void

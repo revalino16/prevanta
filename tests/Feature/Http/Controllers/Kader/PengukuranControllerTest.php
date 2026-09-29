@@ -39,8 +39,7 @@ class PengukuranControllerTest extends TestCase
             ->assertSeeText('Informasi Pelayanan & Antropometri Balita')
             ->assertSee('value="2026-01-02"', false)
             ->assertSee('max="30"', false)
-            ->assertSee('data-message-max="Berat badan tidak boleh lebih dari 30 kg."', false)
-            ->assertSee('name="posisi_pengukuran"', false);
+            ->assertSee('data-message-max="Berat badan tidak boleh lebih dari 30 kg."', false);
     }
 
     public function test_valid_payload_creates_measurement_services_and_calculates_z_score(): void
@@ -59,7 +58,6 @@ class PengukuranControllerTest extends TestCase
                 'tinggi_badan' => '85.73',
                 'lingkar_lengan_atas' => '14.80',
                 'lingkar_kepala' => '47.20',
-                'posisi_pengukuran' => 'berdiri',
                 'foto_pertumbuhan' => UploadedFile::fake()->image('pengukuran.png', 640, 480),
                 'jenis_imunisasi_id' => $immunizationType->getKey(),
                 'jenis_vitamin_id' => $vitaminType->getKey(),
@@ -77,7 +75,6 @@ class PengukuranControllerTest extends TestCase
             'tanggal_pengukuran' => '2026-01-02',
             'berat_badan' => 12.40,
             'tinggi_badan' => 85.73,
-            'posisi_pengukuran' => 'berdiri',
             'z_score' => 0.00,
             'status_pertumbuhan' => 'normal',
         ]);
@@ -113,7 +110,6 @@ class PengukuranControllerTest extends TestCase
                 'tinggi_badan' => '999',
                 'lingkar_lengan_atas' => '4',
                 'lingkar_kepala' => '100',
-                'posisi_pengukuran' => 'duduk',
                 'foto_pertumbuhan' => UploadedFile::fake()->create('catatan.txt', 10, 'text/plain'),
             ]);
 
@@ -125,7 +121,6 @@ class PengukuranControllerTest extends TestCase
                 'tinggi_badan',
                 'lingkar_lengan_atas',
                 'lingkar_kepala',
-                'posisi_pengukuran',
                 'foto_pertumbuhan',
             ]);
         $this->assertSame(
@@ -152,7 +147,6 @@ class PengukuranControllerTest extends TestCase
                 'tinggi_badan' => '130.01',
                 'lingkar_lengan_atas' => '25.01',
                 'lingkar_kepala' => '60.01',
-                'posisi_pengukuran' => 'terlentang',
             ]);
 
         $response->assertSessionHasErrors([
@@ -164,9 +158,9 @@ class PengukuranControllerTest extends TestCase
         $this->assertDatabaseCount('pengukuran', 0);
     }
 
-    public function test_duplicate_measurement_date_is_rejected(): void
+    public function test_duplicate_measurement_in_same_month_is_rejected(): void
     {
-        $this->travelTo('2026-01-02 09:00:00');
+        $this->travelTo('2026-01-15 09:00:00');
         $kader = $this->createUser('Siti Rahayu', 'kader');
         $balita = $this->createBalita('2024-01-02');
         Pengukuran::create([
@@ -177,24 +171,21 @@ class PengukuranControllerTest extends TestCase
             'tinggi_badan' => 85.73,
             'lingkar_lengan_atas' => 14.80,
             'lingkar_kepala' => 47.20,
-            'posisi_pengukuran' => 'berdiri',
             'z_score' => 0,
             'status_pertumbuhan' => 'normal',
         ]);
 
+        // Attempt second measurement on a different date but same month
         $response = $this->actingAs($kader)
             ->post(route('kader.balita.pengukuran.store', $balita), [
-                'tanggal_pengukuran' => '2026-01-02',
+                'tanggal_pengukuran' => '2026-01-15',
                 'berat_badan' => '12.50',
                 'tinggi_badan' => '85.80',
                 'lingkar_lengan_atas' => '14.90',
                 'lingkar_kepala' => '47.30',
-                'posisi_pengukuran' => 'berdiri',
             ]);
 
-        $response->assertSessionHasErrors([
-            'tanggal_pengukuran' => 'Pengukuran balita pada tanggal ini sudah pernah dicatat.',
-        ]);
+        $response->assertSessionHasErrors(['tanggal_pengukuran']);
         $this->assertDatabaseCount('pengukuran', 1);
     }
 
