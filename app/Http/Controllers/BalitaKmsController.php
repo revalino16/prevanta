@@ -13,21 +13,17 @@ use Illuminate\Support\Collection;
 
 class BalitaKmsController extends Controller
 {
-    private const CHART_LEFT = 68.0;
-
-    private const CHART_RIGHT = 892.0;
-
-    private const CHART_TOP = 28.0;
-
-    private const CHART_BOTTOM = 318.0;
+    private const CHART_LEFT = 68;
+    private const CHART_RIGHT = 892;
+    private const CHART_TOP = 28;
+    private const CHART_BOTTOM = 318;
 
     public function __invoke(Balita $balita): View
     {
         $balita->load([
-            'orangTua.user',
-            'pengukuran' => fn ($query) => $query->whereHas('verifikasi', function ($q) {
-                $q->where('status', 'terverifikasi');
-            })->oldest('tanggal_pengukuran'),
+            'pengukuran' => fn ($query) => $query->oldest('tanggal_pengukuran'),
+            'pengukuran.kader',
+            'pengukuran.verifikasi',
             'pengukuran.verifikasi.bidan',
             'imunisasi' => fn ($query) => $query->latest('tanggal_pemberian'),
             'imunisasi.jenisImunisasi',
@@ -38,39 +34,35 @@ class BalitaKmsController extends Controller
         ]);
 
         $birthDate = Carbon::parse($balita->tanggal_lahir);
-        $measurementHistory = $balita->pengukuran
+
+        $verifiedMeasurements = $balita->pengukuran
+            ->filter(fn (Pengukuran $m) => $m->verifikasi?->status === 'terverifikasi')
+            ->values();
+
+        $measurementHistory = $verifiedMeasurements
             ->map(fn (Pengukuran $measurement): array => $this->measurementCard($measurement, $birthDate));
+
         $healthHistory = $this->healthHistory($balita, $birthDate);
 
-        return view('kader.profil-balita', [
+        $view = auth()->user()->role === 'orang_tua'
+            ? 'orangtua.profil-balita'
+            : 'kader.profil-balita';
+
+        return view($view, [
             'balita' => $balita,
             'birthDateLabel' => $this->dateLabel($birthDate),
             'currentAgeLabel' => $this->ageLabel($birthDate, now('Asia/Jakarta')),
             'childCode' => 'BLT-'.str_pad((string) $balita->getKey(), 3, '0', STR_PAD_LEFT),
             'latestMeasurement' => $measurementHistory->last(),
             'measurementHistory' => $measurementHistory->reverse()->values(),
-            'growthCharts' => $this->growthCharts($balita->pengukuran, $birthDate),
+            'growthCharts' => $this->growthCharts($verifiedMeasurements, $birthDate),
             'healthHistory' => $healthHistory,
             'healthLastUpdated' => $healthHistory->first()['date'] ?? null,
         ]);
     }
 
     /**
-     * @return array{
-     *     id: int,
-     *     date: string,
-     *     age: string,
-     *     height: string,
-     *     weight: string,
-     *     armCircumference: string,
-     *     headCircumference: string,
-     *     zScore: string,
-     *     tone: string,
-     *     followUp: string,
-     *     counselingNote: ?string,
-     *     verificationLabel: string,
-     *     verificationTone: string
-     * }
+     * @return array<string, mixed>
      */
     private function measurementCard(Pengukuran $measurement, Carbon $birthDate): array
     {
@@ -81,18 +73,20 @@ class BalitaKmsController extends Controller
         return [
             'id' => (int) $measurement->getKey(),
             'date' => $this->dateLabel($measurementDate),
-            'age' => $this->ageLabel($birthDate, $measurementDate),
-            'height' => $this->measurementValue($measurement->tinggi_badan),
+            'age' => $this->healthAgeLabel($birthDate, $measurementDate),
             'weight' => $this->measurementValue($measurement->berat_badan),
-            'armCircumference' => $this->measurementValue($measurement->lingkar_lengan_atas),
+            'height' => $this->measurementValue($measurement->tinggi_badan),
             'headCircumference' => $this->measurementValue($measurement->lingkar_kepala),
+            'armCircumference' => $this->measurementValue($measurement->lingkar_lengan_atas),
             'zScore' => $this->signedValue($measurement->z_score),
-            'status' => $measurement->status_pertumbuhan ?: 'Belum diklasifikasikan',
+            'status' => $this->healthStatus($measurement->status_pertumbuhan),
             'tone' => $tone,
             'followUp' => $this->followUpLabel($tone, $verification),
             'counselingNote' => $verification?->catatan_penyuluhan,
             'verificationLabel' => $this->verificationLabel($verification),
             'verificationTone' => $this->verificationTone($verification),
+            'counselor' => $verification?->bidan?->nama,
+            'companion' => $measurement->kader?->nama,
         ];
     }
 
@@ -240,8 +234,8 @@ class BalitaKmsController extends Controller
             'xTicks' => $this->horizontalValueTicks($minimumHeight, $maximumHeight, 'cm'),
             'yTicks' => $this->valueTicks($minimumWeight, $maximumWeight, 'kg'),
             'showsZones' => false,
-            'emptyTitle' => 'Belum ada data berat dan tinggi badan',
-            'emptyCopy' => 'Grafik BB/TB akan terisi setelah kedua nilai dicatat.',
+            'emptyTitle' => 'Belum ada data perbandingan',
+            'emptyCopy' => 'Grafik BB/TB akan terisi setelah berat & tinggi dicatat.',
             'legends' => [
                 ['tone' => 'line', 'label' => 'Perbandingan berat dan tinggi anak'],
                 ['tone' => 'recorded', 'label' => 'Data pengukuran tersimpan'],
@@ -251,85 +245,33 @@ class BalitaKmsController extends Controller
     }
 
     /**
-     * @param  Collection<int, array{xValue: float, yValue: float, tooltip: string}>  $measurements
+     * @param  Collection<int, array{xValue: float, yValue: float}>  $points
      * @return array<int, array{x: float, y: float, tooltip: string}>
      */
     private function plotPoints(
-        Collection $measurements,
-        float $minimumX,
-        float $maximumX,
-        float $minimumY,
-        float $maximumY,
+        Collection $points,
+        float $minX,
+        float $maxX,
+        float $minY,
+        float $maxY
     ): array {
-        return $measurements
-            ->map(fn (array $measurement): array => [
-                'x' => round($this->scale(
-                    $measurement['xValue'],
-                    $minimumX,
-                    $maximumX,
-                    self::CHART_LEFT,
-                    self::CHART_RIGHT,
-                ), 2),
-                'y' => round($this->scale(
-                    $measurement['yValue'],
-                    $minimumY,
-                    $maximumY,
-                    self::CHART_BOTTOM,
-                    self::CHART_TOP,
-                ), 2),
-                'tooltip' => $measurement['tooltip'],
-            ])
-            ->all();
+        return $points->map(function (array $point) use ($minX, $maxX, $minY, $maxY): array {
+            return [
+                'x' => $this->scale($point['xValue'], $minX, $maxX, self::CHART_LEFT, self::CHART_RIGHT),
+                'y' => $this->scale($point['yValue'], $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP),
+                'tooltip' => $point['tooltip'] ?? '',
+            ];
+        })->all();
     }
 
     /**
-     * @param  array<int, array{x: float, y: float, tooltip: string}>  $points
+     * @param  array<int, array{x: float, y: float}>  $points
      */
     private function polyline(array $points): string
     {
         return collect($points)
-            ->map(fn (array $point): string => $point['x'].','.$point['y'])
-            ->implode(' ');
-    }
-
-    /**
-     * @param  Collection<int, float|int>  $ages
-     * @return array{0: float, 1: int}
-     */
-    private function ageBounds(Collection $ages): array
-    {
-        $oldestAge = (int) ($ages->max() ?? 0);
-
-        if ($oldestAge <= 6) {
-            $step = 1;
-            $maxAge = max(6, $oldestAge);
-        } elseif ($oldestAge <= 12) {
-            $step = 2;
-            $maxAge = (int) (ceil($oldestAge / 2) * 2);
-        } elseif ($oldestAge <= 24) {
-            $step = 3;
-            $maxAge = (int) (ceil($oldestAge / 3) * 3);
-        } else {
-            $step = 6;
-            $maxAge = max(12, (int) (ceil($oldestAge / 6) * 6));
-        }
-
-        return [(float) $maxAge, $step];
-    }
-
-    /**
-     * @return array<int, array{x: float, label: string}>
-     */
-    private function ageTicks(float $maximumAge, int $step): array
-    {
-        return collect(range(0, (int) $maximumAge, $step))
-            ->map(function (int $age) use ($maximumAge): array {
-                return [
-                    'x' => round($this->scale((float) $age, 0, $maximumAge, self::CHART_LEFT, self::CHART_RIGHT), 2),
-                    'label' => $age === 0 ? 'Lahir' : $age.' bln',
-                ];
-            })
-            ->all();
+            ->map(fn (array $point): string => "{$point['x']},{$point['y']}")
+            ->join(' ');
     }
 
     /**
@@ -337,41 +279,69 @@ class BalitaKmsController extends Controller
      */
     private function zScoreTicks(): array
     {
-        return collect([3, 2, 0, -2, -3, -4])
-            ->map(fn (int $score): array => [
-                'y' => round($this->scale($score, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 2),
-                'label' => match ($score) {
-                    0 => '0 (Median)',
-                    default => ($score > 0 ? '+' : '').$score.' SD',
-                },
-                'tone' => match (true) {
-                    $score >= 0 => 'green',
-                    $score === -2 => 'amber',
-                    default => 'red',
-                },
-            ])
-            ->all();
+        return [
+            ['y' => $this->scale(3, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 'label' => '+3 SD', 'tone' => 'neutral'],
+            ['y' => $this->scale(2, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 'label' => '+2 SD', 'tone' => 'success'],
+            ['y' => $this->scale(0, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 'label' => '0 (Median)', 'tone' => 'success'],
+            ['y' => $this->scale(-2, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 'label' => '-2 SD', 'tone' => 'warning'],
+            ['y' => $this->scale(-3, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 'label' => '-3 SD', 'tone' => 'danger'],
+            ['y' => $this->scale(-4, -4, 3, self::CHART_BOTTOM, self::CHART_TOP), 'label' => '-4 SD', 'tone' => 'danger'],
+        ];
     }
 
     /**
-     * @param  Collection<int, float|int>  $values
-     * @return array{0: float, 1: float}
+     * @return array<int, array{x: float, label: string}>
      */
-    private function valueBounds(Collection $values, float $minimumSpan, float $floor): array
+    private function ageTicks(float $maxAge, float $step): array
     {
-        if ($values->isEmpty()) {
-            return [$floor, $floor + $minimumSpan];
+        $ticks = [];
+
+        for ($age = 0; $age <= $maxAge; $age += $step) {
+            $label = $age === 0 ? '0 bln' : ($age % 12 === 0 ? ($age / 12).' thn' : $age.' bln');
+            $ticks[] = [
+                'x' => $this->scale($age, 0, $maxAge, self::CHART_LEFT, self::CHART_RIGHT),
+                'label' => $label,
+            ];
         }
 
-        $minimum = (float) $values->min();
-        $maximum = (float) $values->max();
-        $span = max($minimumSpan, $maximum - $minimum);
-        $padding = max($span * .15, $minimumSpan / 2);
-        $lower = max($floor, floor(($minimum - $padding) * 2) / 2);
-        $upper = ceil(($maximum + $padding) * 2) / 2;
+        return $ticks;
+    }
 
-        if (($upper - $lower) < $minimumSpan) {
-            $upper = $lower + $minimumSpan;
+    /**
+     * @param  Collection<int, float>  $ages
+     * @return array{0: float, 1: float}
+     */
+    private function ageBounds(Collection $ages): array
+    {
+        $maxAge = max(24, ceil($ages->max() ?? 0));
+        $step = 6;
+
+        if ($maxAge > 24) {
+            $maxAge = ceil($maxAge / 12) * 12;
+            $step = 12;
+        }
+
+        return [$maxAge, $step];
+    }
+
+    /**
+     * @param  Collection<int, float>  $values
+     * @return array{0: float, 1: float}
+     */
+    private function valueBounds(Collection $values, float $buffer, float $minAllowed): array
+    {
+        if ($values->isEmpty()) {
+            return [$minAllowed, $minAllowed + ($buffer * 2)];
+        }
+
+        $min = $values->min();
+        $max = $values->max();
+
+        $lower = max($minAllowed, floor($min - $buffer));
+        $upper = ceil($max + $buffer);
+
+        if ($upper === $lower) {
+            $upper += $buffer;
         }
 
         return [$lower, $upper];

@@ -1,37 +1,22 @@
-@extends('kader.layouts.kader')
+@extends('orangtua.layouts.orangtua')
 
 @section('title', 'Profil ' . $balita->nama . ' — Prevanta')
 
 @section('content')
 
 <main class="content kms-page">
-    @if (session('success'))
-        <div class="kms-success-alert" role="status">
-            <i class="fa-solid fa-circle-check"></i>
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="kms-heading">
         <div>
-            <a href="{{ route('kader.monitoringbalita') }}" class="kms-back-link">
+            <a href="{{ route('orangtua.anakku') }}" class="kms-back-link">
                 <i class="fa-solid fa-arrow-left"></i>
-                Kembali ke Monitoring Balita
+                Kembali ke Daftar Anakku
             </a>
 
             <h1>Profil Anak</h1>
             <p>Informasi dan perkembangan tumbuh kembang anak</p>
         </div>
-
-        @if (Auth::user()->role === 'kader')
-            <a
-                href="{{ route('kader.balita.pengukuran.create', $balita) }}"
-                class="kms-record-button"
-            >
-                <i class="fa-solid fa-pen-to-square"></i>
-                Catat Pengukuran Hari Ini
-            </a>
-        @endif
+        
+        {{-- Tombol "Catat Pengukuran" sudah dihapus untuk orang tua (Read Only) --}}
     </div>
 
     <section class="child-profile-card" aria-labelledby="child-name">
@@ -95,7 +80,7 @@
             </div>
 
             <div class="follow-up follow-up-{{ $latestMeasurement['tone'] ?? 'neutral' }}">
-                <i class="fa-solid fa-clipboard-list"></i>
+                <i class="fa-regular fa-circle-exclamation"></i>
                 <strong>Status Tindak Lanjut:</strong>
                 <span>{{ $latestMeasurement['followUp'] ?? 'Lakukan pengukuran pertama untuk memulai pemantauan' }}</span>
             </div>
@@ -181,7 +166,7 @@
             data-history-target="anthropometry"
         >
             <i class="fa-solid fa-chart-column"></i>
-            Pengukuran Antropometri
+            Pengukuran Terbaru
         </button>
         <button
             type="button"
@@ -263,21 +248,10 @@
                         </div>
                         <div class="metric-value">{{ $measurement['headCircumference'] }} <small>cm</small></div>
                         <div class="metric-meta metric-meta-stack">
-                            <span>Hasil pengukuran</span>
-                            <strong>{{ $measurement['headCircumference'] === '—' ? 'Belum dicatat' : 'Tercatat' }}</strong>
+                            <span>Tindak lanjut</span>
+                            <strong>{{ $measurement['followUp'] }}</strong>
                         </div>
                     </div>
-                </div>
-
-                <div style="margin-top: 1rem; padding: 0.75rem 1rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.5rem; font-size: 0.875rem;">
-                    <div style="margin-bottom: {{ $measurement['counselingNote'] ? '0.5rem' : '0' }};">
-                        <strong>Status Tindak Lanjut:</strong> {{ $measurement['followUp'] }}
-                    </div>
-                    @if($measurement['counselingNote'])
-                        <div style="color: var(--slate-700);">
-                            <strong>Catatan Penyuluhan:</strong> {{ $measurement['counselingNote'] }}
-                        </div>
-                    @endif
                 </div>
             </article>
         @empty
@@ -305,6 +279,7 @@
 @endsection
 
 @push('styles')
+    {{-- Memakai css dari styling kader karena strukturnya sama persis --}}
     @vite('resources/css/kader/profil-balita.css')
 @endpush
 
