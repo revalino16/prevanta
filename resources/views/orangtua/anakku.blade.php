@@ -265,7 +265,7 @@
 
                                     @if ($usiaBulan !== null)
                                         <span class="anak-age-pill">
-                                            {{ $usiaBulan }} Bulan
+                                            {{ number_format($usiaBulan, 1, ',', '.') }} Bulan
                                         </span>
                                     @endif
 
@@ -428,7 +428,7 @@
                             </div>
 
 
-                            <a href="#" class="anak-kms-btn">
+                            <a href="{{ route('orangtua.balita.kms', $anak->id) }}" class="anak-kms-btn">
                                 <i class="fa-solid fa-chart-line"></i>
                                 Lihat KMS
                             </a>
