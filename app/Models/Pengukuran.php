@@ -47,4 +47,9 @@ class Pengukuran extends Model
     {
         return $this->hasOne(Verifikasi::class, 'pengukuran_id')->latestOfMany();
     }
+
+    public function kader(): BelongsTo
+    {
+        return $this->belongsTo(Users::class, 'kader_id');
+    }
 }

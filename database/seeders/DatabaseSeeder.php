@@ -25,5 +25,15 @@ class DatabaseSeeder extends Seeder
                 'role'     => 'kader',
             ]
         );
+
+        Users::firstOrCreate(
+            ['email' => 'bidan@prevanta.id'],
+            [
+                'nama'     => 'Bidan Mawar',
+                'password' => Hash::make('password123'),
+                'no_hp'    => '081234567891',
+                'role'     => 'bidan',
+            ]
+        );
     }
 }
