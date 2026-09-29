@@ -19,6 +19,7 @@ export default defineConfig({
                 'resources/css/kader/dashboard.css',
                 'resources/css/kader/jadwal.css',
                 'resources/css/kader/edukasi.css',
+                'resources/css/orangtua/anakku.css',
             ],
             refresh: true,
             fonts: [

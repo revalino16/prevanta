@@ -34,6 +34,7 @@ class Pengukuran extends Model
             'lingkar_kepala' => 'decimal:2',
             'lingkar_lengan_atas' => 'decimal:2',
             'z_score' => 'decimal:2',
+            'tanggal_pengukuran' => 'date',
         ];
     }
 
