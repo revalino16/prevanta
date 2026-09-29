@@ -265,7 +265,7 @@
 
                                     @if ($usiaBulan !== null)
                                         <span class="anak-age-pill">
-                                            {{ $usiaBulan }} Bulan
+                                            {{ number_format($usiaBulan, 1, ',', '.') }} Bulan
                                         </span>
                                     @endif
 
