@@ -26,6 +26,7 @@ class BalitaKmsController extends Controller
         $balita->load([
             'orangTua.user',
             'pengukuran' => fn ($query) => $query->oldest('tanggal_pengukuran'),
+            'pengukuran.kader',
             'pengukuran.verifikasi.bidan',
             'imunisasi' => fn ($query) => $query->latest('tanggal_pemberian'),
             'imunisasi.jenisImunisasi',
@@ -94,6 +95,9 @@ class BalitaKmsController extends Controller
             'followUp' => $this->followUpLabel($tone, $verification),
             'verificationLabel' => $this->verificationLabel($verification),
             'verificationTone' => $this->verificationTone($verification),
+            'counselingNote' => $verification?->catatan_penyuluhan,
+            'counselor' => $verification?->bidan?->nama,
+            'companion' => $measurement->kader?->nama,
         ];
     }
 
