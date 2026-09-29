@@ -56,13 +56,13 @@
                     <span>Anakku</span>
                 </a>
 
-                {{-- <a
-                    href="{{ route('orangtua.riwayatpengukuran') }}"
+                <a
+                    href="{{ route('orangtua.riwayat') }}"
                     class="nav-item {{ request()->routeIs('orangtua.riwayatpengukuran') ? 'active' : '' }}"
                 >
                     <i class="fa-solid fa-file-medical nav-icon"></i>
                     <span>Riwayat Pengukuran</span>
-                </a> --}}
+                </a>
 
                 <a
                     href="{{ route('orangtua.edukasi') }}"
