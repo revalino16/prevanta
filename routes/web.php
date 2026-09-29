@@ -45,9 +45,6 @@ Route::middleware(['auth', 'role:orang_tua'])
     ->name('orangtua.')
     ->group(function () {
 
-        Route::get('/dashboard', [OrangtuaController::class, 'dashboard'])
-            ->name('dashboard');
-
         Route::get('/anakku', [OrangTua\AnakkuController::class, 'index'])
             ->name('anakku');
 
