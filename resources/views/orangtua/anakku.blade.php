@@ -428,7 +428,7 @@
                             </div>
 
 
-                            <a href="#" class="anak-kms-btn">
+                            <a href="{{ route('orangtua.balita.kms', $anak->id) }}" class="anak-kms-btn">
                                 <i class="fa-solid fa-chart-line"></i>
                                 Lihat KMS
                             </a>
