@@ -28,7 +28,7 @@
                 href="{{ route('kader.balita.pengukuran.create', $balita) }}"
                 class="kms-record-button"
             >
-                <i class="fa-regular fa-circle-plus"></i>
+                <i class="fa-solid fa-pen-to-square"></i>
                 Catat Pengukuran Hari Ini
             </a>
         @endif
@@ -95,7 +95,7 @@
             </div>
 
             <div class="follow-up follow-up-{{ $latestMeasurement['tone'] ?? 'neutral' }}">
-                <i class="fa-regular fa-circle-exclamation"></i>
+                <i class="fa-solid fa-clipboard-list"></i>
                 <strong>Status Tindak Lanjut:</strong>
                 <span>{{ $latestMeasurement['followUp'] ?? 'Lakukan pengukuran pertama untuk memulai pemantauan' }}</span>
             </div>
@@ -227,10 +227,21 @@
                         </div>
                         <div class="metric-value">{{ $measurement['headCircumference'] }} <small>cm</small></div>
                         <div class="metric-meta metric-meta-stack">
-                            <span>Tindak lanjut</span>
-                            <strong>{{ $measurement['followUp'] }}</strong>
+                            <span>Hasil pengukuran</span>
+                            <strong>{{ $measurement['headCircumference'] === '—' ? 'Belum dicatat' : 'Tercatat' }}</strong>
                         </div>
                     </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 0.75rem 1rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.5rem; font-size: 0.875rem;">
+                    <div style="margin-bottom: {{ $measurement['counselingNote'] ? '0.5rem' : '0' }};">
+                        <strong>Status Tindak Lanjut:</strong> {{ $measurement['followUp'] }}
+                    </div>
+                    @if($measurement['counselingNote'])
+                        <div style="color: var(--slate-700);">
+                            <strong>Catatan Penyuluhan:</strong> {{ $measurement['counselingNote'] }}
+                        </div>
+                    @endif
                 </div>
             </article>
         @empty

@@ -19,8 +19,10 @@ class AnakkuController extends Controller
         $anakList = $orangTua
             ? $orangTua->balita()->with([
                 'pengukuran' => function ($query) {
-                    $query->latest('tanggal_pengukuran');
-                }
+                    $query->whereHas('verifikasi', function ($q) {
+                        $q->where('status', 'terverifikasi');
+                    })->latest('tanggal_pengukuran');
+                },
             ])->get()
             : collect();
 
@@ -68,4 +70,3 @@ class AnakkuController extends Controller
         return view('orangtua.tindak-lanjut', compact('anak'));
     }
 }
-

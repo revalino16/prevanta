@@ -101,8 +101,7 @@ class HeightForAgeZScoreCalculator
         return match (true) {
             $zScore < -3 => 'sangat pendek',
             $zScore < -2 => 'pendek',
-            $zScore <= 3 => 'normal',
-            default => 'tinggi',
+            default => 'normal',
         };
     }
 
