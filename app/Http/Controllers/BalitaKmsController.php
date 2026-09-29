@@ -40,7 +40,11 @@ class BalitaKmsController extends Controller
             ->map(fn (Pengukuran $measurement): array => $this->measurementCard($measurement, $birthDate));
         $healthHistory = $this->healthHistory($balita, $birthDate);
 
-        return view('kader.profil-balita', [
+        $view = auth()->user()->role === 'orang_tua'
+            ? 'orangtua.profil-balita'
+            : 'kader.profil-balita';
+
+        return view($view, [
             'balita' => $balita,
             'birthDateLabel' => $this->dateLabel($birthDate),
             'currentAgeLabel' => $this->ageLabel($birthDate, now('Asia/Jakarta')),
