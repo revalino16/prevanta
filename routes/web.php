@@ -7,6 +7,7 @@ use App\Http\Controllers\Bidan;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Kader;
 use App\Http\Controllers\OrangTua;
+use App\Http\Controllers\OrangTua\OrangtuaController;
 use App\Http\Controllers\OrangTua\EdukasiController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,11 +44,24 @@ Route::middleware(['auth', 'role:orang_tua'])
     ->prefix('orangtua')
     ->name('orangtua.')
     ->group(function () {
+
+        Route::get('/dashboard', [OrangtuaController::class, 'dashboard'])
+            ->name('dashboard');
+
         Route::get('/anakku', [OrangTua\AnakkuController::class, 'index'])
             ->name('anakku');
 
         Route::get('/edukasi', [OrangTua\EdukasiController::class, 'index'])
             ->name('edukasi');
+
+        Route::get('/riwayat-pengukuran', [OrangTua\AnakkuController::class, 'riwayat'])
+            ->name('riwayat');
+
+        Route::get('/balita/{balita}/kms', BalitaKmsController::class)
+            ->name('balita.kms');
+
+        Route::get('/balita/{balita}/tindak-lanjut', [OrangTua\AnakkuController::class, 'tindakLanjut'])
+            ->name('balita.tindak-lanjut');
     });
 
 

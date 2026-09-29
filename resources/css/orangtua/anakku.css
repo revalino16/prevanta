@@ -1,0 +1,603 @@
+/* resources/css/orangtua/anakku.css
+   Dipanggil lewat @vite('resources/css/orangtua/anakku.css') di anakku.blade.php
+   Warna, ukuran teks, dan jarak disamakan dengan desain acuan (Anakku-Orangtua.png)
+*/
+
+:root {
+    --primary: #e2536f;         /* pink/raspberry utama: tombol, tag, angka penting, accent bar */
+    --primary-strong: #d63a5c;  /* hover state tombol */
+    --primary-dark: #7c2547;    /* avatar & logo (maroon tua) */
+    --primary-tint: #fbe1e7;    /* bg pill/badge pink muda */
+
+    --green-tint-bg: #ddf3e1;
+    --green-tint-text: #227a49;
+
+    --page-bg: #fdf6f2;
+    --card-bg: #ffffff;
+
+    --text-dark: #23262b;
+    --text-body: #6b7280;
+    --text-muted: #9aa1ab;
+
+    --border-soft: #eef0f2;
+    --gray-pill-bg: #f2f3f5;
+    --gray-pill-text: #4b5563;
+}
+
+.anakku-page {
+    background: var(--page-bg);
+    padding: 24px 32px 48px;
+    color: var(--text-dark);
+}
+
+/* ══════════ HERO BANNER ══════════ */
+
+.anakku-hero {
+    background: linear-gradient(100deg, #ffffff 0%, #fdf1f3 45%, #f7cdd6 100%);
+    border-radius: 28px;
+    padding: 32px 36px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.anakku-hero-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.anakku-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--green-tint-bg);
+    color: var(--green-tint-text);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+}
+
+.anakku-hero-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0 0 10px;
+    letter-spacing: -0.2px;
+}
+
+.anakku-hero-desc {
+    color: var(--text-body);
+    font-size: 14px;
+    max-width: 480px;
+    margin: 0 0 16px;
+    line-height: 1.6;
+}
+
+.anakku-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: #3f4650;
+    font-weight: 500;
+}
+
+.anakku-hero-meta i {
+    color: var(--primary);
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.anakku-hero-meta .dot {
+    color: #d1d5db;
+}
+
+.anakku-hero-right {
+    flex-shrink: 0;
+    width: 260px;
+}
+
+.anakku-hero-img {
+    width: 100%;
+    height: 235px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* ══════════ SECTION HEAD (dipakai ulang di Agenda & Daftar Anak) ══════════ */
+
+.anakku-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 32px;
+    margin-bottom: 4px;
+}
+
+.anakku-section-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.anakku-section-title i {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.anakku-section-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+}
+
+.anakku-periode-pill {
+    background: var(--card-bg);
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+/* ══════════ AGENDA ══════════ */
+
+.agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.agenda-card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 1px 3px rgba(20, 10, 15, 0.04);
+}
+
+.agenda-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.agenda-tag {
+    background: var(--primary-tint);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+}
+
+.agenda-countdown {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.agenda-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 4px;
+    line-height: 1.35;
+}
+
+.agenda-desc {
+    font-size: 13px;
+    color: var(--text-body);
+    margin: 0 0 16px;
+    line-height: 1.55;
+}
+
+.agenda-schedule {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.agenda-date-box {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 12px;
+    padding: 7px 10px;
+    text-align: center;
+    line-height: 1.2;
+    flex-shrink: 0;
+    min-width: 50px;
+}
+
+.agenda-date-month {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.agenda-date-day {
+    display: block;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.agenda-schedule-text {
+    font-size: 13px;
+    color: #4b5563;
+    min-width: 0;
+}
+
+.agenda-time {
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 2px;
+}
+
+.agenda-note {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin: 2px 0 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+/* ══════════ DAFTAR ANAK ══════════ */
+
+.anak-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.anak-card-wrap {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+}
+
+.anak-accent {
+    width: 4px;
+    border-radius: 999px;
+    margin: 2px 0;
+    flex-shrink: 0;
+}
+
+.anak-accent--danger  { background: var(--primary); }
+.anak-accent--warning { background: #f5a524; }
+.anak-accent--ok      { background: #22c55e; }
+
+.anak-card {
+    flex: 1;
+    min-width: 0;
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 1px 3px rgba(20, 10, 15, 0.04);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+@media (min-width: 992px) {
+    .anak-card {
+        grid-template-columns: 1fr 270px 1fr;
+        align-items: center;
+    }
+}
+
+/* -- identitas -- */
+
+.anak-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.anak-photo-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.anak-photo {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    object-fit: cover;
+}
+
+.anak-gender-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.anak-identity-text {
+    min-width: 0;
+}
+
+.anak-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.anak-nik {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.anak-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--text-body);
+    margin-bottom: 4px;
+}
+
+.anak-age-pill {
+    background: var(--gray-pill-bg);
+    color: var(--gray-pill-text);
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+}
+
+.anak-parent {
+    font-size: 12px;
+    color: var(--text-body);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.anak-parent i {
+    color: var(--text-muted);
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+/* -- pengukuran -- */
+
+.anak-measure {
+    padding: 10px 16px;
+}
+
+@media (min-width: 992px) {
+    .anak-measure {
+        padding: 0 24px;
+        border-left: 1px solid var(--border-soft);
+        border-right: 1px solid var(--border-soft);
+    }
+}
+
+.anak-measure-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.anak-measure-top i {
+    font-size: 11px;
+    margin-right: 4px;
+}
+
+.anak-measure-flag {
+    color: #BA1A1A;
+    font-weight: 700;
+}
+
+.anak-measure-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+    gap: 8px;
+}
+
+.anak-measure-label {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin: 0 0 2px;
+}
+
+.anak-measure-value {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.anak-measure-value.is-danger {
+    color: #BA1A1A;
+}
+
+.anak-measure-unit {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin: 4px 0 0;
+}
+
+.anak-measure-footnote {
+    font-size: 12px;
+    color: var(--text-body);
+    margin-top: 10px;
+    text-align: center;
+}
+
+@media (min-width: 992px) {
+    .anak-measure-footnote {
+        text-align: left;
+    }
+}
+
+/* -- status & aksi -- */
+
+.anak-status {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 4px;
+    min-width: 0;
+}
+
+.anak-status-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.anak-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin: 0 0 6px;
+}
+
+.anak-status-badge--danger  { background: var(--primary-tint); color: #BA1A1A; }
+.anak-status-badge--warning { background: #fff7e6; color: #b45309; }
+
+.anak-followup-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-tint);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin: 0 0 6px;
+    text-decoration: none;
+}
+
+.anak-followup-link:hover {
+    filter: brightness(0.97);
+}
+
+.anak-status-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.anak-kms-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.anak-kms-btn:hover {
+    background: var(--primary-strong);
+}
+
+/* ══════════ EMPTY STATE ══════════ */
+
+.empty-state {
+    background: var(--card-bg);
+    border: 1px dashed #e5e7eb;
+    border-radius: 18px;
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    font-size: 30px;
+    margin-bottom: 12px;
+    color: #d1d5db;
+}
+
+.empty-state h3 {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0 0 6px;
+}
+
+.empty-state p {
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ══════════ RESPONSIVE ══════════ */
+
+@media (max-width: 900px) {
+    .agenda-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .anakku-hero {
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .anakku-hero-right {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .anakku-page {
+        padding: 16px;
+    }
+
+    .anak-status {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .anak-kms-btn {
+        justify-content: center;
+    }
+}
