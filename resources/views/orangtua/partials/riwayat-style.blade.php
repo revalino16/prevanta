@@ -1,3 +1,7 @@
+{{-- resources/views/orangtua/partials/riwayat-style.blade.php
+     Isi CSS halaman riwayat. Di-include lewat @include di riwayat.blade.php,
+     jadi tidak bergantung pada folder public / asset() / APP_URL. --}}
+<style>
 /* public/css/orangtua/riwayat.css
    Semua selector diawali .rw- dan di-scope di .rw-app supaya tidak bentrok dengan CSS lain (Bootstrap/Tailwind/layout). */
 .rw-app {
@@ -17,40 +21,17 @@
 }
 .rw-app, .rw-app *, .rw-app *::before, .rw-app *::after { box-sizing: border-box; }
 .rw-app * { margin: 0; padding: 0; }
-.rw-app { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: var(--rw-bg); color: var(--rw-ink); font-size: 14px; }
+.rw-app { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--rw-ink); font-size: 14px; }
 .rw-app a { color: inherit; text-decoration: none; }
 .rw-app svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-.rw-app { display: grid; grid-template-columns: 288px 1fr; min-height: 100vh; }
 
 
-.rw-side { background: var(--rw-side); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
-.rw-brand { display: flex; gap: 12px; align-items: center; padding: 22px 20px; }
-.rw-brand img { width: 40px; height: 40px; object-fit: contain; }
-.rw-brand b { display: block; color: var(--rw-brand); font-size: 18px; font-weight: 700; }
-.rw-brand small { display: block; font-size: 11.5px; line-height: 1.35; color: var(--rw-muted); font-weight: 500; }
-.rw-nav { padding: 24px 16px; display: grid; gap: 6px; }
-.rw-nav a { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; font-weight: 600; color: #3A3536; }
-.rw-nav a:hover { background: #ECE7E2; }
-.rw-nav a.rw-active { background: linear-gradient(180deg, #E5788A, #D9647A); color: #fff; box-shadow: 0 4px 12px rgba(217,100,122,.35); }
-.rw-side-foot { margin-top: auto; padding: 16px; display: grid; gap: 12px; }
-.rw-mode-btn { display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: 12px; background: var(--rw-mint); color: #245A2C; font-weight: 600; }
-.rw-mode-btn .rw-sp { margin-left: auto; }
-.rw-logout { display: flex; align-items: center; gap: 10px; padding: 8px 14px; font-weight: 600; background: none; border: 0; cursor: pointer; font: inherit; font-weight: 600; color: var(--rw-ink); }
 
 
-.rw-main { min-width: 0; }
-.rw-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; }
-.rw-chip-loc { display: inline-flex; align-items: center; gap: 8px; background: var(--rw-mint); color: #1F4D28; padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 13px; }
-.rw-top-right { display: flex; align-items: center; gap: 24px; }
-.rw-bell { position: relative; background: none; border: 0; cursor: pointer; color: var(--rw-ink); }
-.rw-bell i { position: absolute; top: -6px; right: -6px; background: var(--rw-brand); color: #fff; font-style: normal; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; }
-.rw-profile { display: flex; align-items: center; gap: 10px; }
-.rw-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--rw-brand); color: #fff; display: grid; place-items: center; }
-.rw-profile b { display: block; font-size: 13px; }
-.rw-profile small { color: var(--rw-muted); font-size: 12px; }
 
-.rw-content { padding: 8px 32px 48px; max-width: 1000px; }
+
+.rw-content { max-width: 1040px; padding: 28px 36px 56px; }
 
 
 .rw-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
@@ -134,12 +115,9 @@
 
 @media (max-width: 1100px) { .rw-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 860px) {
-    .rw-app { grid-template-columns: 1fr; }
-    .rw-side { position: static; height: auto; }
-    .rw-nav { grid-auto-flow: column; overflow-x: auto; padding: 8px 16px; }
-    .rw-side-foot { display: none; }
-    .rw-top, .rw-content { padding-left: 16px; padding-right: 16px; }
+    .rw-content { padding: 20px 16px 40px; }
     .rw-child-row { flex-wrap: wrap; }
     .rw-switch { margin-left: 0; }
 }
 @media (max-width: 520px) { .rw-grid { grid-template-columns: 1fr; } .rw-exam { padding: 18px; } }
+</style>

@@ -274,8 +274,8 @@
 }
 
 .anak-accent--danger  { background: var(--primary); }
-.anak-accent--warning { background: #f5a524; }
-.anak-accent--ok      { background: #22c55e; }
+.anak-accent--warning { background: #d63a5c; }
+.anak-accent--ok      { background: #d63a5c; }
 
 .anak-card {
     flex: 1;
