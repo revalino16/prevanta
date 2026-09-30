@@ -56,13 +56,13 @@ class JadwalController extends Controller
     {
         $request->validate([
             'jenis_kegiatan' => 'required|string|max:100|regex:/^[a-zA-Z0-9\s]+$/',
-            'tanggal' => 'required|date|after_or_equal:today|before_or_equal:tomorrow',
+            'tanggal' => 'required|date|after_or_equal:today',
             'lokasi' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
         ], [
             'jenis_kegiatan.regex' => 'Nama atau jenis kegiatan tidak boleh mengandung simbol.',
             'tanggal.after_or_equal' => 'Tanggal tidak boleh hari yang sudah lewat.',
-            'tanggal.before_or_equal' => 'Tanggal hanya bisa untuk hari ini atau besok.',
+            'tanggal.before_or_equal' => 'Tanggal hanya bisa untuk 7 hari ke depan.',
         ]);
 
         Jadwal::create([
