@@ -56,7 +56,7 @@ class JadwalController extends Controller
     {
         $request->validate([
             'jenis_kegiatan' => 'required|string|max:100|regex:/^[a-zA-Z0-9\s]+$/',
-            'tanggal' => 'required|date|after_or_equal:today',
+            'tanggal' => 'required|date|after:today',
             'lokasi' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
         ], [
