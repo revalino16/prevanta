@@ -1117,4 +1117,57 @@
     .health-kia-badge {
         align-self: flex-start;
     }
+
+    .measurement-head-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+.measurement-head-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.measurement-head-actions .measurement-verification {
+    margin-top: 0;
+}
+
+.measurement-history-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border: 1px solid #f1c0ca;
+    border-radius: 999px;
+    background: #fdf2f4;
+    color: var(--primary, #9d1b3f);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+.measurement-history-btn:hover {
+    background: var(--primary, #9d1b3f);
+    border-color: var(--primary, #9d1b3f);
+    color: #fff;
+    box-shadow: 0 4px 12px -4px rgba(157, 27, 63, .45);
+}
+
+.measurement-history-btn i {
+    font-size: 10px;
+    transition: transform .18s ease;
+}
+
+.measurement-history-btn:hover i {
+    transform: translateX(2px);
+}
+
+.metric-meta strong.metric-zscore-red {
+    color: #c83250;
 }

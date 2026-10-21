@@ -80,8 +80,8 @@
                 </div>
             </div>
 
-            <div class="follow-up follow-up-{{ $latestMeasurement['tone'] ?? 'neutral' }}">
-                <i class="fa-regular fa-circle-exclamation"></i>
+            <div class="follow-up follow-up-danger">
+                <i class="fa-solid fa-circle-exclamation"></i>
                 <strong>Status Tindak Lanjut:</strong>
                 <span>{{ $latestMeasurement['followUp'] ?? 'Lakukan pengukuran pertama untuk memulai pemantauan' }}</span>
             </div>
@@ -95,7 +95,7 @@
         aria-label="Pengukuran terbaru antropometri"
     >
         @forelse ($measurementHistory->take(1) as $measurement)
-            <article class="measurement-card measurement-card-{{ $measurement['tone'] }}">
+            <article class="measurement-card measurement-card-danger">
                 <div class="measurement-head">
                     <div class="measurement-title-wrap">
                         <span class="measurement-icon"><i class="fa-solid fa-ruler-horizontal"></i></span>
@@ -122,7 +122,7 @@
                 </div>
 
                 <div class="measurement-grid">
-                    <div class="measurement-metric metric-highlight metric-highlight-{{ $measurement['tone'] }}">
+                    <div class="measurement-metric metric-highlight metric-highlight-danger">
                         <div class="metric-label-row">
                             <span>TINGGI BADAN (TB)</span>
                             <i class="fa-solid fa-arrows-up-down"></i>
@@ -130,9 +130,9 @@
                         <div class="metric-value">{{ $measurement['height'] }} <small>cm</small></div>
                         <div class="metric-meta">
                             <span>Z-Score TB/U</span>
-                            <strong>{{ $measurement['zScore'] }}{{ $measurement['zScore'] !== '—' ? ' SD' : '' }}</strong>
+                            <strong class="metric-zscore-red">{{ $measurement['zScore'] }}{{ $measurement['zScore'] !== '—' ? ' SD' : '' }}</strong>
                         </div>
-                        <span class="metric-badge metric-badge-{{ $measurement['tone'] }}">{{ $measurement['status'] }}</span>
+                        <span class="metric-badge metric-badge-danger">{{ $measurement['status'] }}</span>
                     </div>
 
                     <div class="measurement-metric">
@@ -260,6 +260,34 @@
     {{-- Memakai css dari styling kader karena strukturnya sama persis --}}
     @vite('resources/css/kader/profil-balita.css')
     <style>
+        .follow-up-danger {
+            border-color: #f3b8c2;
+            background: #fff0f2;
+            color: #4b5563;
+        }
+
+        .follow-up-danger i {
+            color: #d83954;
+            font-size: 13px;
+        }
+
+        .measurement-card-danger::before {
+            background: #bb3b58;
+        }
+
+        .metric-highlight-danger::after {
+            background: #f1c0ca;
+        }
+
+        .metric-meta strong.metric-zscore-red {
+            color: #c83250;
+        }
+
+        .metric-badge-danger {
+            background: #e98598;
+            color: #722037;
+        }
+
         .measurement-head-actions {
             display: flex;
             align-items: center;
