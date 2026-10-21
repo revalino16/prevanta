@@ -200,85 +200,36 @@ class AnakkuController extends Controller
             ->get()
             ->map(function ($jadwal) use ($posyandu) {
 
-                $tanggal = Carbon::parse(
-                    $this->pick(
-                        $jadwal,
-                        [
-                            'tanggal',
-                            'tanggal_jadwal',
-                            'tgl_jadwal',
-                        ]
-                    )
-                );
+                $tanggal = Carbon::parse($jadwal->tanggal);
 
-                $hariLagi = Carbon::today()->diffInDays($tanggal);
+                $hariLagi = (int) Carbon::today()->diffInDays($tanggal);
 
                 return [
                     'tag' => 'Jadwal',
 
                     'hari_lagi' => $hariLagi,
 
-                    'judul' => $this->pick(
-                        $jadwal,
-                        [
-                            'judul',
-                            'nama_kegiatan',
-                            'nama_jadwal',
-                            'kegiatan',
-                        ],
-                        'Jadwal Posyandu'
-                    ),
+                    // Mengambil jenis kegiatan dari database
+                    'judul' => $jadwal->jenis_kegiatan,
 
-                    'deskripsi' => $this->pick(
-                        $jadwal,
-                        [
-                            'deskripsi',
-                            'keterangan',
-                            'detail',
-                        ],
-                        'Jadwal kegiatan Posyandu'
-                    ),
+                    // Mengambil keterangan dari database
+                    'deskripsi' => $jadwal->keterangan
+                        ?: 'Jadwal kegiatan Posyandu',
 
-                    // Bulan Bahasa Indonesia
                     'tanggal_bulan' => $tanggal->translatedFormat('M'),
 
-                    // Tanggal
                     'tanggal_hari' => $tanggal->format('d'),
 
-                    // Hari + tanggal Bahasa Indonesia
-                    'waktu_label' => $tanggal->translatedFormat('l, d F Y'),
+                    'waktu_label' => $tanggal->translatedFormat('l') . ' Pagi',
 
-                    // Waktu mulai tetap 08.00
                     'jam_mulai' => '08.00',
 
-                    'jam_selesai' => $this->pick(
-                        $jadwal,
-                        [
-                            'jam_selesai',
-                            'waktu_selesai',
-                            'jam_akhir',
-                        ],
-                        'Selesai'
-                    ),
+                    'jam_selesai' => '11.30',
 
-                    'lokasi' => $this->pick(
-                        $jadwal,
-                        [
-                            'lokasi',
-                            'tempat',
-                            'nama_tempat',
-                        ],
-                        $posyandu?->nama ?? 'Posyandu'
-                    ),
+                    'lokasi' => $jadwal->lokasi
+                        ?: ($posyandu?->nama ?? 'Posyandu'),
 
-                    'catatan_lokasi' => $this->pick(
-                        $jadwal,
-                        [
-                            'catatan_lokasi',
-                            'catatan',
-                            'keterangan_lokasi',
-                        ]
-                    ),
+                    'catatan_lokasi' => null,
                 ];
             });
 

@@ -58,7 +58,7 @@
 
                 <a
                     href="{{ route('orangtua.riwayat') }}"
-                    class="nav-item {{ request()->routeIs('orangtua.riwayatpengukuran') ? 'active' : '' }}"
+                    class="nav-item {{ request()->routeIs('orangtua.riwayat') ? 'active' : '' }}"
                 >
                     <i class="fa-solid fa-file-medical nav-icon"></i>
                     <span>Riwayat Pengukuran</span>
