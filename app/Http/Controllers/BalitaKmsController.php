@@ -44,7 +44,7 @@ class BalitaKmsController extends Controller
 
         $healthHistory = $this->healthHistory($balita, $birthDate);
 
-        $view = auth()->user()->role === 'orang_tua'
+        $view = request()->user()->role === 'orang_tua'
             ? 'orangtua.profil-balita'
             : 'kader.profil-balita';
 

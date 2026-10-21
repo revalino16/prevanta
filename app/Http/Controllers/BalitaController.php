@@ -36,36 +36,21 @@ class BalitaController extends Controller
                 continue;
             }
 
-            $status = strtolower($pengukuran->status_pertumbuhan ?? '');
+            $statusPertumbuhan = $pengukuran->status_pertumbuhan;
 
-            if (str_contains($status, 'sangat pendek') || str_contains($status, 'sangat kurus')) {
-                $item->status_key = 'danger';
-                $item->highlight_label = 'Perlu Rujukan';
-                $countSangatPendek++;
-            } elseif (
-                str_contains($status, 'pendek') ||
-                str_contains($status, 'kurus') ||
-                str_contains($status, 'kurang')
-            ) {
-                $item->status_key = 'warning';
-                $item->highlight_label = 'Perlu Pemantauan';
-                $countPendek++;
-            } elseif (
-                str_contains($status, 'tinggi') ||
-                str_contains($status, 'gemuk') ||
-                str_contains($status, 'lebih')
-            ) {
-                $item->status_key = 'info';
-                $item->highlight_label = 'Perlu Pemantauan';
-                $countPendek++;
-            } elseif ($status === 'normal') {
-                $item->status_key = 'success';
-                $item->highlight_label = 'Sesuai KMS';
-                $countNormal++;
-            } else {
-                $item->status_key = null;
-                $item->highlight_label = 'Pemantauan Rutin';
-            }
+            [$item->status_key, $item->highlight_label] = match ($statusPertumbuhan) {
+                'sangat pendek' => ['danger', 'Perlu Rujukan'],
+                'pendek' => ['warning', 'Perlu Pemantauan'],
+                'normal' => ['success', 'Sesuai KMS'],
+                default => [null, 'Pemantauan Rutin'],
+            };
+
+            match ($statusPertumbuhan) {
+                'sangat pendek' => $countSangatPendek++,
+                'pendek' => $countPendek++,
+                'normal' => $countNormal++,
+                default => null,
+            };
         }
 
         return view('kader.monitoringbalita', compact(
