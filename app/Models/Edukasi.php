@@ -8,7 +8,7 @@ class Edukasi extends Model
 {
     protected $table = 'edukasi';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'users_id',

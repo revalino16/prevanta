@@ -168,6 +168,7 @@
                                 data-img="{{ $imgUrl }}"
                                 data-content="{{ $item->konten }}"
                                 data-time="{{ $readMinutes }} Menit Baca"
+                                data-date="{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at) ->translatedFormat('d F Y') : '-' }}"
                                 data-id="{{ $item->id }}"
                             >
                                 <span>Baca Selengkapnya</span>
@@ -209,6 +210,8 @@
 
             <div class="modal-meta">
                 <span id="modalTime"><i class="fa-regular fa-clock"></i> 2 Menit Baca</span>
+                <span>&bull;</span>
+                <span id="modalDate"><i class="fa-regular fa-calendar"></i> Tanggal publikasi</span>
                 <span>&bull;</span>
                 <span>Posyandu Mawar Melati</span>
             </div>
@@ -303,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalImg     = document.getElementById('modalImg');
     const modalContent = document.getElementById('modalContent');
     const modalTime    = document.getElementById('modalTime');
+    const modalDate    = document.getElementById('modalDate');
     const deleteForm   = document.getElementById('deleteForm');
 
     const openModal = (data) => {
@@ -313,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalImg.alt = data.title;
         modalContent.textContent = data.content;
         modalTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + data.time;
+        modalDate.innerHTML = '<i class="fa-regular fa-calendar"></i> ' + data.date;
         deleteForm.action = '{{ url("/kader/edukasi") }}/' + data.id;
         modalBackdrop.classList.add('show');
         document.body.style.overflow = 'hidden';
@@ -333,7 +338,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 badgeClass: btn.dataset.badgeClass,
                 img: btn.dataset.img,
                 content: btn.dataset.content,
-                time: btn.dataset.time
+                time: btn.dataset.time,
+                date: btn.dataset.date
             });
         });
     });
