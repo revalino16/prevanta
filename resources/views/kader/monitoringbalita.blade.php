@@ -4,439 +4,376 @@
 
 @section('content')
 
-<main class="content">
+    <main class="content">
 
-    {{-- PAGE HEADER --}}
-    <div class="page-head">
+        {{-- PAGE HEADER --}}
+        <div class="page-head">
 
-        <div>
-            <div class="eyebrow">E-POSYANDU TERINTEGRASI</div>
+            <div>
+                <div class="eyebrow">E-POSYANDU TERINTEGRASI</div>
 
-            <h1>Monitoring Balita</h1>
+                <h1>Monitoring Balita</h1>
 
-            <p>
-                Kelola data antropometri, pantau kurva pertumbuhan balita, dan lakukan
-                tindakan intervensi gizi terpadu.
-            </p>
-        </div>
+                <p>
+                    Kelola data antropometri, pantau kurva pertumbuhan balita, dan lakukan
+                    tindakan intervensi gizi terpadu.
+                </p>
+            </div>
 
-        <div class="page-head-actions">
-            @if(Auth::user()->role === 'kader')
-                <a
-                    href="{{ route('kader.balita.tambah') }}"
-                    class="btn btn-primary"
-                >
-                    <i class="fa-solid fa-user-plus"></i>
-                    + Tambah Balita
+            <div class="page-head-actions">
+                @if (Auth::user()->role === 'kader')
+                    <a href="{{ route('kader.balita.tambah') }}" class="btn btn-primary">
+                        <i class="fa-solid fa-user-plus"></i>
+                        + Tambah Balita
+                    </a>
+                @endif
+                <a href="{{ route('kader.monitoringbalita.pdf') }}" class="btn btn-outline">
+                    <i class="fa-solid fa-download"></i>
+                    Unduh Rekap Laporan
                 </a>
-            @endif
-            <button type="button" class="btn btn-outline">
-                <i class="fa-solid fa-download"></i>
-                Unduh Rekap Laporan
-            </button>
+            </div>
+
         </div>
 
-    </div>
+
+        {{-- SUCCESS MESSAGE --}}
+        @if (session('success'))
+            <div class="success-message">
+                <i class="fa-solid fa-circle-check"></i>
+                {{ session('success') }}
+            </div>
+        @endif
 
 
-    {{-- SUCCESS MESSAGE --}}
-    @if (session('success'))
-        <div class="success-message">
-            <i class="fa-solid fa-circle-check"></i>
-            {{ session('success') }}
-        </div>
-    @endif
+        {{-- FILTER PANEL --}}
+        <div class="filter-panel">
 
+            <div class="filter-row">
 
-    {{-- FILTER PANEL --}}
-    <div class="filter-panel">
+                <div class="tabs" id="tabs">
 
-        <div class="filter-row">
+                    <button type="button" class="tab active" data-status="">
+                        Semua Status ({{ $balita->count() }})
+                    </button>
 
-            <div class="tabs" id="tabs">
+                    <button type="button" class="tab" data-status="success">
+                        Normal ({{ $countNormal }})
+                    </button>
 
-                <button
-                    type="button"
-                    class="tab active"
-                    data-status=""
-                >
-                    Semua Status ({{ $balita->count() }})
-                </button>
+                    <button type="button" class="tab" data-status="warning">
+                        Pendek ({{ $countPendek }})
+                    </button>
 
-                <button
-                    type="button"
-                    class="tab"
-                    data-status="success"
-                >
-                    Normal ({{ $countNormal }})
-                </button>
+                    <button type="button" class="tab" data-status="danger">
+                        Sangat Pendek ({{ $countSangatPendek }})
+                    </button>
 
-                <button
-                    type="button"
-                    class="tab"
-                    data-status="warning"
-                >
-                    Pendek ({{ $countPendek }})
-                </button>
+                </div>
 
-                <button
-                    type="button"
-                    class="tab"
-                    data-status="danger"
-                >
-                    Sangat Pendek ({{ $countSangatPendek }})
+                <button type="button" class="reset-link" id="resetFilter">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Reset Filter
                 </button>
 
             </div>
 
-            <button
-                type="button"
-                class="reset-link"
-                id="resetFilter"
-            >
-                <i class="fa-solid fa-rotate-left"></i>
-                Reset Filter
-            </button>
+
+            <div class="search-row">
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" id="searchInput" placeholder="Cari nama balita atau NIK...">
+
+                </div>
+
+
+                <select id="genderFilter">
+
+                    <option value="">
+                        Semua Gender
+                    </option>
+
+                    <option value="L">
+                        Laki-laki
+                    </option>
+
+                    <option value="P">
+                        Perempuan
+                    </option>
+
+                </select>
+
+            </div>
 
         </div>
 
 
-        <div class="search-row">
+        {{-- MONITORING LIST --}}
+        <div class="monitoring-panel">
 
-            <div class="search-box">
+            <div class="panel-head">
 
-                <i class="fa-solid fa-magnifying-glass"></i>
+                <div class="panel-title">
+                    <i class="fa-regular fa-face-smile"></i>
+                    Daftar Hasil Pengukuran Antropometri
+                </div>
 
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Cari nama balita atau NIK..."
-                >
+                <span class="panel-count" id="visibleCount">
+                    Menampilkan {{ $balita->count() }} Balita
+                </span>
 
             </div>
 
 
-            <select id="genderFilter">
+            <div class="balita-list">
 
-                <option value="">
-                    Semua Gender
-                </option>
+                @forelse ($balita as $item)
 
-                <option value="L">
-                    Laki-laki
-                </option>
+                    @php
+                        $pengukuran = $item->latest_pengukuran;
+                    @endphp
 
-                <option value="P">
-                    Perempuan
-                </option>
+                    <div class="balita-row" data-name="{{ strtolower($item->nama) }}" data-nik="{{ $item->nik }}"
+                        data-gender="{{ $item->jenis_kelamin }}" data-status="{{ $item->status_key }}">
 
-            </select>
+                        {{-- STATUS BAR --}}
+                        <span class="row-bar {{ $item->status_key ? 'bar-' . $item->status_key : '' }}"></span>
 
-        </div>
 
-    </div>
+                        <div class="row-body">
 
+                            {{-- IDENTITAS BALITA --}}
+                            <div class="who">
 
-    {{-- MONITORING LIST --}}
-    <div class="monitoring-panel">
+                                <div class="avatar-wrap">
 
-        <div class="panel-head">
+                                    <img src="{{ asset($item->jenis_kelamin === 'L' ? 'images/cowo.jpg' : 'images/cewe.jpg') }}"
+                                        alt="Avatar Balita" class="avatar" style="object-fit: cover;">
 
-            <div class="panel-title">
-                <i class="fa-regular fa-face-smile"></i>
-                Daftar Hasil Pengukuran Antropometri
-            </div>
-
-            <span
-                class="panel-count"
-                id="visibleCount"
-            >
-                Menampilkan {{ $balita->count() }} Balita
-            </span>
-
-        </div>
-
-
-        <div class="balita-list">
-
-            @forelse ($balita as $item)
-
-                @php
-                    $pengukuran = $item->latest_pengukuran;
-                @endphp
-
-                <div
-                    class="balita-row"
-                    data-name="{{ strtolower($item->nama) }}"
-                    data-nik="{{ $item->nik }}"
-                    data-gender="{{ $item->jenis_kelamin }}"
-                    data-status="{{ $item->status_key }}"
-                >
-
-                    {{-- STATUS BAR --}}
-                    <span
-                        class="row-bar {{ $item->status_key ? 'bar-' . $item->status_key : '' }}"
-                    ></span>
-
-
-                    <div class="row-body">
-
-                        {{-- IDENTITAS BALITA --}}
-                        <div class="who">
-
-                            <div class="avatar-wrap">
-
-                                <img
-                                    src="{{ asset($item->jenis_kelamin === 'L' ? 'images/cowo.jpg' : 'images/cewe.jpg') }}"
-                                    alt="Avatar Balita"
-                                    class="avatar"
-                                    style="object-fit: cover;"
-                                >
-
-                                @if (in_array($item->jenis_kelamin, ['L', 'P']))
-                                    <span
-                                        class="gender-flag flag-{{ $item->jenis_kelamin }}"
-                                    >
-                                        {{ $item->jenis_kelamin }}
-                                    </span>
-                                @endif
-
-                            </div>
-
-
-                            <div class="who-detail">
-
-                                <div class="who-name">
-                                    {{ $item->nama }}
-                                </div>
-
-                                <div class="who-nik">
-                                    NIK: {{ $item->nik }}
-                                </div>
-
-                                <div class="who-meta">
-
-                                    @php
-                                        $lahir = \Carbon\Carbon::parse($item->tanggal_lahir);
-                                        $now = \Carbon\Carbon::now('Asia/Jakarta');
-
-                                        $diff = $lahir->diff($now);
-                                        $tahun = $diff->y;
-                                        $bulan = $diff->m;
-
-                                        $usiaTeks = '';
-                                        if ($tahun > 0) {
-                                            $usiaTeks .= $tahun . ' Tahun ';
-                                        }
-                                        $usiaTeks .= $bulan . ' Bulan';
-                                    @endphp
-
-                                    <span class="age-chip">
-                                        <i class="fa-solid fa-cake-candles" style="margin-right: 4px;"></i>
-                                        {{ $usiaTeks }}
-                                    </span>
-
-                                    <span class="dot-sep">•</span>
-
-                                    <span class="birth-info">
-                                        Lahir: {{ $lahir->isoFormat('D MMM YYYY') }}
-                                    </span>
-
-                                </div>
-
-
-
-
-                            </div>
-
-                        </div>
-
-
-                        {{-- HASIL PENGUKURAN --}}
-                        <div class="measure">
-
-                            <div class="m-top">
-
-                                <i class="fa-regular fa-calendar"></i>
-
-                                @if ($pengukuran)
-
-                                    {{ \Carbon\Carbon::parse($pengukuran->tanggal_pengukuran)->translatedFormat('d F Y') }}
-
-                                    <span
-                                        class="highlight highlight-{{ $item->status_key }}"
-                                    >
-                                        {{ $item->highlight_label }}
-                                    </span>
-
-                                @else
-
-                                    Belum ada pengukuran
-
-                                @endif
-
-                            </div>
-
-
-                            <div class="m-vals">
-
-                                {{-- TB / PB --}}
-                                <div class="val-item">
-
-                                    <div class="val-label">PB/TB</div>
-
-                                    <div class="val-num {{ $item->status_key ? 'val-' . $item->status_key : '' }}">
-
-                                        {{ $pengukuran->tinggi_badan ?? '-' }}
-
-                                        @if ($pengukuran && $pengukuran->tinggi_badan !== null)
-                                            <span class="val-unit">cm</span>
-                                        @endif
-
-                                    </div>
-
-                                </div>
-
-
-                                {{-- BB --}}
-                                <div class="val-item">
-
-                                    <div class="val-label">BB</div>
-
-                                    <div class="val-num">
-
-                                        {{ $pengukuran->berat_badan ?? '-' }}
-
-                                        @if ($pengukuran && $pengukuran->berat_badan !== null)
-                                            <span class="val-unit">kg</span>
-                                        @endif
-
-                                    </div>
-
-                                </div>
-
-
-                                {{-- LILA --}}
-                                <div class="val-item">
-
-                                    <div class="val-label">LILA</div>
-
-                                    <div class="val-num">
-
-                                        {{ $pengukuran->lingkar_lengan_atas ?? '-' }}
-
-                                        @if ($pengukuran && $pengukuran->lingkar_lengan_atas !== null)
-                                            <span class="val-unit">cm</span>
-                                        @endif
-
-                                    </div>
-
-                                </div>
-
-
-
-
-                            </div>
-
-                        </div>
-
-
-                        {{-- STATUS --}}
-                        <div class="status-col">
-
-                            @if ($pengukuran)
-
-                                <span
-                                    class="status-badge status-{{ $item->status_key }}"
-                                >
-
-                                    @if ($item->status_key === 'danger')
-                                        <i class="fa-solid fa-triangle-exclamation"></i>
-                                    @elseif ($item->status_key === 'success')
-                                        <i class="fa-solid fa-circle-check"></i>
-                                    @elseif ($item->status_key === 'warning')
-                                        <i class="fa-regular fa-circle-exclamation"></i>
-                                    @else
-                                        <i class="fa-regular fa-circle-question"></i>
+                                    @if (in_array($item->jenis_kelamin, ['L', 'P']))
+                                        <span class="gender-flag flag-{{ $item->jenis_kelamin }}">
+                                            {{ $item->jenis_kelamin }}
+                                        </span>
                                     @endif
 
-                                    {{ $pengukuran->status_pertumbuhan ?? '-' }}
-
-                                </span>
+                                </div>
 
 
-                                
+                                <div class="who-detail">
 
-                                @if ($pengukuran->z_score ?? null)
-                                    <div class="zscore-text">
-                                        Z-Score: {{ $pengukuran->z_score }}
+                                    <div class="who-name">
+                                        {{ $item->nama }}
                                     </div>
+
+                                    <div class="who-nik">
+                                        NIK: {{ $item->nik }}
+                                    </div>
+
+                                    <div class="who-meta">
+
+                                        @php
+                                            $lahir = \Carbon\Carbon::parse($item->tanggal_lahir);
+                                            $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+                                            $diff = $lahir->diff($now);
+                                            $tahun = $diff->y;
+                                            $bulan = $diff->m;
+
+                                            $usiaTeks = '';
+                                            if ($tahun > 0) {
+                                                $usiaTeks .= $tahun . ' Tahun ';
+                                            }
+                                            $usiaTeks .= $bulan . ' Bulan';
+                                        @endphp
+
+                                        <span class="age-chip">
+                                            <i class="fa-solid fa-cake-candles" style="margin-right: 4px;"></i>
+                                            {{ $usiaTeks }}
+                                        </span>
+
+                                        <span class="dot-sep">•</span>
+
+                                        <span class="birth-info">
+                                            Lahir: {{ $lahir->isoFormat('D MMM YYYY') }}
+                                        </span>
+
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- HASIL PENGUKURAN --}}
+                            <div class="measure">
+
+                                <div class="m-top">
+
+                                    <i class="fa-regular fa-calendar"></i>
+
+                                    @if ($pengukuran)
+                                        {{ \Carbon\Carbon::parse($pengukuran->tanggal_pengukuran)->translatedFormat('d F Y') }}
+
+                                        <span class="highlight highlight-{{ $item->status_key }}">
+                                            {{ $item->highlight_label }}
+                                        </span>
+                                    @else
+                                        Belum ada pengukuran
+                                    @endif
+
+                                </div>
+
+
+                                <div class="m-vals">
+
+                                    {{-- TB / PB --}}
+                                    <div class="val-item">
+
+                                        <div class="val-label">PB/TB</div>
+
+                                        <div class="val-num {{ $item->status_key ? 'val-' . $item->status_key : '' }}">
+
+                                            {{ $pengukuran->tinggi_badan ?? '-' }}
+
+                                            @if ($pengukuran && $pengukuran->tinggi_badan !== null)
+                                                <span class="val-unit">cm</span>
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {{-- BB --}}
+                                    <div class="val-item">
+
+                                        <div class="val-label">BB</div>
+
+                                        <div class="val-num">
+
+                                            {{ $pengukuran->berat_badan ?? '-' }}
+
+                                            @if ($pengukuran && $pengukuran->berat_badan !== null)
+                                                <span class="val-unit">kg</span>
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {{-- LILA --}}
+                                    <div class="val-item">
+
+                                        <div class="val-label">LILA</div>
+
+                                        <div class="val-num">
+
+                                            {{ $pengukuran->lingkar_lengan_atas ?? '-' }}
+
+                                            @if ($pengukuran && $pengukuran->lingkar_lengan_atas !== null)
+                                                <span class="val-unit">cm</span>
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- STATUS --}}
+                            <div class="status-col">
+
+                                @if ($pengukuran)
+                                    <span class="status-badge status-{{ $item->status_key }}">
+
+                                        @if ($item->status_key === 'danger')
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                        @elseif ($item->status_key === 'success')
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        @elseif ($item->status_key === 'warning')
+                                            <i class="fa-regular fa-circle-exclamation"></i>
+                                        @else
+                                            <i class="fa-regular fa-circle-question"></i>
+                                        @endif
+
+                                        {{ $pengukuran->status_pertumbuhan ?? '-' }}
+
+                                    </span>
+
+
+
+
+                                    @if ($pengukuran->z_score ?? null)
+                                        <div class="zscore-text">
+                                            Z-Score: {{ $pengukuran->z_score }}
+                                        </div>
+                                    @endif
+                                @else
+                                    <span class="status-badge status-empty">
+                                        Belum diukur
+                                    </span>
                                 @endif
 
-                            @else
-
-                                <span class="status-badge status-empty">
-                                    Belum diukur
-                                </span>
-
-                            @endif
-
-                        </div>
+                            </div>
 
 
-                        {{-- ACTION --}}
-                        <div class="row-actions">
+                            {{-- ACTION --}}
+                            <div class="row-actions">
 
-                            <a
-                                href="{{ route(Auth::user()->role === 'bidan' ? 'bidan.balita.kms' : 'kader.balita.kms', $item) }}"
-                                class="btn-kms"
-                            >
-                                <i class="fa-solid fa-chart-line"></i>
-                                Lihat KMS
-                            </a>
-
-                            @if(Auth::user()->role === 'kader')
-                                <a
-                                    href="{{ route('kader.balita.edit', $item->id) }}"
-                                    class="btn-edit"
-                                    title="Edit"
-                                >
-                                    <i
-                                        class="fa-solid fa-pen"
-                                        style="font-size: 11px;"
-                                    ></i>
+                                <a href="{{ route(Auth::user()->role === 'bidan' ? 'bidan.balita.kms' : 'kader.balita.kms', $item) }}"
+                                    class="btn-kms">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                    Lihat KMS
                                 </a>
-                            @endif
+
+                                @if (Auth::user()->role === 'kader')
+                                    <a href="{{ route('kader.balita.edit', $item->id) }}" class="btn-edit"
+                                        title="Edit">
+                                        <i class="fa-solid fa-pen" style="font-size: 11px;"></i>
+                                    </a>
+                                @endif
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                @empty
 
-            @empty
+                    <div class="empty-state">
 
-                <div class="empty-state">
+                        <i class="fa-solid fa-child"></i>
 
-                    <i class="fa-solid fa-child"></i>
+                        <h3>
+                            Belum ada data balita
+                        </h3>
 
-                    <h3>
-                        Belum ada data balita
-                    </h3>
+                        <p>
+                            Data balita yang terdaftar akan ditampilkan di sini.
+                        </p>
 
-                    <p>
-                        Data balita yang terdaftar akan ditampilkan di sini.
-                    </p>
+                    </div>
 
-                </div>
+                @endforelse
 
-            @endforelse
+            </div>
 
         </div>
 
-    </div>
-
-</main>
+    </main>
 
 @endsection
 
