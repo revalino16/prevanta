@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Balita;
 use App\Models\OrangTua;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -54,7 +55,10 @@ class BalitaController extends Controller
         }
 
         return view('kader.monitoringbalita', compact(
-            'balita', 'countNormal', 'countPendek', 'countSangatPendek'
+            'balita',
+            'countNormal',
+            'countPendek',
+            'countSangatPendek'
         ));
     }
 
@@ -101,7 +105,7 @@ class BalitaController extends Controller
         $request->validate([
             'orang_tua_id' => 'required|exists:orang_tua,id',
             'nama' => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
-            'nik' => 'required|digits:16|unique:balita,nik,'.$id,
+            'nik' => 'required|digits:16|unique:balita,nik,' . $id,
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat' => 'nullable',
@@ -132,5 +136,26 @@ class BalitaController extends Controller
         return redirect()
             ->route('kader.monitoringbalita')
             ->with('success', 'Data balita berhasil dihapus.');
+    }
+
+    public function unduhPdf()
+    {
+        $balita = Balita::with([
+            'orangTua.user',
+            'pengukuran' => function ($query) {
+                $query->whereHas('verifikasi', function ($q) {
+                    $q->where('status', 'terverifikasi');
+                })->latest('tanggal_pengukuran');
+            },
+        ])->get();
+
+        foreach ($balita as $item) {
+            $item->latest_pengukuran = $item->pengukuran->first();
+        }
+
+        $pdf = Pdf::loadView('kader.laporanBalitaPDF', compact('balita'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('rekap-monitoring-balita.pdf');
     }
 }

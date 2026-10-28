@@ -103,6 +103,9 @@ Route::middleware(['auth', 'role:kader'])
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
             ->name('monitoringbalita');
 
+        Route::get('/monitoring-balita/unduh-pdf', [BalitaController::class, 'unduhPdf'])
+            ->name('monitoringbalita.pdf');
+            
         Route::get('/balita/{balita}/kms', BalitaKmsController::class)
             ->name('balita.kms');
 

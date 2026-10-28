@@ -58,7 +58,7 @@
 
                 <a
                     href="{{ route('orangtua.riwayat') }}"
-                    class="nav-item {{ request()->routeIs('orangtua.riwayatpengukuran') ? 'active' : '' }}"
+                    class="nav-item {{ request()->routeIs('orangtua.riwayat') ? 'active' : '' }}"
                 >
                     <i class="fa-solid fa-file-medical nav-icon"></i>
                     <span>Riwayat Pengukuran</span>
@@ -109,10 +109,10 @@
                     <span>Posko RW 03</span>
                 </div>
 
-                <button class="topbar-bell" type="button" title="Notifikasi">
+                {{-- <button class="topbar-bell" type="button" title="Notifikasi">
                     <i class="fa-regular fa-bell"></i>
                     <span class="notif-dot">3</span>
-                </button>
+                </button> --}}
 
                 @auth
                     <div class="topbar-user">
