@@ -28,7 +28,7 @@ class OrangTuaBalitaSeederTest extends TestCase
     {
         $this->seed(OrangTuaBalitaSeeder::class);
 
-        $defaultParent = Users::where('email', 'orangtua@prevanta.id')->first();
+        $defaultParent = Users::where('email', 'orangtua@gmail.com')->first();
         $this->assertNotNull($defaultParent);
         $this->assertEquals('orang_tua', $defaultParent->role);
         $this->assertTrue(Hash::check('password123', $defaultParent->password));
@@ -53,7 +53,7 @@ class OrangTuaBalitaSeederTest extends TestCase
         $this->seed(OrangTuaBalitaSeeder::class);
         $this->seed(OrangTuaBalitaSeeder::class);
 
-        $count = Users::where('email', 'orangtua@prevanta.id')->count();
+        $count = Users::where('email', 'orangtua@gmail.com')->count();
         $this->assertEquals(1, $count);
     }
 

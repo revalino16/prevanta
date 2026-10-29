@@ -32,15 +32,28 @@ class OrangTuaBalitaSeeder extends Seeder
         $parents = $this->getDummyParentData();
 
         foreach ($parents as $parentData) {
-            $user = Users::updateOrCreate(
-                ['email' => $parentData['email']],
-                [
+            $existingOrangTua = OrangTua::where('nik', $parentData['nik'])->first();
+
+            if ($existingOrangTua && $existingOrangTua->user) {
+                $user = $existingOrangTua->user;
+                $user->update([
                     'nama' => $parentData['nama'],
+                    'email' => $parentData['email'],
                     'password' => Hash::make($parentData['password']),
                     'no_hp' => $parentData['no_hp'],
                     'role' => 'orang_tua',
-                ]
-            );
+                ]);
+            } else {
+                $user = Users::updateOrCreate(
+                    ['email' => $parentData['email']],
+                    [
+                        'nama' => $parentData['nama'],
+                        'password' => Hash::make($parentData['password']),
+                        'no_hp' => $parentData['no_hp'],
+                        'role' => 'orang_tua',
+                    ]
+                );
+            }
 
             $orangTua = OrangTua::updateOrCreate(
                 ['users_id' => $user->id],
@@ -279,7 +292,7 @@ class OrangTuaBalitaSeeder extends Seeder
             // =========================================================================
             [
                 'nama' => 'Siti Aminah, S.Pd.',
-                'email' => 'orangtua@prevanta.id',
+                'email' => 'orangtua@gmail.com',
                 'password' => 'password123',
                 'no_hp' => '081234567001',
                 'nik' => '3512015203900001',
@@ -410,7 +423,7 @@ class OrangTuaBalitaSeeder extends Seeder
             // =========================================================================
             [
                 'nama' => 'Budi Santoso',
-                'email' => 'budi.santoso@prevanta.id',
+                'email' => 'budi.santoso@gmail.com',
                 'password' => 'password123',
                 'no_hp' => '081234567002',
                 'nik' => '3512011006880002',
@@ -474,7 +487,7 @@ class OrangTuaBalitaSeeder extends Seeder
             // =========================================================================
             [
                 'nama' => 'Ratna Dewi Sari',
-                'email' => 'ratna.sari@prevanta.id',
+                'email' => 'ratna.sari@gmail.com',
                 'password' => 'password123',
                 'no_hp' => '081234567003',
                 'nik' => '3512016508930003',
@@ -521,7 +534,7 @@ class OrangTuaBalitaSeeder extends Seeder
             // =========================================================================
             [
                 'nama' => 'Hendra Wijaya',
-                'email' => 'hendra.wali@prevanta.id',
+                'email' => 'hendra.wali@gmail.com',
                 'password' => 'password123',
                 'no_hp' => '081234567004',
                 'nik' => '3512011504820004',
@@ -571,7 +584,7 @@ class OrangTuaBalitaSeeder extends Seeder
             // =========================================================================
             [
                 'nama' => 'Maya Lestari',
-                'email' => 'maya.lestari@prevanta.id',
+                'email' => 'maya.lestari@gmail.com',
                 'password' => 'password123',
                 'no_hp' => '081234567005',
                 'nik' => '3512015011950005',
