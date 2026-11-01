@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BalitaController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\EdukasiController;
+use App\Http\Controllers\Api\JadwalController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,10 +38,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // =========================================================
-    // KADER
+    // BALITA & MONITORING (Mengikuti BalitaController web)
     // =========================================================
-    // Route::prefix('kader')->name('kader.')->group(function () {
-    // });
+    Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
+    Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('balita.orang-tua');
+    Route::apiResource('balita', BalitaController::class)->parameters(['balita' => 'id']);
+
+    // =========================================================
+    // JADWAL (Mengikuti JadwalController web)
+    // =========================================================
+    Route::apiResource('jadwal', JadwalController::class)->parameters(['jadwal' => 'id']);
+
+    // =========================================================
+    // EDUKASI (Mengikuti EdukasiController web)
+    // =========================================================
+    Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
+    Route::apiResource('edukasi', EdukasiController::class)->parameters(['edukasi' => 'id']);
 });
 
 // Route::apiResource('dashboard', DashboardController::class);
