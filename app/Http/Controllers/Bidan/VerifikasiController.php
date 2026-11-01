@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Balita;
 use App\Models\Pengukuran;
 use App\Models\Verifikasi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,7 +62,10 @@ class VerifikasiController extends Controller
         }
 
         return view('bidan.verifikasi', compact(
-            'balita', 'countNormal', 'countPendek', 'countSangatPendek'
+            'balita',
+            'countNormal',
+            'countPendek',
+            'countSangatPendek'
         ));
     }
 
@@ -87,6 +91,23 @@ class VerifikasiController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Hasil pengukuran balita '.$pengukuran->balita->nama.' berhasil diverifikasi.');
+            ->with('success', 'Hasil pengukuran balita ' . $pengukuran->balita->nama . ' berhasil diverifikasi.');
+    }
+
+    public function export()
+    {
+        $verifikasi = Verifikasi::with([
+            'pengukuran.balita'
+        ])
+            ->where('status', 'terverifikasi')
+            ->orderByDesc('tanggal_verifikasi')
+            ->get();
+
+        $pdf = Pdf::loadView(
+            'bidan.VerifikasiPDF',
+            compact('verifikasi')
+        )->setPaper('a4', 'landscape');
+
+        return $pdf->download('rekap-verifikasi-balita.pdf');
     }
 }

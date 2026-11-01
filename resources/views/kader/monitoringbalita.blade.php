@@ -27,7 +27,8 @@
                         + Tambah Balita
                     </a>
                 @endif
-                <a href="{{ route('kader.monitoringbalita.pdf') }}" class="btn btn-outline">
+                <a href="{{ route(Auth::user()->role === 'bidan' ? 'bidan.monitoringbalita.pdf' : 'kader.monitoringbalita.pdf') }}"
+                    class="btn btn-outline">
                     <i class="fa-solid fa-download"></i>
                     Unduh Rekap Laporan
                 </a>

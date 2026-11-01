@@ -61,12 +61,8 @@ Route::middleware(['auth', 'role:orang_tua'])
             ->name('balita.tindak-lanjut');
     });
 
-
-
-// =====================================================
 // BIDAN
 // Role database: bidan
-// =====================================================
 
 Route::middleware(['auth', 'role:bidan'])
     ->prefix('bidan')
@@ -78,11 +74,17 @@ Route::middleware(['auth', 'role:bidan'])
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
             ->name('monitoringbalita');
 
+        Route::get('/monitoring-balita/unduh-pdf', [BalitaController::class, 'unduhPdf'])
+            ->name('monitoringbalita.pdf');
+
         Route::get('/balita/{balita}/kms', BalitaKmsController::class)
             ->name('balita.kms');
 
         Route::get('/verifikasi', [Bidan\VerifikasiController::class, 'index'])
             ->name('verifikasi');
+
+        Route::get('/verifikasi/export', [Bidan\VerifikasiController::class, 'export'])
+            ->name('verifikasi.export');
 
         Route::post('/verifikasi/{pengukuran}', [Bidan\VerifikasiController::class, 'store'])
             ->name('verifikasi.store');
@@ -100,12 +102,15 @@ Route::middleware(['auth', 'role:kader'])
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/dashboard/ekspor-excel', [DashboardController::class, 'exportTrendExcel'])
+            ->name('dashboard.export-excel');
+
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
             ->name('monitoringbalita');
 
         Route::get('/monitoring-balita/unduh-pdf', [BalitaController::class, 'unduhPdf'])
             ->name('monitoringbalita.pdf');
-            
+
         Route::get('/balita/{balita}/kms', BalitaKmsController::class)
             ->name('balita.kms');
 

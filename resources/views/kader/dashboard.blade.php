@@ -10,7 +10,7 @@
 
 <main class="content">
 
-    {{-- ══ HERO BANNER ══════════════════════════════════════════ --}}
+    {{-- HERO BANNER --}}
     <div class="hero-banner">
 
         <div class="hero-tag">
@@ -139,10 +139,12 @@
                     Monitoring pergerakan persentase balita kategori stunting (TB/U &lt; &minus;2 SD) di Posyandu Mawar Melati
                 </div>
             </div>
-            <button class="btn-export" type="button">
-                <i class="fa-solid fa-download"></i>
-                Ekspor Data
-            </button>
+
+<a href="{{ route('kader.dashboard.export-excel') }}" class="btn-export">
+    <i class="fa-solid fa-download"></i>
+    Ekspor Data
+</a>
+
         </div>
 
         <div class="chart-body">
@@ -319,7 +321,9 @@
 @endsection
 
 @push('scripts')
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script> --}}
 <script>
 (function () {
     const labels = @json($trenLabels);
@@ -401,6 +405,78 @@
             },
         },
     });
+
+//         // Ekspor data tren prevalensi ke CSV
+
+// const exportButton = document.getElementById('exportTrendData');
+
+// if (exportButton) {
+//     exportButton.addEventListener('click', async function () {
+//         try {
+//             const workbook = new ExcelJS.Workbook();
+//             const worksheet = workbook.addWorksheet('Tren Prevalensi');
+
+//             worksheet.columns = [
+//                 { header: 'Bulan', key: 'bulan', width: 20 },
+//                 { header: 'Prevalensi Stunting (%)', key: 'prevalensi', width: 28 },
+//                 { header: 'Target Nasional (%)', key: 'target', width: 22 }
+//             ];
+
+//             labels.forEach((bulan, index) => {
+//                 worksheet.addRow({
+//                     bulan: bulan,
+//                     prevalensi: data[index] ?? 0,
+//                     target: 14
+//                 });
+//             });
+
+//             // Pastikan grafik selesai dirender sebelum diambil
+//             const chart = Chart.getChart('trendChart');
+
+//             if (!chart) {
+//                 alert('Grafik belum tersedia.');
+//                 return;
+//             }
+
+//             chart.update('none');
+
+//             const canvas = document.getElementById('trendChart');
+//             const imageBase64 = canvas.toDataURL('image/png').split(',')[1];
+
+//             const imageId = workbook.addImage({
+//                 base64: imageBase64,
+//                 extension: 'png'
+//             });
+
+//             worksheet.addImage(imageId, {
+//                 tl: { col: 0, row: labels.length + 3 },
+//                 ext: { width: 700, height: 350 }
+//             });
+
+//             worksheet.getRow(1).font = { bold: true };
+
+//             const buffer = await workbook.xlsx.writeBuffer();
+//             const blob = new Blob([buffer], {
+//                 type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+//             });
+
+//             const url = URL.createObjectURL(blob);
+//             const link = document.createElement('a');
+
+//             link.href = url;
+//             link.download = 'laporan-tren-prevalensi-stunting.xlsx';
+//             document.body.appendChild(link);
+//             link.click();
+//             link.remove();
+
+//             setTimeout(() => URL.revokeObjectURL(url), 1000);
+//         } catch (error) {
+//             console.error('Gagal mengekspor Excel:', error);
+//             alert('Gagal mengekspor Excel. Periksa Console browser.');
+//         }
+//     });
+// }
+
 })();
 </script>
 @endpush
