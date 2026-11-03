@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\BalitaController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
@@ -38,6 +39,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // =========================================================
+    // BIDAN
+    // =========================================================
+    Route::prefix('bidan')->name('api.bidan.')->group(function () {
+        Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
+        Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
+    });
+
+    // =========================================================
+    // KADER
     // BALITA & MONITORING (Mengikuti BalitaController web)
     // =========================================================
     Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
