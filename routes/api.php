@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\BalitaController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
@@ -37,6 +38,34 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // =========================================================
+    // BIDAN
+    // =========================================================
+    Route::prefix('bidan')->name('api.bidan.')->group(function () {
+        Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
+        Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
+    });
+
+    // =========================================================
+    // KADER
+    // BALITA & MONITORING (Mengikuti BalitaController web)
+    // =========================================================
+    Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
+    Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('balita.orang-tua');
+    Route::apiResource('balita', BalitaController::class)->parameters(['balita' => 'id']);
+
+    // =========================================================
+    // JADWAL (Mengikuti JadwalController web)
+    // =========================================================
+    Route::apiResource('jadwal', JadwalController::class)->parameters(['jadwal' => 'id']);
+
+    // =========================================================
+    // EDUKASI (Mengikuti EdukasiController web)
+    // =========================================================
+    Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
+    Route::apiResource('edukasi', EdukasiController::class)->parameters(['edukasi' => 'id']);
 });
 
 // =========================================================
