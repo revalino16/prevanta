@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // =========================================================
+    // BIDAN
+    // =========================================================
+    Route::prefix('bidan')->name('api.bidan.')->group(function () {
+        Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
+        Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
+    });
 
     // =========================================================
     // KADER
