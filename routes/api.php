@@ -5,15 +5,17 @@ use App\Http\Controllers\Api\BalitaController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
 use App\Http\Controllers\Api\JadwalController;
-use App\Models\Jadwal;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes - Prevanta (Mobile)
 |--------------------------------------------------------------------------
+| Mengikuti pola routes/web.php:
+|   - middleware 'auth:sanctum'  → ganti 'auth' (session) untuk mobile token
+|   - middleware 'role:xxx'      → cek role user (kader / bidan / orang_tua)
+|   - prefix 'xxx'               → organisasi URL per role
+|
 | Base URL: /api/...
 |--------------------------------------------------------------------------
 */
@@ -30,158 +32,98 @@ Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 Route::post('/register', [AuthController::class, 'register'])->name('api.register');
 
 // =========================================================
-// AUTHENTICATED (SANCTUM)
+// SEMUA ROLE YANG SUDAH LOGIN (auth:sanctum)
 // =========================================================
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // =========================================================
-    // BALITA & MONITORING (Mengikuti BalitaController web)
-    // =========================================================
-    Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
-    Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('balita.orang-tua');
-    Route::apiResource('balita', BalitaController::class)->parameters(['balita' => 'id']);
-
-    // =========================================================
-    // JADWAL (Mengikuti JadwalController web)
-    // =========================================================
-    Route::apiResource('jadwal', JadwalController::class)->parameters(['jadwal' => 'id']);
-
-    // =========================================================
-    // EDUKASI (Mengikuti EdukasiController web)
-    // =========================================================
-    Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
-    Route::apiResource('edukasi', EdukasiController::class)->parameters(['edukasi' => 'id']);
 });
-    // ORANG TUA - DASHBOARD (ANAKKU)
-    // Identik dengan App\Http\Controllers\OrangTua\AnakkuController@index
-    // =========================================================
-//     Route::get('/ortu/dashboard', function (Request $request) {
-//         Carbon::setLocale('id');
-//         $user = $request->user();
-//         $orangTua = $user?->orangTua;
 
-//         // Ambil daftar anak milik orang tua yang login (hanya pengukuran terverifikasi bidan)
-//         $anakList = $orangTua
-//             ? $orangTua->balita()
-//                 ->whereHas('pengukuran', function ($query) {
-//                     $query->whereHas('verifikasi', function ($q) {
-//                         $q->where('status', 'terverifikasi');
-//                     });
-//                 })
-//                 ->with([
-//                     'pengukuran' => function ($query) {
-//                         $query->whereHas('verifikasi', function ($q) {
-//                             $q->where('status', 'terverifikasi');
-//                         })
-//                             ->with('verifikasi')
-//                             ->latest('tanggal_pengukuran');
-//                     },
-//                 ])
-//                 ->get()
-//                 ->map(function ($anak) use ($user) {
-//                     $p = $anak->pengukuran->first();
+// =========================================================
+// KADER (role:kader)
+// Identik dengan grup Route::middleware(['auth', 'role:kader'])
+//   ->prefix('kader') di routes/web.php
+// =========================================================
+Route::middleware(['auth:sanctum', 'role:kader'])
+    ->prefix('kader')
+    ->name('kader.')
+    ->group(function () {
 
-//                     // Hitung usia bulan persis seperti anakku.blade.php
-//                     $usiaBulan = $anak->tanggal_lahir
-//                         ? $anak->tanggal_lahir->diffInMonths(now())
-//                         : null;
-//                     $usiaLabel = $usiaBulan !== null
-//                         ? number_format($usiaBulan, 1, ',', '.') . ' Bulan'
-//                         : '- Bulan';
+        // Dashboard kader
+        // Identik dengan: GET /kader/dashboard → DashboardController@index
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-//                     // Tentukan level warna persis seperti anakku.blade.php (danger, warning, ok)
-//                     $statusPertumbuhan = $p?->status_pertumbuhan ?? 'Normal';
-//                     $statusLower = strtolower($statusPertumbuhan);
+        // Monitoring balita (hanya view/read)
+        // Identik dengan: GET /kader/monitoring-balita → BalitaController@index
+        Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
 
-//                     if (
-//                         str_contains($statusLower, 'sangat pendek') ||
-//                         str_contains($statusLower, 'sangat kurus') ||
-//                         str_contains($statusLower, 'buruk')
-//                     ) {
-//                         $level = 'danger';
-//                     } elseif (
-//                         str_contains($statusLower, 'pendek') ||
-//                         str_contains($statusLower, 'kurus') ||
-//                         str_contains($statusLower, 'kurang')
-//                     ) {
-//                         $level = 'warning';
-//                     } else {
-//                         $level = 'ok';
-//                     }
+        // Daftar orang tua (untuk dropdown form tambah/edit balita)
+        Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('orang-tua');
 
-//                     // Format tindak lanjut & catatan penyuluhan dari verifikasi bidan
-//                     $verifikasi = $p?->verifikasi;
-//                     $tindakLanjutRaw = strtolower((string) ($verifikasi?->tindak_lanjut ?? ''));
-//                     $tindakLanjutLabel = null;
-//                     if ($tindakLanjutRaw === 'perlu') {
-//                         $tindakLanjutLabel = 'Perlu Tindak Lanjut & Intervensi';
-//                     } elseif (!empty($verifikasi?->tindak_lanjut) && $tindakLanjutRaw !== 'tidak_perlu') {
-//                         $tindakLanjutLabel = $verifikasi->tindak_lanjut;
-//                     }
+        // CRUD Balita
+        // Identik dengan: tambah, edit, update, destroy balita di web
+        Route::apiResource('balita', BalitaController::class)
+            ->parameters(['balita' => 'id']);
 
-//                     return [
-//                         'id' => $anak->id,
-//                         'nama' => $anak->nama,
-//                         'nik' => $anak->nik ?? '-',
-//                         'jenis_kelamin' => strtoupper(substr($anak->jenis_kelamin ?? 'L', 0, 1)),
-//                         'usia_label' => $usiaLabel,
-//                         'tanggal_lahir_label' => $anak->tanggal_lahir
-//                             ? Carbon::parse($anak->tanggal_lahir)->translatedFormat('d M Y')
-//                             : '-',
-//                         'nama_orang_tua' => 'Orang Tua: ' . ($user->nama ?? '-'),
-//                         'alamat' => $anak->alamat,
-//                         'tanggal_ukur' => $p && $p->tanggal_pengukuran
-//                             ? Carbon::parse($p->tanggal_pengukuran)->translatedFormat('d M Y')
-//                             : 'Belum ada pengukuran',
-//                         'tinggi_badan' => $p?->tinggi_badan ?? 0,
-//                         'berat_badan' => $p?->berat_badan ?? 0,
-//                         'lingkar_lengan_atas' => $p?->lingkar_lengan_atas ?? 0,
-//                         'z_score' => $p?->z_score,
-//                         'status_pertumbuhan' => $statusPertumbuhan,
-//                         'level' => $level, // 'danger' | 'warning' | 'ok'
-//                         'tindak_lanjut_label' => $tindakLanjutLabel,
-//                         'catatan_penyuluhan' => $verifikasi?->catatan_penyuluhan,
-//                     ];
-//                 })
-//                 ->values()
-//             : [];
+        // CRUD Jadwal kegiatan posyandu
+        // Identik dengan: GET/POST/DELETE /kader/jadwal → JadwalController
+        Route::apiResource('jadwal', JadwalController::class)
+            ->parameters(['jadwal' => 'id']);
 
-//         // Ambil jadwal terdekat persis seperti AnakkuController.php
-//         $agendaList = Jadwal::query()
-//             ->whereDate('tanggal', '>=', Carbon::today())
-//             ->orderBy('tanggal', 'asc')
-//             ->get()
-//             ->map(function ($jadwal) {
-//                 $tanggal = Carbon::parse($jadwal->tanggal);
-//                 $hariLagi = (int) Carbon::today()->diffInDays($tanggal);
+        // Edukasi (kader): read + tambah + hapus
+        // Identik dengan: GET /kader/edukasi, POST /tambah-edukasi, DELETE /edukasi/{id}
+        // Tidak ada update karena web controller juga tidak punya method update
+        Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
+        Route::apiResource('edukasi', EdukasiController::class)
+            ->parameters(['edukasi' => 'id'])
+            ->only(['index', 'show', 'store', 'destroy']);
+    });
 
-//                 return [
-//                     'tag' => 'Jadwal',
-//                     'hari_lagi' => $hariLagi,
-//                     'judul' => $jadwal->jenis_kegiatan,
-//                     'deskripsi' => $jadwal->keterangan ?: 'Jadwal kegiatan Posyandu',
-//                     'tanggal_bulan' => strtoupper($tanggal->translatedFormat('M')),
-//                     'tanggal_hari' => $tanggal->format('d'),
-//                     'waktu_label' => $tanggal->translatedFormat('l') . ' Pagi • 08.00 - 11.30 WIB',
-//                     'lokasi' => $jadwal->lokasi ?: 'Posyandu Jambu 77',
-//                 ];
-//             })
-//             ->values();
+// =========================================================
+// BIDAN (role:bidan)
+// Identik dengan grup Route::middleware(['auth', 'role:bidan'])
+//   ->prefix('bidan') di routes/web.php
+// =========================================================
+Route::middleware(['auth:sanctum', 'role:bidan'])
+    ->prefix('bidan')
+    ->name('bidan.')
+    ->group(function () {
 
-//         return response()->json([
-//             'success' => true,
-//             'data' => [
-//                 'posyandu_nama' => 'Posyandu Jambu 77 - Desa Rowo Indah',
-//                 'notif_count' => 0,
-//                 'sapaan_keluarga' => ($user->nama ?? 'Bunda & Ayah') . '!',
-//                 'tanggal_hari_ini' => Carbon::now()->translatedFormat('l, d F Y'),
-//                 'periode_siklus' => 'Siklus ' . Carbon::now()->translatedFormat('M Y'),
-//                 'agenda_list' => $agendaList,
-//                 'anak_list' => $anakList,
-//             ],
-//         ]);
-//     });
-// });
+        // Dashboard bidan
+        // Identik dengan: GET /bidan/dashboard → DashboardController@index
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Monitoring balita (bidan juga bisa lihat, sama seperti di web)
+        // Identik dengan: GET /bidan/monitoring-balita → BalitaController@index
+        Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
+        Route::get('/balita/{id}', [BalitaController::class, 'show'])->name('balita.show');
+
+        // Verifikasi pengukuran (khusus bidan, belum ada Api Controller-nya)
+        // Akan ditambahkan saat Api/VerifikasiController dibuat
+        // Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
+        // Route::post('/verifikasi/{pengukuran}', [VerifikasiController::class, 'store'])->name('verifikasi.store');
+    });
+
+// =========================================================
+// ORANG TUA (role:orang_tua)
+// Identik dengan grup Route::middleware(['auth', 'role:orang_tua'])
+//   ->prefix('orangtua') di routes/web.php
+// =========================================================
+Route::middleware(['auth:sanctum', 'role:orang_tua'])
+    ->prefix('orangtua')
+    ->name('orangtua.')
+    ->group(function () {
+
+        // Anakku & riwayat pengukuran
+        // Akan ditambahkan saat Api/AnakkuController dibuat
+        // Route::get('/anakku', [AnakkuController::class, 'index'])->name('anakku');
+        // Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
+        // Route::get('/balita/{balita}/tindak-lanjut', [AnakkuController::class, 'tindakLanjut']);
+
+        // Edukasi (orang tua): read-only
+        // Identik dengan: GET /orangtua/edukasi → OrangTua\EdukasiController@index
+        Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
+        Route::apiResource('edukasi', EdukasiController::class)
+            ->parameters(['edukasi' => 'id'])
+            ->only(['index', 'show']);
+    });
