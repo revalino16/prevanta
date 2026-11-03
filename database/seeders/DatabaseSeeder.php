@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\JenisImunisasi;
-use App\Models\JenisVitamin;
 use App\Models\Users;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -31,11 +29,13 @@ class DatabaseSeeder extends Seeder
         Users::firstOrCreate(
             ['email' => 'bidan@prevanta.id'],
             [
-                'nama'     => 'Bidan Mawar',
+                'nama' => 'Bidan Mawar',
                 'password' => Hash::make('password123'),
-                'no_hp'    => '081234567891',
-                'role'     => 'bidan',
+                'no_hp' => '081234567891',
+                'role' => 'bidan',
             ]
         );
+
+        $this->call(OrangTuaBalitaSeeder::class);
     }
 }
