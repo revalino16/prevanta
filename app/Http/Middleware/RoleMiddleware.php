@@ -15,11 +15,26 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (! $request->user()) {
+            // API: return JSON, Web: redirect to login
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated.',
+                ], 401);
+            }
+
             return redirect()->route('login');
         }
 
         if (! in_array($request->user()->role, $roles)) {
-            // Redirect to their proper home if they have wrong role
+            // API: return JSON 403, Web: redirect to proper dashboard
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak. Anda tidak memiliki izin untuk mengakses resource ini.',
+                ], 403);
+            }
+
             $role = $request->user()->role;
             if ($role === 'kader') {
                 return redirect()->route('kader.dashboard');
@@ -27,6 +42,7 @@ class RoleMiddleware
             if ($role === 'bidan') {
                 return redirect()->route('bidan.dashboard');
             }
+
             return redirect()->route('orangtua.anakku');
         }
 
