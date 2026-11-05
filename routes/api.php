@@ -35,47 +35,56 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 // =========================================================
 // SEMUA ROLE YANG SUDAH LOGIN (auth:sanctum)
 // =========================================================
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
-    Route::get('/me', [AuthController::class, 'me'])->name('api.me');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Route::middleware(['auth:sanctum'])->group(function () {
+//     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+//     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // =========================================================
-    // BIDAN
-    // =========================================================
-    Route::prefix('bidan')->name('api.bidan.')->group(function () {
-        Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
-        Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
-    });
+//     // =========================================================
+//     // BIDAN
+//     // =========================================================
+//     Route::prefix('bidan')->name('api.bidan.')->group(function () {
+//         Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
+//         Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
+//     });
 
-    // =========================================================
-    // KADER
-    // BALITA & MONITORING (Mengikuti BalitaController web)
-    // =========================================================
-    Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
-    Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('balita.orang-tua');
-    Route::apiResource('balita', BalitaController::class)->parameters(['balita' => 'id']);
+//     // =========================================================
+//     // KADER
+//     // BALITA & MONITORING (Mengikuti BalitaController web)
+//     // =========================================================
+//     Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
+//     Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('balita.orang-tua');
+//     Route::apiResource('balita', BalitaController::class)->parameters(['balita' => 'id']);
 
-    // =========================================================
-    // JADWAL (Mengikuti JadwalController web)
-    // =========================================================
-    Route::apiResource('jadwal', JadwalController::class)->parameters(['jadwal' => 'id']);
+//     // =========================================================
+//     // JADWAL (Mengikuti JadwalController web)
+//     // =========================================================
+//     Route::apiResource('jadwal', JadwalController::class)->parameters(['jadwal' => 'id']);
 
-    // =========================================================
-    // EDUKASI (Mengikuti EdukasiController web)
-    // =========================================================
-    Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
-    Route::apiResource('edukasi', EdukasiController::class)->parameters(['edukasi' => 'id']);
-});
+//     // =========================================================
+//     // EDUKASI (Mengikuti EdukasiController web)
+//     // =========================================================
+//     Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
+//     Route::apiResource('edukasi', EdukasiController::class)->parameters(['edukasi' => 'id']);
+// });
 
 // =========================================================
 // KADER (role:kader)
 // Identik dengan grup Route::middleware(['auth', 'role:kader'])
 //   ->prefix('kader') di routes/web.php
 // =========================================================
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('api.logout');
+
+    Route::get('/me', [AuthController::class, 'me'])
+        ->name('api.me');
+});
+
 Route::middleware(['auth:sanctum', 'role:kader'])
     ->prefix('kader')
-    ->name('kader.')
+    ->name('api.kader.')
     ->group(function () {
 
         // Dashboard kader
@@ -115,7 +124,7 @@ Route::middleware(['auth:sanctum', 'role:kader'])
 // =========================================================
 Route::middleware(['auth:sanctum', 'role:bidan'])
     ->prefix('bidan')
-    ->name('bidan.')
+    ->name('api.bidan.')
     ->group(function () {
 
         // Dashboard bidan
@@ -140,7 +149,7 @@ Route::middleware(['auth:sanctum', 'role:bidan'])
 // =========================================================
 Route::middleware(['auth:sanctum', 'role:orang_tua'])
     ->prefix('orangtua')
-    ->name('orangtua.')
+    ->name('api.orangtua.')
     ->group(function () {
 
         // Anakku & riwayat pengukuran
