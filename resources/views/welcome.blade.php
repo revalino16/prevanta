@@ -888,22 +888,19 @@
         <!-- ============================================== -->
         <section class="py-12 sm:py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div
-                    class="relative rounded-3xl overflow-hidden bg-[#7C2740] p-8 sm:p-12 lg:p-14 text-white shadow-2xl">
-
-                    <!-- Decorative glow inside card -->
-                    <div
-                        class="absolute -left-20 -bottom-20 w-80 h-80 bg-rose-900/30 rounded-full blur-3xl pointer-events-none">
-                    </div>
+                <div class="relative rounded-3xl overflow-hidden p-8 sm:p-12 lg:p-16 text-white shadow-[0_30px_70px_-30px_rgba(138,31,77,0.55)]"
+                    style="background:
+                        radial-gradient(60% 80% at 92% 0%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0) 65%),
+                        radial-gradient(55% 70% at 0% 100%, rgba(246,168,201,0.38) 0%, rgba(246,168,201,0) 70%),
+                        linear-gradient(135deg, #6f1740 0%, #a8235a 45%, #d6457f 100%);">
 
                     <div class="relative z-10 max-w-3xl">
 
-
                         <!-- 1000 HPK Tag -->
                         <div
-                            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wide text-white mb-5 shadow-xs">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/25 text-xs font-semibold text-white mb-6">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -912,23 +909,23 @@
 
                         <!-- Big CTA Headline -->
                         <h2
-                            class="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight tracking-tight">
+                            class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.12] tracking-tight">
                             Setiap Gram Sangat Berarti untuk Masa Depan Emas Si Kecil
                         </h2>
 
                         <!-- CTA Subtitle -->
-                        <p class="mt-4 text-sm sm:text-base text-white/90 leading-relaxed max-w-xl">
+                        <p class="mt-5 text-base sm:text-lg text-white/85 leading-relaxed max-w-xl">
                             Gabung bersama 1.400+ Posyandu dan puluhan ribu orang tua di seluruh Indonesia. Mulai
                             pencatatan digital hari ini tanpa biaya registrasi.
                         </p>
 
-                        <!-- CTA Action Button (Pointing directly to login.blade.php) -->
-                        <div class="mt-8">
+                        <!-- CTA Action Button -->
+                        <div class="mt-9">
                             <a href="{{ route('login') }}"
-                                class="inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-white text-[#8c223e] font-extrabold text-sm sm:text-base shadow-lg hover:shadow-xl hover:bg-rose-50 hover:-translate-y-0.5 active:translate-y-0 transition-all group">
+                                class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-[#8a1f4d] font-bold text-sm sm:text-base shadow-lg shadow-black/10 hover:bg-pink-50 hover:-translate-y-0.5 active:translate-y-0 transition-all group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
                                 <span>Masuk Sebagai Orang Tua</span>
                                 <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
@@ -937,9 +934,9 @@
 
                         <!-- Hotline WhatsApp Info -->
                         <div
-                            class="mt-8 pt-6 border-t border-white/15 flex items-center gap-2.5 text-xs sm:text-sm text-white/80">
-                            <svg class="w-4 h-4 text-emerald-300 flex-shrink-0" fill="currentColor"
-                                viewBox="0 0 24 24">
+                            class="mt-10 pt-6 border-t border-white/20 flex items-start sm:items-center gap-3 text-sm text-white/85">
+                            <svg class="w-4 h-4 text-pink-200 flex-shrink-0 mt-0.5 sm:mt-0" fill="currentColor"
+                                viewBox="0 0 24 24" aria-hidden="true">
                                 <path
                                     d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
                             </svg>
@@ -971,7 +968,7 @@
                                 Prevanta
                             </span>
                             <span class="text-[11px] font-semibold text-gray-500 mt-1">
-                                Posyandu Jambu 77 RW 03
+                                 Jambu 77
                             </span>
                         </div>
                     </div>

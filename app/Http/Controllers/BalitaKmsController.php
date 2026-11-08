@@ -14,8 +14,11 @@ use Illuminate\Support\Collection;
 class BalitaKmsController extends Controller
 {
     private const CHART_LEFT = 68;
+
     private const CHART_RIGHT = 892;
+
     private const CHART_TOP = 28;
+
     private const CHART_BOTTOM = 318;
 
     public function __invoke(Balita $balita): View
@@ -45,7 +48,7 @@ class BalitaKmsController extends Controller
         $healthHistory = $this->healthHistory($balita, $birthDate);
 
         $view = request()->user()->role === 'orang_tua'
-       
+
             ? 'orangtua.profil-balita'
             : 'kader.profil-balita';
 

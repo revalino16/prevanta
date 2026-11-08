@@ -36,17 +36,17 @@ class DashboardController extends Controller
 
         $statusGroups = Pengukuran::whereIn('id', $latestIds)
             ->get()
-            ->groupBy(fn($p) => strtolower(trim($p->status_pertumbuhan ?? '')));
+            ->groupBy(fn ($p) => strtolower(trim($p->status_pertumbuhan ?? '')));
 
-        $giziNormal   = ($statusGroups->get('normal')        ?? collect())->count();
-        $pendek       = ($statusGroups->get('pendek')        ?? collect())->count();
+        $giziNormal = ($statusGroups->get('normal') ?? collect())->count();
+        $pendek = ($statusGroups->get('pendek') ?? collect())->count();
         $sangatPendek = ($statusGroups->get('sangat pendek') ?? collect())->count();
-        $giziKurang   = ($statusGroups->get('gizi kurang')   ?? collect())->count();
+        $giziKurang = ($statusGroups->get('gizi kurang') ?? collect())->count();
 
         // Prevalensi stunting (pendek + sangat pendek)
-        $totalDiukur   = $latestIds->count();
+        $totalDiukur = $latestIds->count();
         $stuntingCount = $pendek + $sangatPendek;
-        $prevalensi    = $totalDiukur > 0
+        $prevalensi = $totalDiukur > 0
             ? round(($stuntingCount / $totalDiukur) * 100, 1)
             : 0;
 
@@ -55,14 +55,14 @@ class DashboardController extends Controller
         $trenValues = [];
 
         for ($i = 5; $i >= 0; $i--) {
-            $tgl     = $now->copy()->subMonths($i);
+            $tgl = $now->copy()->subMonths($i);
             $records = Pengukuran::whereMonth('tanggal_pengukuran', $tgl->month)
                 ->whereYear('tanggal_pengukuran', $tgl->year)
                 ->get();
 
-            $total    = $records->count();
+            $total = $records->count();
             $stunting = $records->filter(
-                fn($p) => in_array(strtolower(trim($p->status_pertumbuhan ?? '')), ['pendek', 'sangat pendek'])
+                fn ($p) => in_array(strtolower(trim($p->status_pertumbuhan ?? '')), ['pendek', 'sangat pendek'])
             )->count();
 
             $trenLabels[] = $tgl->isoFormat('MMM YYYY');
@@ -86,7 +86,7 @@ class DashboardController extends Controller
 
         // Helper: hitung status untuk satu kelompok balita
         $hitungStatus = function ($kelompok) use ($latestIds) {
-            $ids    = $kelompok->pluck('id');
+            $ids = $kelompok->pluck('id');
             $normal = 0;
             $pendek = 0;
             $sangat = 0;
@@ -107,14 +107,14 @@ class DashboardController extends Controller
             }
 
             return [
-                'total'  => $ids->count(),
+                'total' => $ids->count(),
                 'normal' => $normal,
                 'pendek' => $pendek,
                 'sangat' => $sangat,
             ];
         };
 
-        $stat023  = $hitungStatus($group023);
+        $stat023 = $hitungStatus($group023);
         $stat2459 = $hitungStatus($group2459);
 
         // Total diukur hari ini
@@ -124,20 +124,20 @@ class DashboardController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => [
-                'total_balita'          => $totalBalita,
-                'hadir_ditimbang'       => $hadirDitimbang,
-                'gizi_normal'           => $giziNormal,
-                'pendek'                => $pendek,
-                'sangat_pendek'         => $sangatPendek,
-                'gizi_kurang'           => $giziKurang,
-                'prevalensi'            => $prevalensi,
-                'stunting_count'        => $stuntingCount,
-                'total_diukur'          => $totalDiukur,
-                'tren_labels'           => $trenLabels,
-                'tren_values'           => $trenValues,
-                'stat_023'              => $stat023,
-                'stat_2459'             => $stat2459,
+            'data' => [
+                'total_balita' => $totalBalita,
+                'hadir_ditimbang' => $hadirDitimbang,
+                'gizi_normal' => $giziNormal,
+                'pendek' => $pendek,
+                'sangat_pendek' => $sangatPendek,
+                'gizi_kurang' => $giziKurang,
+                'prevalensi' => $prevalensi,
+                'stunting_count' => $stuntingCount,
+                'total_diukur' => $totalDiukur,
+                'tren_labels' => $trenLabels,
+                'tren_values' => $trenValues,
+                'stat_023' => $stat023,
+                'stat_2459' => $stat2459,
                 'total_diukur_hari_ini' => $totalDiukurHariIni,
             ],
         ]);
