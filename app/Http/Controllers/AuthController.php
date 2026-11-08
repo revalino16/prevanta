@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
 use App\Models\OrangTua;
+use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +35,7 @@ class AuthController extends Controller
         $user = Users::where('email', $request->email)->first();
 
         // Cek email dan password
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => 'Email atau kata sandi salah.',
             ]);
@@ -70,7 +70,6 @@ class AuthController extends Controller
             ]);
     }
 
-
     // =====================================================
     // REGISTRASI
     // =====================================================
@@ -87,40 +86,40 @@ class AuthController extends Controller
             'name' => [
                 'required',
                 'regex:/^[a-zA-Z\s\.\'\-]+$/',
-                'max:100'
+                'max:100',
             ],
 
             'nik' => [
                 'required',
                 'digits:16',
-                'unique:orang_tua,nik'
+                'unique:orang_tua,nik',
             ],
 
             'email' => [
                 'required',
                 'email',
-                'unique:users,email'
+                'unique:users,email',
             ],
 
             'no_hp' => [
                 'required',
-                'digits_between:8,13'
+                'digits_between:8,13',
             ],
 
             'jenis_kelamin' => [
                 'required',
-                'in:laki-laki,perempuan'
+                'in:laki-laki,perempuan',
             ],
 
             'hubungan_dengan_balita' => [
                 'required',
-                'in:orangtua,wali'
+                'in:orangtua,wali',
             ],
 
             'password' => [
                 'required',
                 'min:8',
-                'confirmed'
+                'confirmed',
             ],
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
@@ -149,7 +148,6 @@ class AuthController extends Controller
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
         ]);
 
-
         // =================================================
         // SIMPAN DATA USER & ORANG TUA (TRANSAKSI)
         // =================================================
@@ -171,7 +169,6 @@ class AuthController extends Controller
             ]);
         });
 
-
         // =================================================
         // SELESAI REGISTRASI
         // =================================================
@@ -184,7 +181,6 @@ class AuthController extends Controller
             ->route('login')
             ->with('success', 'Registrasi berhasil. Silakan login.');
     }
-
 
     // =====================================================
     // LOGOUT

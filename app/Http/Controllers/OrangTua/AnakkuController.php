@@ -220,7 +220,7 @@ class AnakkuController extends Controller
 
                     'tanggal_hari' => $tanggal->format('d'),
 
-                    'waktu_label' => $tanggal->translatedFormat('l') . ' Pagi',
+                    'waktu_label' => $tanggal->translatedFormat('l').' Pagi',
 
                     'jam_mulai' => '08.00',
 

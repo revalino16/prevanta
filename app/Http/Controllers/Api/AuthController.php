@@ -29,14 +29,14 @@ class AuthController extends Controller
 
         $user = Users::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Email atau kata sandi salah.',
             ], 401);
         }
 
-        if (!in_array($user->role, ['kader', 'bidan', 'orang_tua'])) {
+        if (! in_array($user->role, ['kader', 'bidan', 'orang_tua'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Role akun tidak dikenali.',

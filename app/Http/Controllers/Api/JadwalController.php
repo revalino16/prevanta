@@ -48,24 +48,24 @@ class JadwalController extends Controller
             ->count();
 
         $formatJadwal = fn ($j) => [
-            'id'             => $j->id,
-            'users_id'       => $j->users_id,
+            'id' => $j->id,
+            'users_id' => $j->users_id,
             'jenis_kegiatan' => $j->jenis_kegiatan,
-            'tanggal'        => $j->tanggal ? Carbon::parse($j->tanggal)->format('Y-m-d') : null,
-            'lokasi'         => $j->lokasi,
-            'keterangan'     => $j->keterangan,
+            'tanggal' => $j->tanggal ? Carbon::parse($j->tanggal)->format('Y-m-d') : null,
+            'lokasi' => $j->lokasi,
+            'keterangan' => $j->keterangan,
         ];
 
         return response()->json([
             'success' => true,
-            'data'    => [
+            'data' => [
                 'statistik' => [
                     'total_bulan_ini' => $totalBulanIni,
-                    'sudah_lewat'     => $sudahLewat,
+                    'sudah_lewat' => $sudahLewat,
                 ],
-                'jadwal_hari_ini'   => $jadwalHariIni->map($formatJadwal),
-                'jadwal_mendatang'  => $jadwalMendatang->map($formatJadwal),
-                'jadwal_lewat'      => $jadwalLewat->map($formatJadwal),
+                'jadwal_hari_ini' => $jadwalHariIni->map($formatJadwal),
+                'jadwal_mendatang' => $jadwalMendatang->map($formatJadwal),
+                'jadwal_lewat' => $jadwalLewat->map($formatJadwal),
             ],
         ]);
     }
@@ -79,26 +79,26 @@ class JadwalController extends Controller
     {
         $validated = $request->validate([
             'jenis_kegiatan' => 'required|string|max:100|regex:/^[a-zA-Z0-9\s]+$/',
-            'tanggal'        => 'required|date|after_or_equal:today',
-            'lokasi'         => 'nullable|string|max:255',
-            'keterangan'     => 'nullable|string',
+            'tanggal' => 'required|date|after_or_equal:today',
+            'lokasi' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string',
         ], [
-            'jenis_kegiatan.regex'   => 'Nama atau jenis kegiatan tidak boleh mengandung simbol.',
+            'jenis_kegiatan.regex' => 'Nama atau jenis kegiatan tidak boleh mengandung simbol.',
             'tanggal.after_or_equal' => 'Tanggal tidak boleh hari yang sudah lewat.',
         ]);
 
         $jadwal = Jadwal::create([
-            'users_id'       => $request->user()?->id ?? Auth::id(),
+            'users_id' => $request->user()?->id ?? Auth::id(),
             'jenis_kegiatan' => $validated['jenis_kegiatan'],
-            'tanggal'        => $validated['tanggal'],
-            'lokasi'         => $validated['lokasi'] ?? null,
-            'keterangan'     => $validated['keterangan'] ?? null,
+            'tanggal' => $validated['tanggal'],
+            'lokasi' => $validated['lokasi'] ?? null,
+            'keterangan' => $validated['keterangan'] ?? null,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Jadwal berhasil ditambahkan.',
-            'data'    => $jadwal,
+            'data' => $jadwal,
         ], 201);
     }
 
@@ -112,13 +112,13 @@ class JadwalController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => [
-                'id'             => $jadwal->id,
-                'users_id'       => $jadwal->users_id,
+            'data' => [
+                'id' => $jadwal->id,
+                'users_id' => $jadwal->users_id,
                 'jenis_kegiatan' => $jadwal->jenis_kegiatan,
-                'tanggal'        => $jadwal->tanggal ? Carbon::parse($jadwal->tanggal)->format('Y-m-d') : null,
-                'lokasi'         => $jadwal->lokasi,
-                'keterangan'     => $jadwal->keterangan,
+                'tanggal' => $jadwal->tanggal ? Carbon::parse($jadwal->tanggal)->format('Y-m-d') : null,
+                'lokasi' => $jadwal->lokasi,
+                'keterangan' => $jadwal->keterangan,
             ],
         ]);
     }
@@ -133,9 +133,9 @@ class JadwalController extends Controller
 
         $validated = $request->validate([
             'jenis_kegiatan' => 'sometimes|string|max:100|regex:/^[a-zA-Z0-9\s]+$/',
-            'tanggal'        => 'sometimes|date',
-            'lokasi'         => 'nullable|string|max:255',
-            'keterangan'     => 'nullable|string',
+            'tanggal' => 'sometimes|date',
+            'lokasi' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string',
         ], [
             'jenis_kegiatan.regex' => 'Nama atau jenis kegiatan tidak boleh mengandung simbol.',
         ]);
@@ -145,7 +145,7 @@ class JadwalController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Jadwal berhasil diperbarui.',
-            'data'    => $jadwal,
+            'data' => $jadwal,
         ]);
     }
 
