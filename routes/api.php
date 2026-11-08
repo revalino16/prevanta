@@ -45,10 +45,10 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 //     // =========================================================
 //     // BIDAN
 //     // =========================================================
-//     Route::prefix('bidan')->name('api.bidan.')->group(function () {
-//         Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
-//         Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
-//     });
+    // Route::prefix('bidan')->name('api.bidan.')->group(function () {
+    //     Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
+    //     Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
+    // });
 
 //     // =========================================================
 //     // KADER
@@ -137,7 +137,8 @@ Route::middleware(['auth:sanctum', 'role:bidan'])
         // Identik dengan: GET /bidan/monitoring-balita → BalitaController@index
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
         Route::get('/balita/{id}', [BalitaController::class, 'show'])->name('balita.show');
-
+        Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
+        Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
         // Verifikasi pengukuran (khusus bidan, belum ada Api Controller-nya)
         // Akan ditambahkan saat Api/VerifikasiController dibuat
         // Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
@@ -166,7 +167,7 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
         Route::apiResource('edukasi', EdukasiController::class)
             ->parameters(['edukasi' => 'id'])
             ->only(['index', 'show']);
-        
+
         // =========================================================
     // ORANG TUA - BUKU KMS & GRAFIK WHO (/api/ortu/monitoring)
     // Identik dengan App\Http\Controllers\BalitaKmsController
