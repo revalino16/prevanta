@@ -39,14 +39,14 @@ class BalitaController extends Controller
 
         $balita = $query->get();
 
-        $countNormal       = 0;
-        $countPendek       = 0;
+        $countNormal = 0;
+        $countPendek = 0;
         $countSangatPendek = 0;
 
         $items = $balita->map(function ($item) use (&$countNormal, &$countPendek, &$countSangatPendek) {
             $pengukuran = $item->pengukuran->first();
 
-            $statusKey      = null;
+            $statusKey = null;
             $highlightLabel = 'Belum Ada Data Terverifikasi';
 
             if ($pengukuran) {
@@ -54,58 +54,58 @@ class BalitaController extends Controller
 
                 [$statusKey, $highlightLabel] = match ($statusPertumbuhan) {
                     'sangat pendek' => ['danger', 'Perlu Rujukan'],
-                    'pendek'        => ['warning', 'Perlu Pemantauan'],
-                    'normal'        => ['success', 'Sesuai KMS'],
-                    default         => [null, 'Pemantauan Rutin'],
+                    'pendek' => ['warning', 'Perlu Pemantauan'],
+                    'normal' => ['success', 'Sesuai KMS'],
+                    default => [null, 'Pemantauan Rutin'],
                 };
 
                 match ($statusPertumbuhan) {
                     'sangat pendek' => $countSangatPendek++,
-                    'pendek'        => $countPendek++,
-                    'normal'        => $countNormal++,
-                    default         => null,
+                    'pendek' => $countPendek++,
+                    'normal' => $countNormal++,
+                    default => null,
                 };
             }
 
             return [
-                'id'            => $item->id,
-                'nama'          => $item->nama,
-                'nik'           => $item->nik,
+                'id' => $item->id,
+                'nama' => $item->nama,
+                'nik' => $item->nik,
                 'tanggal_lahir' => $item->tanggal_lahir ? Carbon::parse($item->tanggal_lahir)->format('Y-m-d') : null,
                 'jenis_kelamin' => $item->jenis_kelamin,
-                'alamat'        => $item->alamat,
-                'orang_tua'     => $item->orangTua ? [
-                    'id'                     => $item->orangTua->id,
-                    'nik'                    => $item->orangTua->nik,
-                    'nama'                   => $item->orangTua->user?->nama,
-                    'no_hp'                  => $item->orangTua->user?->no_hp,
+                'alamat' => $item->alamat,
+                'orang_tua' => $item->orangTua ? [
+                    'id' => $item->orangTua->id,
+                    'nik' => $item->orangTua->nik,
+                    'nama' => $item->orangTua->user?->nama,
+                    'no_hp' => $item->orangTua->user?->no_hp,
                     'hubungan_dengan_balita' => $item->orangTua->hubungan_dengan_balita,
                 ] : null,
                 'latest_pengukuran' => $pengukuran ? [
-                    'id'                 => $pengukuran->id,
+                    'id' => $pengukuran->id,
                     'tanggal_pengukuran' => $pengukuran->tanggal_pengukuran ? Carbon::parse($pengukuran->tanggal_pengukuran)->format('Y-m-d') : null,
-                    'berat_badan'        => $pengukuran->berat_badan,
-                    'tinggi_badan'       => $pengukuran->tinggi_badan,
-                    'lingkar_kepala'     => $pengukuran->lingkar_kepala,
-                    'lingkar_lengan_atas'=> $pengukuran->lingkar_lengan_atas,
-                    'z_score'            => $pengukuran->z_score,
+                    'berat_badan' => $pengukuran->berat_badan,
+                    'tinggi_badan' => $pengukuran->tinggi_badan,
+                    'lingkar_kepala' => $pengukuran->lingkar_kepala,
+                    'lingkar_lengan_atas' => $pengukuran->lingkar_lengan_atas,
+                    'z_score' => $pengukuran->z_score,
                     'status_pertumbuhan' => $pengukuran->status_pertumbuhan,
                 ] : null,
-                'status_key'      => $statusKey,
+                'status_key' => $statusKey,
                 'highlight_label' => $highlightLabel,
             ];
         });
 
         return response()->json([
             'success' => true,
-            'data'    => [
+            'data' => [
                 'summary' => [
-                    'total'         => $balita->count(),
-                    'normal'        => $countNormal,
-                    'pendek'        => $countPendek,
+                    'total' => $balita->count(),
+                    'normal' => $countNormal,
+                    'pendek' => $countPendek,
                     'sangat_pendek' => $countSangatPendek,
                 ],
-                'balita'  => $items,
+                'balita' => $items,
             ],
         ]);
     }
@@ -119,17 +119,17 @@ class BalitaController extends Controller
     {
         $orangTua = OrangTua::with('user')->get()->map(function ($ot) {
             return [
-                'id'                     => $ot->id,
-                'nik'                    => $ot->nik,
-                'nama'                   => $ot->user?->nama,
-                'no_hp'                  => $ot->user?->no_hp,
+                'id' => $ot->id,
+                'nik' => $ot->nik,
+                'nama' => $ot->user?->nama,
+                'no_hp' => $ot->user?->no_hp,
                 'hubungan_dengan_balita' => $ot->hubungan_dengan_balita,
             ];
         });
 
         return response()->json([
             'success' => true,
-            'data'    => $orangTua,
+            'data' => $orangTua,
         ]);
     }
 
@@ -141,14 +141,14 @@ class BalitaController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'orang_tua_id'  => 'required|exists:orang_tua,id',
-            'nama'          => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
-            'nik'           => 'required|digits:16|unique:balita,nik',
+            'orang_tua_id' => 'required|exists:orang_tua,id',
+            'nama' => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
+            'nik' => 'required|digits:16|unique:balita,nik',
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
-            'alamat'        => 'required|string',
+            'alamat' => 'required|string',
         ], [
-            'nama.regex'                    => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
+            'nama.regex' => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh melebihi hari ini.',
         ]);
 
@@ -157,7 +157,7 @@ class BalitaController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data balita berhasil ditambahkan.',
-            'data'    => $balita,
+            'data' => $balita,
         ], 201);
     }
 
@@ -184,39 +184,39 @@ class BalitaController extends Controller
             $statusPertumbuhan = strtolower(trim($pengukuran->status_pertumbuhan ?? ''));
             [$statusKey, $highlightLabel] = match ($statusPertumbuhan) {
                 'sangat pendek' => ['danger', 'Perlu Rujukan'],
-                'pendek'        => ['warning', 'Perlu Pemantauan'],
-                'normal'        => ['success', 'Sesuai KMS'],
-                default         => [null, 'Pemantauan Rutin'],
+                'pendek' => ['warning', 'Perlu Pemantauan'],
+                'normal' => ['success', 'Sesuai KMS'],
+                default => [null, 'Pemantauan Rutin'],
             };
         }
 
         return response()->json([
             'success' => true,
-            'data'    => [
-                'id'            => $balita->id,
-                'nama'          => $balita->nama,
-                'nik'           => $balita->nik,
+            'data' => [
+                'id' => $balita->id,
+                'nama' => $balita->nama,
+                'nik' => $balita->nik,
                 'tanggal_lahir' => $balita->tanggal_lahir ? Carbon::parse($balita->tanggal_lahir)->format('Y-m-d') : null,
                 'jenis_kelamin' => $balita->jenis_kelamin,
-                'alamat'        => $balita->alamat,
-                'orang_tua'     => $balita->orangTua ? [
-                    'id'                     => $balita->orangTua->id,
-                    'nik'                    => $balita->orangTua->nik,
-                    'nama'                   => $balita->orangTua->user?->nama,
-                    'no_hp'                  => $balita->orangTua->user?->no_hp,
+                'alamat' => $balita->alamat,
+                'orang_tua' => $balita->orangTua ? [
+                    'id' => $balita->orangTua->id,
+                    'nik' => $balita->orangTua->nik,
+                    'nama' => $balita->orangTua->user?->nama,
+                    'no_hp' => $balita->orangTua->user?->no_hp,
                     'hubungan_dengan_balita' => $balita->orangTua->hubungan_dengan_balita,
                 ] : null,
                 'latest_pengukuran' => $pengukuran ? [
-                    'id'                 => $pengukuran->id,
+                    'id' => $pengukuran->id,
                     'tanggal_pengukuran' => $pengukuran->tanggal_pengukuran ? Carbon::parse($pengukuran->tanggal_pengukuran)->format('Y-m-d') : null,
-                    'berat_badan'        => $pengukuran->berat_badan,
-                    'tinggi_badan'       => $pengukuran->tinggi_badan,
-                    'lingkar_kepala'     => $pengukuran->lingkar_kepala,
-                    'lingkar_lengan_atas'=> $pengukuran->lingkar_lengan_atas,
-                    'z_score'            => $pengukuran->z_score,
+                    'berat_badan' => $pengukuran->berat_badan,
+                    'tinggi_badan' => $pengukuran->tinggi_badan,
+                    'lingkar_kepala' => $pengukuran->lingkar_kepala,
+                    'lingkar_lengan_atas' => $pengukuran->lingkar_lengan_atas,
+                    'z_score' => $pengukuran->z_score,
                     'status_pertumbuhan' => $pengukuran->status_pertumbuhan,
                 ] : null,
-                'status_key'      => $statusKey,
+                'status_key' => $statusKey,
                 'highlight_label' => $highlightLabel,
             ],
         ]);
@@ -232,14 +232,14 @@ class BalitaController extends Controller
         $balita = Balita::findOrFail($id);
 
         $validated = $request->validate([
-            'orang_tua_id'  => 'required|exists:orang_tua,id',
-            'nama'          => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
-            'nik'           => 'required|digits:16|unique:balita,nik,' . $id,
+            'orang_tua_id' => 'required|exists:orang_tua,id',
+            'nama' => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
+            'nik' => 'required|digits:16|unique:balita,nik,'.$id,
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
-            'alamat'        => 'nullable|string',
+            'alamat' => 'nullable|string',
         ], [
-            'nama.regex'                    => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
+            'nama.regex' => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh melebihi hari ini.',
         ]);
 
@@ -248,7 +248,7 @@ class BalitaController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data balita berhasil diubah.',
-            'data'    => $balita,
+            'data' => $balita,
         ]);
     }
 

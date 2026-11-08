@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\BalitaController;
+use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
 use App\Http\Controllers\Api\JadwalController;
