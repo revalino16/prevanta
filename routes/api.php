@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnakkuController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BalitaController;
 use App\Http\Controllers\Api\BidanController;
@@ -153,11 +154,9 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
     ->name('api.orangtua.')
     ->group(function () {
 
-        // Anakku & riwayat pengukuran
-        // Akan ditambahkan saat Api/AnakkuController dibuat
-        // Route::get('/anakku', [AnakkuController::class, 'index'])->name('anakku');
-        // Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
-        // Route::get('/balita/{balita}/tindak-lanjut', [AnakkuController::class, 'tindakLanjut']);
+        // Anakku dashboard & monitoring balita orang tua
+        Route::get('/dashboard', [AnakkuController::class, 'dashboard'])->name('dashboard');
+        Route::get('/anakku', [AnakkuController::class, 'dashboard'])->name('anakku');
 
         // Edukasi (orang tua): read-only
         // Identik dengan: GET /orangtua/edukasi → OrangTua\EdukasiController@index
@@ -166,3 +165,15 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
             ->parameters(['edukasi' => 'id'])
             ->only(['index', 'show']);
     });
+
+// Alias grup /api/ortu/... agar kompatibel dengan mobile endpoint
+Route::middleware(['auth:sanctum', 'role:orang_tua'])
+    ->prefix('ortu')
+    ->name('api.ortu.')
+    ->group(function () {
+        Route::get('/dashboard', [AnakkuController::class, 'dashboard'])->name('dashboard');
+        Route::get('/anakku', [AnakkuController::class, 'dashboard'])->name('anakku');
+    });
+
+// Preview dashboard orang tua (fallback jika sesi belum login di flutter dev)
+Route::get('/ortu/dashboard-preview', [AnakkuController::class, 'dashboard']);
