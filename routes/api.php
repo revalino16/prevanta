@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnakkuController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BalitaController;
 use App\Http\Controllers\Api\BidanController;
@@ -35,45 +36,6 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 // =========================================================
 // SEMUA ROLE YANG SUDAH LOGIN (auth:sanctum)
 // =========================================================
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
-//     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
-//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-//     // =========================================================
-//     // BIDAN
-//     // =========================================================
-    // Route::prefix('bidan')->name('api.bidan.')->group(function () {
-    //     Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
-    //     Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
-    // });
-
-//     // =========================================================
-//     // KADER
-//     // BALITA & MONITORING (Mengikuti BalitaController web)
-//     // =========================================================
-//     Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
-//     Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('balita.orang-tua');
-//     Route::apiResource('balita', BalitaController::class)->parameters(['balita' => 'id']);
-
-//     // =========================================================
-//     // JADWAL (Mengikuti JadwalController web)
-//     // =========================================================
-//     Route::apiResource('jadwal', JadwalController::class)->parameters(['jadwal' => 'id']);
-
-//     // =========================================================
-//     // EDUKASI (Mengikuti EdukasiController web)
-//     // =========================================================
-//     Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
-//     Route::apiResource('edukasi', EdukasiController::class)->parameters(['edukasi' => 'id']);
-// });
-
-// =========================================================
-// KADER (role:kader)
-// Identik dengan grup Route::middleware(['auth', 'role:kader'])
-//   ->prefix('kader') di routes/web.php
-// =========================================================
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('api.logout');
@@ -82,6 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('api.me');
 });
 
+// =========================================================
+// KADER (role:kader)
+// Identik dengan grup Route::middleware(['auth', 'role:kader'])
+//   ->prefix('kader') di routes/web.php
+// =========================================================
 Route::middleware(['auth:sanctum', 'role:kader'])
     ->prefix('kader')
     ->name('api.kader.')
@@ -132,15 +99,10 @@ Route::middleware(['auth:sanctum', 'role:bidan'])
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // Monitoring balita (bidan juga bisa lihat, sama seperti di web)
-        // Identik dengan: GET /bidan/monitoring-balita → BalitaController@index
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
         Route::get('/balita/{id}', [BalitaController::class, 'show'])->name('balita.show');
         Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
         Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
-        // Verifikasi pengukuran (khusus bidan, belum ada Api Controller-nya)
-        // Akan ditambahkan saat Api/VerifikasiController dibuat
-        // Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
-        // Route::post('/verifikasi/{pengukuran}', [VerifikasiController::class, 'store'])->name('verifikasi.store');
     });
 
 // =========================================================
@@ -153,16 +115,26 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
     ->name('api.orangtua.')
     ->group(function () {
 
-        // Anakku & riwayat pengukuran
-        // Akan ditambahkan saat Api/AnakkuController dibuat
-        // Route::get('/anakku', [AnakkuController::class, 'index'])->name('anakku');
-        // Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
-        // Route::get('/balita/{balita}/tindak-lanjut', [AnakkuController::class, 'tindakLanjut']);
+        // Anakku dashboard & riwayat orang tua
+        Route::get('/dashboard', [AnakkuController::class, 'dashboard'])->name('dashboard');
+        Route::get('/anakku', [AnakkuController::class, 'dashboard'])->name('anakku');
+        Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
+        Route::get('/monitoring', [AnakkuController::class, 'monitoring'])->name('monitoring');
 
         // Edukasi (orang tua): read-only
-        // Identik dengan: GET /orangtua/edukasi → OrangTua\EdukasiController@index
         Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
         Route::apiResource('edukasi', EdukasiController::class)
             ->parameters(['edukasi' => 'id'])
             ->only(['index', 'show']);
+    });
+
+// Alias grup /api/ortu/... agar kompatibel dengan mobile endpoint
+Route::middleware(['auth:sanctum', 'role:orang_tua'])
+    ->prefix('ortu')
+    ->name('api.ortu.')
+    ->group(function () {
+        Route::get('/dashboard', [AnakkuController::class, 'dashboard'])->name('dashboard');
+        Route::get('/anakku', [AnakkuController::class, 'dashboard'])->name('anakku');
+        Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
+        Route::get('/monitoring', [AnakkuController::class, 'monitoring'])->name('monitoring');
     });
