@@ -187,53 +187,10 @@ class OrangTuaBalitaSeeder extends Seeder
      */
     protected function seedJenisImunisasiDanVitamin(): void
     {
-        $imunisasiList = [
-            [
-                'nama_imunisasi' => 'HB-0 (Hepatitis B)',
-                'deskripsi' => 'Pencegahan infeksi hepatitis B saat bayi baru lahir (0-7 hari).',
-            ],
-            [
-                'nama_imunisasi' => 'BCG',
-                'deskripsi' => 'Mencegah penyakit tuberkulosis (TBC) berat seperti meningitis TB.',
-            ],
-            [
-                'nama_imunisasi' => 'Polio Tetes 1 (bOPV 1)',
-                'deskripsi' => 'Pencegahan kelumpuhan akibat infeksi virus polio.',
-            ],
-            [
-                'nama_imunisasi' => 'DPT-HB-Hib 1',
-                'deskripsi' => 'Mencegah Difteri, Pertusis, Tetanus, Hepatitis B, serta pneumonia dan meningitis oleh Hib.',
-            ],
-            [
-                'nama_imunisasi' => 'Campak Rubella (MR)',
-                'deskripsi' => 'Pencegahan infeksi campak dan rubella pada balita.',
-            ],
-        ];
-
-        foreach ($imunisasiList as $item) {
-            JenisImunisasi::firstOrCreate(
-                ['nama_imunisasi' => $item['nama_imunisasi']],
-                $item
-            );
-        }
-
-        $vitaminList = [
-            [
-                'nama_vitamin' => 'Vitamin A Biru (100.000 IU)',
-                'deskripsi' => 'Diberikan untuk bayi usia 6-11 bulan untuk kesehatan mata dan daya tahan tubuh.',
-            ],
-            [
-                'nama_vitamin' => 'Vitamin A Merah (200.000 IU)',
-                'deskripsi' => 'Diberikan untuk anak balita usia 12-59 bulan serta ibu nifas.',
-            ],
-        ];
-
-        foreach ($vitaminList as $item) {
-            JenisVitamin::firstOrCreate(
-                ['nama_vitamin' => $item['nama_vitamin']],
-                $item
-            );
-        }
+        $this->call([
+            JenisImunisasiSeeder::class,
+            JenisVitaminSeeder::class,
+        ]);
     }
 
     /**
