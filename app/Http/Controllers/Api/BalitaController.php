@@ -12,6 +12,103 @@ use Illuminate\Http\Request;
 class BalitaController extends Controller
 {
     /**
+     * GET /api/kader/balita/{id}/kms
+     * Mengambil profil balita dan seluruh riwayat pengukuran untuk KMS kader.
+     */
+    public function kms(int|string $id): JsonResponse
+    {
+        $balita = Balita::with([
+            'orangTua.user',
+            'pengukuran' => fn ($query) => $query
+                ->with(['verifikasi.bidan', 'kader'])
+                ->orderByDesc('tanggal_pengukuran')
+                ->orderByDesc('id'),
+            'imunisasi' => fn ($query) => $query
+                ->with(['jenisImunisasi', 'kader'])
+                ->orderByDesc('tanggal_pemberian')
+                ->orderByDesc('id'),
+            'vitamin' => fn ($query) => $query
+                ->with(['jenisVitamin', 'kader'])
+                ->orderByDesc('tanggal_pemberian')
+                ->orderByDesc('id'),
+        ])->findOrFail($id);
+
+        $birthDate = $balita->tanggal_lahir ? Carbon::parse($balita->tanggal_lahir) : null;
+        $now = Carbon::now('Asia/Jakarta');
+        $measurements = $balita->pengukuran->map(function ($measurement) use ($birthDate) {
+            $date = $measurement->tanggal_pengukuran
+                ? Carbon::parse($measurement->tanggal_pengukuran)
+                : null;
+            $ageMonths = $birthDate && $date
+                ? (int) $birthDate->diffInMonths($date)
+                : 0;
+            $status = $measurement->status_pertumbuhan ?? 'Belum ditentukan';
+            $verification = $measurement->verifikasi;
+            $verified = strtolower($verification?->status ?? '') === 'terverifikasi';
+
+            return [
+                'id' => $measurement->id,
+                'tanggal' => $date?->locale('id')->translatedFormat('d M Y') ?? '-',
+                'usia_bulan' => $ageMonths,
+                'is_verified' => $verified,
+                'tinggi_badan' => (float) $measurement->tinggi_badan,
+                'berat_badan' => (float) $measurement->berat_badan,
+                'lingkar_lengan_atas' => (float) $measurement->lingkar_lengan_atas,
+                'lingkar_kepala' => (float) $measurement->lingkar_kepala,
+                'z_score' => $measurement->z_score !== null ? (float) $measurement->z_score : null,
+                'status_pertumbuhan' => $status,
+                'verifikasi_label' => $verified
+                    ? 'Verif Bidan'
+                    : ($verification?->status ? ucfirst($verification->status) : 'Belum diverifikasi'),
+            ];
+        })->values();
+
+        $serviceHistory = $balita->imunisasi->map(fn ($item) => [
+            'id' => $item->id,
+            'jenis' => 'imunisasi',
+            'nama' => $item->jenisImunisasi?->nama_imunisasi ?? 'Imunisasi',
+            'tanggal' => $item->tanggal_pemberian?->locale('id')->translatedFormat('d M Y') ?? '-',
+            '_tanggal_urut' => $item->tanggal_pemberian?->toDateString() ?? '',
+            'status' => $item->status === 'sudah_diberikan' ? 'Sudah diberikan' : 'Belum diberikan',
+            'petugas' => $item->kader?->nama ?? 'Kader Posyandu',
+        ])->concat($balita->vitamin->map(fn ($item) => [
+            'id' => $item->id,
+            'jenis' => 'vitamin',
+            'nama' => $item->jenisVitamin?->nama_vitamin ?? 'Vitamin',
+            'tanggal' => $item->tanggal_pemberian?->locale('id')->translatedFormat('d M Y') ?? '-',
+            '_tanggal_urut' => $item->tanggal_pemberian?->toDateString() ?? '',
+            'status' => $item->status === 'sudah_diberikan' ? 'Sudah diberikan' : 'Belum diberikan',
+            'petugas' => $item->kader?->nama ?? 'Kader Posyandu',
+        ]))->sortByDesc('_tanggal_urut')->map(function (array $item): array {
+            unset($item['_tanggal_urut']);
+
+            return $item;
+        })->values();
+
+        $ageMonths = $birthDate ? (int) $birthDate->diffInMonths($now) : 0;
+        $parent = $balita->orangTua;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $balita->id,
+                'kode_balita' => 'BLT-'.str_pad((string) $balita->id, 3, '0', STR_PAD_LEFT),
+                'nama' => $balita->nama,
+                'nik' => $balita->nik ?? '-',
+                'jenis_kelamin' => strtoupper($balita->jenis_kelamin ?? 'L'),
+                'tanggal_lahir' => $birthDate?->locale('id')->translatedFormat('d M Y') ?? '-',
+                'usia_bulan' => $ageMonths,
+                'orang_tua' => $parent?->user?->nama ?? '-',
+                'hubungan_orang_tua' => $parent?->hubungan_dengan_balita ?? 'Orang Tua / Wali',
+                'domisili' => $balita->alamat ?? '-',
+                'posyandu_nama' => 'Posyandu Terpadu Prevanta',
+                'pengukuran' => $measurements,
+                'riwayat_layanan' => $serviceHistory,
+            ],
+        ]);
+    }
+
+    /**
      * GET /api/kader/monitoring-balita (atau /api/balita)
      * Mengambil daftar balita untuk monitoring beserta status KMS dan rekap statistik.
      * Identik dengan App\Http\Controllers\BalitaController@index
