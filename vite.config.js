@@ -21,6 +21,7 @@ export default defineConfig({
                 'resources/css/kader/edukasi.css',
                 'resources/css/orangtua/anakku.css',
                 'resources/css/orangtua/riwayat.css',
+                'resources/css/orangtua/profil.css',
             ],
             refresh: true,
             fonts: [

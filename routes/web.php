@@ -62,7 +62,7 @@ Route::middleware(['auth', 'role:orang_tua'])
 
         Route::get('/profil', [ProfilController::class, 'edit'])
             ->name('profil.edit');
-        
+
         Route::put('/profil', [ProfilController::class, 'update'])
             ->name('profil.update');
     });
