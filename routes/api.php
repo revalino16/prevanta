@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
 use App\Http\Controllers\Api\JadwalController;
+use App\Http\Controllers\Api\PengukuranController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,6 +62,9 @@ Route::middleware(['auth:sanctum', 'role:kader'])
         // Monitoring balita (hanya view/read)
         // Identik dengan: GET /kader/monitoring-balita → BalitaController@index
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
+        Route::get('/balita/{id}/kms', [BalitaController::class, 'kms'])->name('balita.kms');
+        Route::get('/pengukuran/options', [PengukuranController::class, 'options'])->name('pengukuran.options');
+        Route::post('/balita/{balita}/pengukuran', [PengukuranController::class, 'store'])->name('balita.pengukuran.store');
 
         // Daftar orang tua (untuk dropdown form tambah/edit balita)
         Route::get('/orang-tua', [BalitaController::class, 'orangTuaList'])->name('orang-tua');

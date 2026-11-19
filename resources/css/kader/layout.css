@@ -334,6 +334,27 @@ select {
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    padding: 4px 12px 4px 5px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: background .15s, border-color .15s;
+}
+
+a.topbar-user:hover {
+    background: #FDF5F7;
+    border-color: #F4D3DE;
+}
+
+.topbar-user.is-active {
+    background: #FCEEF2;
+    border-color: #F4D3DE;
+}
+
+.topbar-user.is-active .user-role {
+    color: var(--wine);
+    font-weight: 600;
 }
 
 .user-avatar {
@@ -348,6 +369,14 @@ select {
     font-weight: 700;
     font-size: 13px;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .user-info {
