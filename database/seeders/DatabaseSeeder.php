@@ -36,10 +36,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $this->call([
-            JenisImunisasiSeeder::class,
-            JenisVitaminSeeder::class,
-            OrangTuaBalitaSeeder::class,
-        ]);
+        $this->call(OrangTuaBalitaSeeder::class);
     }
 }

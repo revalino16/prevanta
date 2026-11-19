@@ -115,27 +115,15 @@
                 </button> --}}
 
                 @auth
-                    @php
-                        $authUser = Auth::user();
-                        $fotoProfilUrl = $authUser->orangTua?->foto_profil_url;
-                    @endphp
-                    <a
-                        href="{{ route('orangtua.profil.edit') }}"
-                        class="topbar-user {{ request()->routeIs('orangtua.profil*') ? 'is-active' : '' }}"
-                        title="Profil & Pengaturan Akun"
-                    >
+                    <div class="topbar-user">
                         <div class="user-avatar">
-                            @if ($fotoProfilUrl)
-                                <img src="{{ $fotoProfilUrl }}" alt="Foto profil {{ $authUser->nama }}">
-                            @else
-                                {{ strtoupper(substr($authUser->nama, 0, 1)) }}
-                            @endif
+                            {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
                         </div>
                         <div class="user-info">
-                            <span class="user-name">{{ $authUser->nama }}</span>
-                            <span class="user-role">{{ $authUser->role === 'orang_tua' ? 'Orang Tua' : ucfirst($authUser->role) }}</span>
+                            <span class="user-name">{{ Auth::user()->nama }}</span>
+                            <span class="user-role">{{ ucfirst(Auth::user()->role) }}</span>
                         </div>
-                    </a>
+                    </div>
                 @endauth
 
             </div>

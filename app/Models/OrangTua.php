@@ -2,10 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrangTua extends Model
 {
@@ -18,31 +15,14 @@ class OrangTua extends Model
         'nik',
         'hubungan_dengan_balita',
         'jenis_kelamin',
-        'foto_profil',
     ];
 
-    /**
-     * Mendapatkan URL publik foto profil orang tua jika tersedia.
-     */
-    protected function fotoProfilUrl(): Attribute
-    {
-        return Attribute::make(
-            get: function (): ?string {
-                if (empty($this->foto_profil)) {
-                    return null;
-                }
-
-                return asset('storage/'.ltrim($this->foto_profil, '/'));
-            },
-        );
-    }
-
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(Users::class, 'users_id');
     }
 
-    public function balita(): HasMany
+    public function balita()
     {
         return $this->hasMany(Balita::class, 'orang_tua_id');
     }
