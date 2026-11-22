@@ -21,6 +21,10 @@ class OrangTua extends Model
         'foto_profil',
     ];
 
+    protected $appends = [
+        'foto_profil_url',
+    ];
+
     /**
      * Mendapatkan URL publik foto profil orang tua jika tersedia.
      */

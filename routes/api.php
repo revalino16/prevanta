@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
 use App\Http\Controllers\Api\JadwalController;
 use App\Http\Controllers\Api\PengukuranController;
+use App\Http\Controllers\Api\ProfilOrangTuaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -125,6 +126,10 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
         Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
         Route::get('/monitoring', [AnakkuController::class, 'monitoring'])->name('monitoring');
 
+        // Profil orang tua (GET & POST multipart)
+        Route::get('/profil', [ProfilOrangTuaController::class, 'show'])->name('profil.show');
+        Route::post('/profil', [ProfilOrangTuaController::class, 'update'])->name('profil.update');
+
         // Jadwal posyandu (read-only untuk orang tua)
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
 
@@ -144,6 +149,10 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
         Route::get('/anakku', [AnakkuController::class, 'dashboard'])->name('anakku');
         Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
         Route::get('/monitoring', [AnakkuController::class, 'monitoring'])->name('monitoring');
+
+        // Profil orang tua (GET & POST multipart)
+        Route::get('/profil', [ProfilOrangTuaController::class, 'show'])->name('profil.show');
+        Route::post('/profil', [ProfilOrangTuaController::class, 'update'])->name('profil.update');
 
         // Jadwal posyandu (read-only untuk orang tua)
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
