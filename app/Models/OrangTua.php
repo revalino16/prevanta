@@ -36,7 +36,15 @@ class OrangTua extends Model
                     return null;
                 }
 
-                return asset('storage/'.ltrim($this->foto_profil, '/'));
+                $filename = basename(ltrim($this->foto_profil, '/'));
+
+                if ($filename === '') {
+                    return null;
+                }
+
+                return route('api.media.profil-orangtua', [
+                    'filename' => $filename,
+                ]);
             },
         );
     }

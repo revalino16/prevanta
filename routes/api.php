@@ -28,6 +28,9 @@ use Illuminate\Support\Facades\Route;
 // [PUBLIC] Health check
 // =========================================================
 Route::get('/ping', fn () => response()->json(['status' => 'ok', 'app' => 'Prevanta API']));
+Route::get('/media/profil-orangtua/{filename}', [ProfilOrangTuaController::class, 'showPhoto'])
+    ->where('filename', '[A-Za-z0-9._-]+')
+    ->name('api.media.profil-orangtua');
 
 // =========================================================
 // AUTHENTICATION (PUBLIC)

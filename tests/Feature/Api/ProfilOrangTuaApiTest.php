@@ -92,7 +92,7 @@ class ProfilOrangTuaApiTest extends TestCase
 
             $fotoProfilUrl = $response->json('data.user.orang_tua.foto_profil_url');
             $this->assertIsString($fotoProfilUrl);
-            $this->assertStringContainsString('/storage/profil-orangtua/avatar.jpg', $fotoProfilUrl);
+            $this->assertStringContainsString('/api/media/profil-orangtua/avatar.jpg', $fotoProfilUrl);
         }
     }
 
@@ -137,7 +137,7 @@ class ProfilOrangTuaApiTest extends TestCase
         $this->assertIsString($orangTua->foto_profil);
         $this->assertStringStartsWith('profil-orangtua/', $orangTua->foto_profil);
         $this->assertStringContainsString(
-            '/storage/'.$orangTua->foto_profil,
+            '/api/media/profil-orangtua/'.basename($orangTua->foto_profil),
             (string) $response->json('data.user.orang_tua.foto_profil_url')
         );
 
@@ -283,6 +283,20 @@ class ProfilOrangTuaApiTest extends TestCase
         $this->assertSame($user->getKey(), $orangTua->users_id);
         $this->assertSame('orangtua', $orangTua->hubungan_dengan_balita);
         $this->assertSame('P', $orangTua->jenis_kelamin);
+    }
+
+    public function test_public_media_endpoint_serves_profile_photo_with_cors_header_and_404_when_missing(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('profil-orangtua/avatar.png', 'fake-image-binary');
+
+        $this->withHeaders(['Origin' => 'http://localhost:50000'])
+            ->get('/api/media/profil-orangtua/avatar.png')
+            ->assertOk()
+            ->assertHeader('Access-Control-Allow-Origin', '*');
+
+        $this->get('/api/media/profil-orangtua/tidak-ada.png')
+            ->assertNotFound();
     }
 
     private function fakeImageUpload(string $filename = 'profil-baru.png', int $extraBytes = 0): UploadedFile

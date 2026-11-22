@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class ProfilOrangTuaController extends Controller
@@ -113,6 +114,24 @@ class ProfilOrangTuaController extends Controller
             'data' => [
                 'user' => $user,
             ],
+        ]);
+    }
+
+    /**
+     * GET /api/media/profil-orangtua/{filename}
+     * Menyajikan file foto profil orang tua via Laravel agar mendukung CORS.
+     */
+    public function showPhoto(string $filename): StreamedResponse
+    {
+        $safeFilename = basename($filename);
+        $path = 'profil-orangtua/'.$safeFilename;
+
+        if ($safeFilename === '' || ! Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->response($path, null, [
+            'Cache-Control' => 'public, max-age=86400',
         ]);
     }
 }
