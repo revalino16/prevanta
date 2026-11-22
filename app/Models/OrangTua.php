@@ -21,6 +21,10 @@ class OrangTua extends Model
         'foto_profil',
     ];
 
+    protected $appends = [
+        'foto_profil_url',
+    ];
+
     /**
      * Mendapatkan URL publik foto profil orang tua jika tersedia.
      */
@@ -32,7 +36,15 @@ class OrangTua extends Model
                     return null;
                 }
 
-                return asset('storage/'.ltrim($this->foto_profil, '/'));
+                $filename = basename(ltrim($this->foto_profil, '/'));
+
+                if ($filename === '') {
+                    return null;
+                }
+
+                return route('api.media.profil-orangtua', [
+                    'filename' => $filename,
+                ]);
             },
         );
     }
