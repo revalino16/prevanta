@@ -125,6 +125,9 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
         Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
         Route::get('/monitoring', [AnakkuController::class, 'monitoring'])->name('monitoring');
 
+        // Jadwal posyandu (read-only untuk orang tua)
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
+
         // Edukasi (orang tua): read-only
         Route::get('/edukasi/kategori', [EdukasiController::class, 'kategoriList'])->name('edukasi.kategori');
         Route::apiResource('edukasi', EdukasiController::class)
@@ -141,4 +144,7 @@ Route::middleware(['auth:sanctum', 'role:orang_tua'])
         Route::get('/anakku', [AnakkuController::class, 'dashboard'])->name('anakku');
         Route::get('/riwayat', [AnakkuController::class, 'riwayat'])->name('riwayat');
         Route::get('/monitoring', [AnakkuController::class, 'monitoring'])->name('monitoring');
+
+        // Jadwal posyandu (read-only untuk orang tua)
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
     });
