@@ -3,8 +3,10 @@
 namespace App\Http\Requests\OrangTua;
 
 use App\Models\Users;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 
@@ -25,7 +27,7 @@ class UpdateProfilOrangTuaRequest extends FormRequest
         $orangTua = $user?->orangTua;
 
         return [
-            'nama' => ['bail', 'required', 'string', 'max:100', 'regex:/^[a-zA-Z\s\.,\'\-]+$/'],
+            'nama' => ['bail', 'required', 'string', 'min:2', 'max:60', 'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/'],
             'nik' => ['bail', 'required', 'digits:16', Rule::unique('orang_tua', 'nik')->ignore($orangTua?->id)],
             'email' => ['bail', 'required', 'string', 'email', 'max:100', Rule::unique('users', 'email')->ignore($user?->id)],
             'no_hp' => ['bail', 'required', 'digits_between:8,13'],
@@ -37,7 +39,39 @@ class UpdateProfilOrangTuaRequest extends FormRequest
                     ->max('2mb'),
             ],
             'hapus_foto' => ['nullable', 'boolean'],
-            'password' => ['bail', 'nullable', 'string', 'min:8', 'confirmed'],
+            'current_password' => [
+                'bail',
+                'required_with:password,password_confirmation',
+                'nullable',
+                'string',
+                'max:72',
+                function (string $attribute, mixed $value, Closure $fail) use ($user): void {
+                    if (! is_string($value) || $value === '') {
+                        return;
+                    }
+
+                    if ($user === null || ! Hash::check($value, (string) $user->password)) {
+                        $fail('Kata sandi saat ini tidak sesuai.');
+                    }
+                },
+            ],
+            'password' => [
+                'bail',
+                'required_with:current_password,password_confirmation',
+                'nullable',
+                'string',
+                'min:8',
+                'max:64',
+                'different:current_password',
+                'confirmed',
+            ],
+            'password_confirmation' => [
+                'bail',
+                'required_with:current_password,password',
+                'nullable',
+                'string',
+                'max:64',
+            ],
         ];
     }
 
@@ -49,8 +83,9 @@ class UpdateProfilOrangTuaRequest extends FormRequest
         return [
             'nama.required' => 'Nama lengkap orang tua wajib diisi.',
             'nama.string' => 'Nama lengkap harus berupa teks yang valid.',
-            'nama.max' => 'Nama lengkap maksimal 100 karakter.',
-            'nama.regex' => 'Nama hanya boleh berisi huruf, spasi, titik, koma, tanda petik, atau tanda hubung.',
+            'nama.min' => 'Nama lengkap minimal 2 karakter.',
+            'nama.max' => 'Nama lengkap maksimal 60 karakter.',
+            'nama.regex' => 'Nama lengkap hanya boleh berisi huruf dan spasi.',
 
             'nik.required' => 'NIK wajib diisi.',
             'nik.digits' => 'NIK harus tepat 16 digit angka.',
@@ -72,9 +107,20 @@ class UpdateProfilOrangTuaRequest extends FormRequest
 
             'hapus_foto.boolean' => 'Status penghapusan foto tidak valid.',
 
+            'current_password.required_with' => 'Kata sandi saat ini wajib diisi jika ingin mengubah kata sandi.',
+            'current_password.string' => 'Kata sandi saat ini harus berupa teks yang valid.',
+            'current_password.max' => 'Kata sandi saat ini maksimal 72 karakter.',
+
+            'password.required_with' => 'Kata sandi baru wajib diisi jika ingin mengubah kata sandi.',
             'password.string' => 'Kata sandi baru harus berupa teks yang valid.',
             'password.min' => 'Kata sandi baru minimal 8 karakter.',
+            'password.max' => 'Kata sandi baru maksimal 64 karakter.',
+            'password.different' => 'Kata sandi baru harus berbeda dengan kata sandi saat ini.',
             'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+
+            'password_confirmation.required_with' => 'Konfirmasi kata sandi baru wajib diisi.',
+            'password_confirmation.string' => 'Konfirmasi kata sandi baru harus berupa teks yang valid.',
+            'password_confirmation.max' => 'Konfirmasi kata sandi baru maksimal 64 karakter.',
         ];
     }
 
@@ -83,7 +129,7 @@ class UpdateProfilOrangTuaRequest extends FormRequest
         $normalized = [];
 
         if (is_string($this->input('nama'))) {
-            $normalized['nama'] = trim($this->input('nama'));
+            $normalized['nama'] = preg_replace('/\s+/', ' ', trim($this->input('nama'))) ?? '';
         }
 
         if (is_string($this->input('nik'))) {

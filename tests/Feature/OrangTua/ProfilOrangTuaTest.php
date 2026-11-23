@@ -79,7 +79,9 @@ class ProfilOrangTuaTest extends TestCase
             ->assertSeeText('Orang Tua / Wali')
             ->assertSeeText('Perempuan')
             ->assertSeeText('Posyandu Mawar Melati')
-            ->assertSee('value="Siti Aminah, S.Pd."', false)
+            ->assertSeeText('Kata Sandi Saat Ini')
+            ->assertSeeText('8–64 karakter. Disarankan menggunakan kombinasi huruf dan angka.')
+            ->assertSee('value="Siti Aminah"', false)
             ->assertSee('value="'.$orangTua->nik.'"', false)
             ->assertSee('topbar-user is-active', false);
     }
@@ -94,12 +96,13 @@ class ProfilOrangTuaTest extends TestCase
 
         $response = $this->actingAs($user)
             ->put(route('orangtua.profil.update'), [
-                'nama' => '  Siti Aminah, M.Pd.  ',
+                'nama' => '  Siti   Aminah  ',
                 'nik' => '3512015203900009',
                 'email' => 'SITI.BARU@EXAMPLE.TEST',
                 'no_hp' => '081298765432',
                 'foto_profil' => $this->fakeImageUpload('profil-baru.png'),
                 'hapus_foto' => '0',
+                'current_password' => '',
                 'password' => '',
                 'password_confirmation' => '',
             ]);
@@ -111,7 +114,7 @@ class ProfilOrangTuaTest extends TestCase
         $user->refresh();
         $orangTua->refresh();
 
-        $this->assertSame('Siti Aminah, M.Pd.', $user->nama);
+        $this->assertSame('Siti Aminah', $user->nama);
         $this->assertSame('siti.baru@example.test', $user->email);
         $this->assertSame('081298765432', $user->no_hp);
         $this->assertTrue(Hash::check('SandiLama123!', $user->password));
@@ -134,8 +137,9 @@ class ProfilOrangTuaTest extends TestCase
                 'nik' => $orangTua->nik,
                 'email' => $user->email,
                 'no_hp' => $user->no_hp,
-                'password' => 'SandiBaru!2026',
-                'password_confirmation' => 'SandiBaru!2026',
+                'current_password' => 'SandiLama123!',
+                'password' => 'SandiBaru2026',
+                'password_confirmation' => 'SandiBaru2026',
             ]);
 
         $response
@@ -143,7 +147,7 @@ class ProfilOrangTuaTest extends TestCase
             ->assertSessionHas('success', 'Profil orang tua berhasil diperbarui.');
 
         $user->refresh();
-        $this->assertTrue(Hash::check('SandiBaru!2026', $user->password));
+        $this->assertTrue(Hash::check('SandiBaru2026', $user->password));
     }
 
     public function test_orang_tua_can_remove_existing_photo_via_hapus_foto_flag(): void
@@ -210,6 +214,7 @@ class ProfilOrangTuaTest extends TestCase
                 'email' => 'budi@example.test',
                 'no_hp' => '0812',
                 'foto_profil' => UploadedFile::fake()->create('dokumen.pdf', 100, 'application/pdf'),
+                'current_password' => 'SandiLama123!',
                 'password' => 'pendek',
                 'password_confirmation' => 'beda',
             ]);
@@ -217,7 +222,7 @@ class ProfilOrangTuaTest extends TestCase
         $response
             ->assertRedirect(route('orangtua.profil.edit'))
             ->assertSessionHasErrors([
-                'nama' => 'Nama hanya boleh berisi huruf, spasi, titik, koma, tanda petik, atau tanda hubung.',
+                'nama' => 'Nama lengkap hanya boleh berisi huruf dan spasi.',
                 'nik' => 'NIK sudah terdaftar pada akun orang tua lain.',
                 'email' => 'Email sudah digunakan oleh akun lain.',
                 'no_hp' => 'No. HP / WhatsApp harus terdiri dari 8 sampai 13 digit angka.',
@@ -238,8 +243,9 @@ class ProfilOrangTuaTest extends TestCase
                 'email' => 'format-salah',
                 'no_hp' => $user->no_hp,
                 'foto_profil' => $this->fakeImageUpload('besar.png', 2500 * 1024),
-                'password' => 'Minimal8Karakter!',
-                'password_confirmation' => 'TidakCocok!',
+                'current_password' => 'SandiLama123!',
+                'password' => 'Minimal8Karakter',
+                'password_confirmation' => 'TidakCocok',
             ]);
 
         $response
@@ -255,13 +261,127 @@ class ProfilOrangTuaTest extends TestCase
         $this->assertSame('3512015203900001', $orangTua->nik);
     }
 
+    public function test_nama_rejects_symbols_and_out_of_range_lengths(): void
+    {
+        [$user, $orangTua] = $this->createOrangTuaAccount();
+
+        $cases = [
+            'Siti Aminah, S.Pd.' => 'Nama lengkap hanya boleh berisi huruf dan spasi.',
+            'A' => 'Nama lengkap minimal 2 karakter.',
+            str_repeat('a', 61) => 'Nama lengkap maksimal 60 karakter.',
+        ];
+
+        foreach ($cases as $invalidNama => $expectedError) {
+            $this->actingAs($user)
+                ->from(route('orangtua.profil.edit'))
+                ->put(route('orangtua.profil.update'), [
+                    'nama' => $invalidNama,
+                    'nik' => $orangTua->nik,
+                    'email' => $user->email,
+                    'no_hp' => $user->no_hp,
+                ])
+                ->assertRedirect(route('orangtua.profil.edit'))
+                ->assertSessionHasErrors(['nama' => $expectedError]);
+        }
+    }
+
+    public function test_password_change_enforces_current_password_length_and_coupling(): void
+    {
+        [$user, $orangTua] = $this->createOrangTuaAccount();
+
+        // 1. Ganti sandi tanpa kata sandi saat ini
+        $this->actingAs($user)
+            ->from(route('orangtua.profil.edit'))
+            ->put(route('orangtua.profil.update'), [
+                'nama' => $user->nama,
+                'nik' => $orangTua->nik,
+                'email' => $user->email,
+                'no_hp' => $user->no_hp,
+                'password' => 'SandiBaru2026',
+                'password_confirmation' => 'SandiBaru2026',
+            ])
+            ->assertSessionHasErrors([
+                'current_password' => 'Kata sandi saat ini wajib diisi jika ingin mengubah kata sandi.',
+            ]);
+
+        // 2. Kata sandi saat ini salah
+        $this->actingAs($user)
+            ->from(route('orangtua.profil.edit'))
+            ->put(route('orangtua.profil.update'), [
+                'nama' => $user->nama,
+                'nik' => $orangTua->nik,
+                'email' => $user->email,
+                'no_hp' => $user->no_hp,
+                'current_password' => 'SandiSalah123',
+                'password' => 'SandiBaru2026',
+                'password_confirmation' => 'SandiBaru2026',
+            ])
+            ->assertSessionHasErrors([
+                'current_password' => 'Kata sandi saat ini tidak sesuai.',
+            ]);
+
+        // 3. Kata sandi baru sama dengan kata sandi saat ini
+        $this->actingAs($user)
+            ->from(route('orangtua.profil.edit'))
+            ->put(route('orangtua.profil.update'), [
+                'nama' => $user->nama,
+                'nik' => $orangTua->nik,
+                'email' => $user->email,
+                'no_hp' => $user->no_hp,
+                'current_password' => 'SandiLama123!',
+                'password' => 'SandiLama123!',
+                'password_confirmation' => 'SandiLama123!',
+            ])
+            ->assertSessionHasErrors([
+                'password' => 'Kata sandi baru harus berbeda dengan kata sandi saat ini.',
+            ]);
+
+        // 4. Kata sandi baru melebihi 64 karakter
+        $tooLongPassword = str_repeat('a', 65);
+        $this->actingAs($user)
+            ->from(route('orangtua.profil.edit'))
+            ->put(route('orangtua.profil.update'), [
+                'nama' => $user->nama,
+                'nik' => $orangTua->nik,
+                'email' => $user->email,
+                'no_hp' => $user->no_hp,
+                'current_password' => 'SandiLama123!',
+                'password' => $tooLongPassword,
+                'password_confirmation' => $tooLongPassword,
+            ])
+            ->assertSessionHasErrors([
+                'password' => 'Kata sandi baru maksimal 64 karakter.',
+                'password_confirmation' => 'Konfirmasi kata sandi baru maksimal 64 karakter.',
+            ]);
+
+        // 5. Hanya mengisi konfirmasi kata sandi tanpa kata sandi saat ini & baru
+        $this->actingAs($user)
+            ->from(route('orangtua.profil.edit'))
+            ->put(route('orangtua.profil.update'), [
+                'nama' => $user->nama,
+                'nik' => $orangTua->nik,
+                'email' => $user->email,
+                'no_hp' => $user->no_hp,
+                'current_password' => '',
+                'password' => '',
+                'password_confirmation' => 'SandiBaru2026',
+            ])
+            ->assertSessionHasErrors([
+                'current_password' => 'Kata sandi saat ini wajib diisi jika ingin mengubah kata sandi.',
+                'password' => 'Kata sandi baru wajib diisi jika ingin mengubah kata sandi.',
+            ]);
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('SandiLama123!', $user->password));
+    }
+
     public function test_read_only_and_privileged_fields_cannot_be_overwritten_by_request(): void
     {
         [$user, $orangTua] = $this->createOrangTuaAccount();
 
         $response = $this->actingAs($user)
             ->put(route('orangtua.profil.update'), [
-                'nama' => 'Siti Aminah, S.Pd.',
+                'nama' => 'Siti Aminah',
                 'nik' => '3512015203900001',
                 'email' => 'orangtua@example.test',
                 'no_hp' => '081234567001',
@@ -302,7 +422,7 @@ class ProfilOrangTuaTest extends TestCase
     private function createOrangTuaAccount(array $overrides = []): array
     {
         $user = Users::create([
-            'nama' => $overrides['nama'] ?? 'Siti Aminah, S.Pd.',
+            'nama' => $overrides['nama'] ?? 'Siti Aminah',
             'email' => $overrides['email'] ?? 'orangtua@example.test',
             'password' => Hash::make('SandiLama123!'),
             'no_hp' => $overrides['no_hp'] ?? '081234567001',

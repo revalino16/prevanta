@@ -248,7 +248,7 @@ class OrangTuaBalitaSeeder extends Seeder
             // AKUN 1: Default Test Account (Ibu dengan 2 Balita Status Normal)
             // =========================================================================
             [
-                'nama' => 'Siti Aminah, S.Pd.',
+                'nama' => 'Siti Aminah',
                 'email' => 'orangtua@gmail.com',
                 'password' => 'password123',
                 'no_hp' => '081234567001',

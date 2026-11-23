@@ -81,7 +81,7 @@ class ProfilOrangTuaApiTest extends TestCase
                 ->assertOk()
                 ->assertJsonPath('success', true)
                 ->assertJsonPath('data.user.id', $user->getKey())
-                ->assertJsonPath('data.user.nama', 'Siti Aminah, S.Pd.')
+                ->assertJsonPath('data.user.nama', 'Siti Aminah')
                 ->assertJsonPath('data.user.email', 'orangtua@example.test')
                 ->assertJsonPath('data.user.no_hp', '081234567001')
                 ->assertJsonPath('data.user.role', 'orang_tua')
@@ -107,12 +107,13 @@ class ProfilOrangTuaApiTest extends TestCase
         Sanctum::actingAs($user);
 
         $response = $this->post('/api/ortu/profil', [
-            'nama' => '  Siti Aminah, M.Pd.  ',
+            'nama' => '  Siti   Aminah  ',
             'nik' => '3512015203900009',
             'email' => 'SITI.BARU@EXAMPLE.TEST',
             'no_hp' => '081298765432',
             'foto_profil' => $this->fakeImageUpload('profil-baru.png'),
             'hapus_foto' => '0',
+            'current_password' => '',
             'password' => '',
             'password_confirmation' => '',
         ], ['Accept' => 'application/json']);
@@ -121,7 +122,7 @@ class ProfilOrangTuaApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('success', true)
             ->assertJsonPath('message', 'Profil orang tua berhasil diperbarui.')
-            ->assertJsonPath('data.user.nama', 'Siti Aminah, M.Pd.')
+            ->assertJsonPath('data.user.nama', 'Siti Aminah')
             ->assertJsonPath('data.user.email', 'siti.baru@example.test')
             ->assertJsonPath('data.user.no_hp', '081298765432')
             ->assertJsonPath('data.user.orang_tua.nik', '3512015203900009');
@@ -129,7 +130,7 @@ class ProfilOrangTuaApiTest extends TestCase
         $user->refresh();
         $orangTua->refresh();
 
-        $this->assertSame('Siti Aminah, M.Pd.', $user->nama);
+        $this->assertSame('Siti Aminah', $user->nama);
         $this->assertSame('siti.baru@example.test', $user->email);
         $this->assertSame('081298765432', $user->no_hp);
         $this->assertTrue(Hash::check('SandiLama123!', $user->password));
@@ -155,8 +156,9 @@ class ProfilOrangTuaApiTest extends TestCase
             'nik' => $orangTua->nik,
             'email' => $user->email,
             'no_hp' => $user->no_hp,
-            'password' => 'SandiBaru!2026',
-            'password_confirmation' => 'SandiBaru!2026',
+            'current_password' => 'SandiLama123!',
+            'password' => 'SandiBaru2026',
+            'password_confirmation' => 'SandiBaru2026',
         ]);
 
         $response
@@ -165,7 +167,7 @@ class ProfilOrangTuaApiTest extends TestCase
             ->assertJsonPath('message', 'Profil orang tua berhasil diperbarui.');
 
         $user->refresh();
-        $this->assertTrue(Hash::check('SandiBaru!2026', $user->password));
+        $this->assertTrue(Hash::check('SandiBaru2026', $user->password));
     }
 
     public function test_orang_tua_can_remove_existing_photo_via_hapus_foto_flag(): void
@@ -214,6 +216,7 @@ class ProfilOrangTuaApiTest extends TestCase
             'email' => 'budi@example.test',
             'no_hp' => '0812',
             'foto_profil' => UploadedFile::fake()->create('dokumen.pdf', 100, 'application/pdf'),
+            'current_password' => 'SandiLama123!',
             'password' => 'pendek',
             'password_confirmation' => 'beda',
         ], ['Accept' => 'application/json']);
@@ -221,7 +224,7 @@ class ProfilOrangTuaApiTest extends TestCase
         $response
             ->assertUnprocessable()
             ->assertJsonValidationErrors([
-                'nama' => 'Nama hanya boleh berisi huruf, spasi, titik, koma, tanda petik, atau tanda hubung.',
+                'nama' => 'Nama lengkap hanya boleh berisi huruf dan spasi.',
                 'nik' => 'NIK sudah terdaftar pada akun orang tua lain.',
                 'email' => 'Email sudah digunakan oleh akun lain.',
                 'no_hp' => 'No. HP / WhatsApp harus terdiri dari 8 sampai 13 digit angka.',
@@ -241,8 +244,9 @@ class ProfilOrangTuaApiTest extends TestCase
             'email' => 'format-salah',
             'no_hp' => $user->no_hp,
             'foto_profil' => $this->fakeImageUpload('besar.png', 2500 * 1024),
-            'password' => 'Minimal8Karakter!',
-            'password_confirmation' => 'TidakCocok!',
+            'current_password' => 'SandiLama123!',
+            'password' => 'Minimal8Karakter',
+            'password_confirmation' => 'TidakCocok',
         ], ['Accept' => 'application/json']);
 
         $response
@@ -258,13 +262,56 @@ class ProfilOrangTuaApiTest extends TestCase
         $this->assertSame('3512015203900001', $orangTua->nik);
     }
 
+    public function test_api_enforces_current_password_and_character_length_bounds(): void
+    {
+        [$user, $orangTua] = $this->createOrangTuaAccount();
+        Sanctum::actingAs($user);
+
+        // Wrong current_password + nama with symbols + password > 64 chars
+        $tooLongPassword = str_repeat('z', 65);
+        $this->postJson('/api/ortu/profil', [
+            'nama' => 'Siti Aminah, S.Pd.',
+            'nik' => $orangTua->nik,
+            'email' => $user->email,
+            'no_hp' => $user->no_hp,
+            'current_password' => 'SalahBanget',
+            'password' => $tooLongPassword,
+            'password_confirmation' => $tooLongPassword,
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors([
+                'nama' => 'Nama lengkap hanya boleh berisi huruf dan spasi.',
+                'current_password' => 'Kata sandi saat ini tidak sesuai.',
+                'password' => 'Kata sandi baru maksimal 64 karakter.',
+                'password_confirmation' => 'Konfirmasi kata sandi baru maksimal 64 karakter.',
+            ]);
+
+        // Missing current_password when changing password + nama > 60 chars
+        $this->postJson('/api/ortu/profil', [
+            'nama' => str_repeat('a', 61),
+            'nik' => $orangTua->nik,
+            'email' => $user->email,
+            'no_hp' => $user->no_hp,
+            'password' => 'SandiBaru2026',
+            'password_confirmation' => 'SandiBaru2026',
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors([
+                'nama' => 'Nama lengkap maksimal 60 karakter.',
+                'current_password' => 'Kata sandi saat ini wajib diisi jika ingin mengubah kata sandi.',
+            ]);
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('SandiLama123!', $user->password));
+    }
+
     public function test_read_only_and_privileged_fields_cannot_be_overwritten_via_api(): void
     {
         [$user, $orangTua] = $this->createOrangTuaAccount();
         Sanctum::actingAs($user);
 
         $response = $this->postJson('/api/ortu/profil', [
-            'nama' => 'Siti Aminah, S.Pd.',
+            'nama' => 'Siti Aminah',
             'nik' => '3512015203900001',
             'email' => 'orangtua@example.test',
             'no_hp' => '081234567001',
@@ -319,7 +366,7 @@ class ProfilOrangTuaApiTest extends TestCase
     private function createOrangTuaAccount(array $overrides = []): array
     {
         $user = Users::create([
-            'nama' => $overrides['nama'] ?? 'Siti Aminah, S.Pd.',
+            'nama' => $overrides['nama'] ?? 'Siti Aminah',
             'email' => $overrides['email'] ?? 'orangtua@example.test',
             'password' => Hash::make('SandiLama123!'),
             'no_hp' => $overrides['no_hp'] ?? '081234567001',

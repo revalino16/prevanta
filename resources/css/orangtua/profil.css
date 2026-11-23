@@ -164,11 +164,16 @@
 .op-identity-name {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
     font-size: 20px;
     font-weight: 800;
     color: var(--op-ink);
     margin: 0 0 3px;
+}
+
+.op-identity-name span {
+    overflow-wrap: anywhere;
 }
 
 .op-identity-name i {
@@ -437,7 +442,7 @@
 }
 
 .op-input.is-password {
-    padding-right: 42px;
+    padding-right: 48px;
 }
 
 .op-input.is-invalid {

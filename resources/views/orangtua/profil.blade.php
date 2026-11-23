@@ -191,7 +191,10 @@
                                 class="op-input @error('nama') is-invalid @enderror"
                                 value="{{ old('nama', $user->nama) }}"
                                 data-initial="{{ $user->nama }}"
-                                maxlength="100"
+                                minlength="2"
+                                maxlength="60"
+                                pattern="[A-Za-z]+( [A-Za-z]+)*"
+                                title="Nama lengkap hanya boleh berisi huruf dan spasi (2–60 karakter)."
                                 autocomplete="name"
                                 required
                             >
@@ -199,7 +202,7 @@
                         @error('nama')
                             <span class="op-error-text">{{ $message }}</span>
                         @else
-                            <span class="op-help-text">Sesuai KTP / Kartu Keluarga resmi.</span>
+                            <span class="op-help-text">Sesuai KTP, hanya huruf dan spasi (2–60 karakter, tanpa gelar, angka, atau simbol).</span>
                         @enderror
                     </div>
 
@@ -318,8 +321,39 @@
                     <div class="op-amber-note">
                         <i class="fa-solid fa-circle-info"></i>
                         <span>
-                            Biarkan kolom kata sandi kosong jika Anda tidak ingin mengubah kata sandi saat ini.
+                            Biarkan seluruh kolom kata sandi kosong jika Anda tidak ingin mengubah kata sandi saat ini.
                         </span>
+                    </div>
+
+                    <div class="op-field-group">
+                        <div class="op-label-row">
+                            <label for="current_password" class="op-label">Kata Sandi Saat Ini</label>
+                        </div>
+                        <div class="op-input-wrap">
+                            <i class="fa-solid fa-key op-input-icon"></i>
+                            <input
+                                type="password"
+                                id="current_password"
+                                name="current_password"
+                                class="op-input is-password @error('current_password') is-invalid @enderror"
+                                placeholder="Masukkan kata sandi saat ini"
+                                maxlength="72"
+                                autocomplete="current-password"
+                            >
+                            <button
+                                type="button"
+                                class="op-eye-btn"
+                                data-toggle-password="current_password"
+                                aria-label="Tampilkan atau sembunyikan kata sandi saat ini"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        @error('current_password')
+                            <span class="op-error-text">{{ $message }}</span>
+                        @else
+                            <span class="op-help-text">Wajib diisi hanya jika Anda ingin mengganti kata sandi.</span>
+                        @enderror
                     </div>
 
                     <div class="op-field-group">
@@ -333,7 +367,9 @@
                                 id="password"
                                 name="password"
                                 class="op-input is-password @error('password') is-invalid @enderror"
-                                placeholder="Minimal 8 karakter"
+                                placeholder="8–64 karakter"
+                                minlength="8"
+                                maxlength="64"
                                 autocomplete="new-password"
                             >
                             <button
@@ -348,7 +384,7 @@
                         @error('password')
                             <span class="op-error-text">{{ $message }}</span>
                         @else
-                            <span class="op-help-text">Gunakan kombinasi huruf, angka, dan simbol.</span>
+                            <span class="op-help-text">8–64 karakter. Disarankan menggunakan kombinasi huruf dan angka.</span>
                         @enderror
                     </div>
 
@@ -362,8 +398,10 @@
                                 type="password"
                                 id="password_confirmation"
                                 name="password_confirmation"
-                                class="op-input is-password"
+                                class="op-input is-password @error('password_confirmation') is-invalid @enderror"
                                 placeholder="Ulangi kata sandi baru"
+                                minlength="8"
+                                maxlength="64"
                                 autocomplete="new-password"
                             >
                             <button
@@ -375,7 +413,11 @@
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                         </div>
-                        <span class="op-help-text">Pastikan sama dengan kata sandi baru.</span>
+                        @error('password_confirmation')
+                            <span class="op-error-text">{{ $message }}</span>
+                        @else
+                            <span class="op-help-text">Pastikan sama dengan kata sandi baru.</span>
+                        @enderror
                     </div>
 
                     <div class="op-security-note">
@@ -448,6 +490,7 @@
             const nikInput = document.getElementById('nik');
             const emailInput = document.getElementById('email');
             const noHpInput = document.getElementById('no_hp');
+            const currentPasswordInput = document.getElementById('current_password');
             const passwordInput = document.getElementById('password');
             const passwordConfirmInput = document.getElementById('password_confirmation');
             const nikCounter = document.getElementById('nik-counter');
@@ -464,6 +507,30 @@
             const btnSubmitModal = document.getElementById('btn-submit-confirm-modal');
 
             let activeObjectUrl = null;
+
+            const sanitizeNama = () => {
+                if (!namaInput) {
+                    return;
+                }
+
+                const cleaned = namaInput.value
+                    .replace(/[^a-zA-Z\s]/g, '')
+                    .replace(/^\s+/, '')
+                    .replace(/\s{2,}/g, ' ')
+                    .slice(0, 60);
+
+                if (namaInput.value !== cleaned) {
+                    namaInput.value = cleaned;
+                }
+
+                namaInput.setCustomValidity('');
+            };
+
+            const clearPasswordValidity = () => {
+                [currentPasswordInput, passwordInput, passwordConfirmInput].forEach((input) => {
+                    input?.setCustomValidity('');
+                });
+            };
 
             const updateNikCounter = () => {
                 if (!nikInput || !nikCounter) {
@@ -521,9 +588,13 @@
                 }
             };
 
-            // Penghitung digit NIK & filter angka No. HP
+            // Filter huruf/spasi Nama, penghitung digit NIK, & filter angka No. HP
+            namaInput?.addEventListener('input', sanitizeNama);
             nikInput?.addEventListener('input', updateNikCounter);
             noHpInput?.addEventListener('input', sanitizeNoHp);
+            [currentPasswordInput, passwordInput, passwordConfirmInput].forEach((input) => {
+                input?.addEventListener('input', clearPasswordValidity);
+            });
             updateNikCounter();
 
             // Live preview upload foto profil
@@ -588,15 +659,15 @@
                     }
                 });
 
-                if (passwordInput) {
-                    passwordInput.value = '';
-                    passwordInput.type = 'password';
-                }
+                [currentPasswordInput, passwordInput, passwordConfirmInput].forEach((input) => {
+                    if (input) {
+                        input.value = '';
+                        input.type = 'password';
+                        input.setCustomValidity('');
+                    }
+                });
 
-                if (passwordConfirmInput) {
-                    passwordConfirmInput.value = '';
-                    passwordConfirmInput.type = 'password';
-                }
+                namaInput?.setCustomValidity('');
 
                 document.querySelectorAll('[data-toggle-password] i').forEach((icon) => {
                     icon.classList.add('fa-eye');
@@ -649,7 +720,50 @@
                 btnOpenModal?.focus();
             };
 
+            const applyClientValidation = () => {
+                if (namaInput) {
+                    const normalizedNama = namaInput.value.trim().replace(/\s+/g, ' ');
+                    namaInput.value = normalizedNama;
+                    namaInput.setCustomValidity('');
+
+                    if (normalizedNama.length > 0 && normalizedNama.length < 2) {
+                        namaInput.setCustomValidity('Nama lengkap minimal 2 karakter.');
+                    } else if (normalizedNama.length > 60) {
+                        namaInput.setCustomValidity('Nama lengkap maksimal 60 karakter.');
+                    } else if (normalizedNama.length > 0 && !/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(normalizedNama)) {
+                        namaInput.setCustomValidity('Nama lengkap hanya boleh berisi huruf dan spasi.');
+                    }
+                }
+
+                clearPasswordValidity();
+
+                const curr = currentPasswordInput?.value ?? '';
+                const next = passwordInput?.value ?? '';
+                const conf = passwordConfirmInput?.value ?? '';
+                const isChangingPassword = curr !== '' || next !== '' || conf !== '';
+
+                if (isChangingPassword) {
+                    if (curr === '' && currentPasswordInput) {
+                        currentPasswordInput.setCustomValidity('Kata sandi saat ini wajib diisi jika ingin mengubah kata sandi.');
+                    } else if (next === '' && passwordInput) {
+                        passwordInput.setCustomValidity('Kata sandi baru wajib diisi jika ingin mengubah kata sandi.');
+                    } else if (next.length < 8 && passwordInput) {
+                        passwordInput.setCustomValidity('Kata sandi baru minimal 8 karakter.');
+                    } else if (next.length > 64 && passwordInput) {
+                        passwordInput.setCustomValidity('Kata sandi baru maksimal 64 karakter.');
+                    } else if (next === curr && passwordInput) {
+                        passwordInput.setCustomValidity('Kata sandi baru harus berbeda dengan kata sandi saat ini.');
+                    } else if (conf === '' && passwordConfirmInput) {
+                        passwordConfirmInput.setCustomValidity('Konfirmasi kata sandi baru wajib diisi.');
+                    } else if (conf !== next && passwordConfirmInput) {
+                        passwordConfirmInput.setCustomValidity('Konfirmasi kata sandi baru tidak cocok.');
+                    }
+                }
+            };
+
             btnOpenModal?.addEventListener('click', () => {
+                applyClientValidation();
+
                 if (!form.reportValidity()) {
                     return;
                 }
