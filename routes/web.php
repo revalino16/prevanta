@@ -78,6 +78,9 @@ Route::middleware(['auth', 'role:bidan'])
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/dashboard/ekspor-excel', [DashboardController::class, 'exportTrendExcel'])
+            ->name('dashboard.export-excel');
+
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
             ->name('monitoringbalita');
 
