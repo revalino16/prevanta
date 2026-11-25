@@ -15,16 +15,18 @@ class BidanController extends Controller
 {
     /**
      * GET /api/bidan/verifikasi
-     * Mengambil daftar balita beserta status verifikasi pengukurannya.
+     * Mengambil daftar balita yang sudah diukur dan siap diverifikasi oleh bidan.
      */
     public function verifikasi(): JsonResponse
     {
-        $balitaList = Balita::with([
-            'orangTua.user',
-            'pengukuran' => function ($q) {
-                $q->with('verifikasi')->latest('tanggal_pengukuran');
-            },
-        ])->get();
+        // Hanya ambil balita yang sudah memiliki data pengukuran di posyandu
+        $balitaList = Balita::whereHas('pengukuran')
+            ->with([
+                'orangTua.user',
+                'pengukuran' => function ($q) {
+                    $q->with('verifikasi')->latest('tanggal_pengukuran')->latest('id');
+                },
+            ])->get();
 
         $data = $balitaList->map(function ($b) {
             $latestPengukuran = $b->pengukuran->first();

@@ -140,7 +140,7 @@
                 </div>
             </div>
 
-<a href="{{ route('kader.dashboard.export-excel') }}" class="btn-export">
+<a href="{{ route(Auth::user()->role . '.dashboard.export-excel') }}" class="btn-export">
     <i class="fa-solid fa-download"></i>
     Ekspor Data
 </a>
@@ -406,76 +406,7 @@
         },
     });
 
-//         // Ekspor data tren prevalensi ke CSV
 
-// const exportButton = document.getElementById('exportTrendData');
-
-// if (exportButton) {
-//     exportButton.addEventListener('click', async function () {
-//         try {
-//             const workbook = new ExcelJS.Workbook();
-//             const worksheet = workbook.addWorksheet('Tren Prevalensi');
-
-//             worksheet.columns = [
-//                 { header: 'Bulan', key: 'bulan', width: 20 },
-//                 { header: 'Prevalensi Stunting (%)', key: 'prevalensi', width: 28 },
-//                 { header: 'Target Nasional (%)', key: 'target', width: 22 }
-//             ];
-
-//             labels.forEach((bulan, index) => {
-//                 worksheet.addRow({
-//                     bulan: bulan,
-//                     prevalensi: data[index] ?? 0,
-//                     target: 14
-//                 });
-//             });
-
-//             // Pastikan grafik selesai dirender sebelum diambil
-//             const chart = Chart.getChart('trendChart');
-
-//             if (!chart) {
-//                 alert('Grafik belum tersedia.');
-//                 return;
-//             }
-
-//             chart.update('none');
-
-//             const canvas = document.getElementById('trendChart');
-//             const imageBase64 = canvas.toDataURL('image/png').split(',')[1];
-
-//             const imageId = workbook.addImage({
-//                 base64: imageBase64,
-//                 extension: 'png'
-//             });
-
-//             worksheet.addImage(imageId, {
-//                 tl: { col: 0, row: labels.length + 3 },
-//                 ext: { width: 700, height: 350 }
-//             });
-
-//             worksheet.getRow(1).font = { bold: true };
-
-//             const buffer = await workbook.xlsx.writeBuffer();
-//             const blob = new Blob([buffer], {
-//                 type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-//             });
-
-//             const url = URL.createObjectURL(blob);
-//             const link = document.createElement('a');
-
-//             link.href = url;
-//             link.download = 'laporan-tren-prevalensi-stunting.xlsx';
-//             document.body.appendChild(link);
-//             link.click();
-//             link.remove();
-
-//             setTimeout(() => URL.revokeObjectURL(url), 1000);
-//         } catch (error) {
-//             console.error('Gagal mengekspor Excel:', error);
-//             alert('Gagal mengekspor Excel. Periksa Console browser.');
-//         }
-//     });
-// }
 
 })();
 </script>

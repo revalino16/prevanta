@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Kader;
 use App\Http\Controllers\OrangTua;
 use App\Http\Controllers\OrangTua\EdukasiController;
+use App\Http\Controllers\OrangTua\ProfilController;
 use Illuminate\Support\Facades\Route;
 
 // Landing Page
@@ -58,6 +59,12 @@ Route::middleware(['auth', 'role:orang_tua'])
 
         Route::get('/balita/{balita}/tindak-lanjut', [OrangTua\AnakkuController::class, 'tindakLanjut'])
             ->name('balita.tindak-lanjut');
+
+        Route::get('/profil', [ProfilController::class, 'edit'])
+            ->name('profil.edit');
+
+        Route::put('/profil', [ProfilController::class, 'update'])
+            ->name('profil.update');
     });
 
 // =====================================================
@@ -70,6 +77,9 @@ Route::middleware(['auth', 'role:bidan'])
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/dashboard/ekspor-excel', [DashboardController::class, 'exportTrendExcel'])
+            ->name('dashboard.export-excel');
 
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])
             ->name('monitoringbalita');

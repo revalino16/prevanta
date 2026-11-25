@@ -261,7 +261,7 @@
                             </span>
                             <input type="text" id="name" name="name"
                                 class="input-field @error('name') error @enderror" placeholder="Masukkan nama lengkap"
-                                value="{{ old('name') }}" autocomplete="name">
+                                value="{{ old('name') }}" minlength="2" maxlength="60" autocomplete="name">
                         </div>
                         @error('name')
                             <p class="error-msg">
@@ -318,7 +318,7 @@
                             </span>
                             <input type="email" id="email" name="email"
                                 class="input-field @error('email') error @enderror" placeholder="Masukkan email"
-                                value="{{ old('email') }}" autocomplete="email">
+                                value="{{ old('email') }}" maxlength="100" autocomplete="email">
                         </div>
                         @error('email')
                             <p class="error-msg">
@@ -345,7 +345,7 @@
                             </span>
                             <input type="password" id="password" name="password"
                                 class="input-field @error('password') error @enderror pr-10"
-                                placeholder="Minimal 8 karakter" autocomplete="new-password">
+                                placeholder="8–64 karakter" minlength="8" maxlength="64" autocomplete="new-password">
                             <button type="button" onclick="togglePass('password','eyePass')"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition">
                                 <svg id="eyePass" class="w-4 h-4" fill="none" stroke="currentColor"
@@ -410,7 +410,7 @@
                             </span>
                             <input type="password" id="password_confirmation" name="password_confirmation"
                                 class="input-field pr-10" placeholder="Ulangi kata sandi"
-                                autocomplete="new-password">
+                                minlength="8" maxlength="64" autocomplete="new-password">
                             <button type="button" onclick="togglePass('password_confirmation','eyeConfirm')"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition">
                                 <svg id="eyeConfirm" class="w-4 h-4" fill="none" stroke="currentColor"
@@ -536,9 +536,13 @@
             this.value = this.value.replace(/\D/g, '');
         });
 
-        // --- Live Name: allow only letters and spaces ---
+        // --- Live Name: allow only letters and spaces (max 60 chars) ---
         document.getElementById('name').addEventListener('input', function() {
-            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+            this.value = this.value
+                .replace(/[^a-zA-Z\s]/g, '')
+                .replace(/^\s+/, '')
+                .replace(/\s{2,}/g, ' ')
+                .slice(0, 60);
         });
 
         // --- Client-side validation on submit ---
@@ -599,12 +603,17 @@
                 errors.push(msg);
             }
 
-            // Validate name (required + only letters)
-            const nameVal = fields.name.el.value.trim();
+            // Validate name (required + only letters/spaces + 2-60 chars)
+            const nameVal = fields.name.el.value.trim().replace(/\s+/g, ' ');
+            fields.name.el.value = nameVal;
             if (!nameVal) {
                 addErr('name', 'Nama lengkap wajib diisi.');
-            } else if (!/^[a-zA-Z\s]+$/.test(nameVal)) {
-                addErr('name', 'Nama hanya boleh mengandung huruf dan spasi.');
+            } else if (nameVal.length < 2) {
+                addErr('name', 'Nama lengkap minimal 2 karakter.');
+            } else if (nameVal.length > 60) {
+                addErr('name', 'Nama lengkap maksimal 60 karakter.');
+            } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(nameVal)) {
+                addErr('name', 'Nama lengkap hanya boleh berisi huruf dan spasi.');
             }
 
             // Validate NIK (required + exactly 16 digits)
@@ -619,6 +628,8 @@
             const emailVal = fields.email.el.value.trim();
             if (!emailVal) {
                 addErr('email', 'Email wajib diisi.');
+            } else if (emailVal.length > 100) {
+                addErr('email', 'Email maksimal 100 karakter.');
             } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
                 addErr('email', 'Format email tidak valid.');
             }
@@ -647,6 +658,8 @@
                 addErr('password', 'Kata sandi wajib diisi.');
             } else if (passVal.length < 8) {
                 addErr('password', 'Kata sandi minimal 8 karakter.');
+            } else if (passVal.length > 64) {
+                addErr('password', 'Kata sandi maksimal 64 karakter.');
             }
 
             // Validate confirm password

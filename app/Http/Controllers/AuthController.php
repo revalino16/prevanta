@@ -86,12 +86,20 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        if (is_string($request->input('name'))) {
+            $request->merge([
+                'name' => preg_replace('/\s+/', ' ', trim($request->input('name'))) ?? '',
+            ]);
+        }
+
         // Validasi data registrasi
         $request->validate([
             'name' => [
                 'required',
-                'regex:/^[a-zA-Z\s\.\'\-]+$/',
-                'max:100',
+                'string',
+                'min:2',
+                'max:60',
+                'regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/',
             ],
 
             'nik' => [
@@ -102,7 +110,9 @@ class AuthController extends Controller
 
             'email' => [
                 'required',
+                'string',
                 'email',
+                'max:100',
                 'unique:users,email',
             ],
 
@@ -123,13 +133,16 @@ class AuthController extends Controller
 
             'password' => [
                 'required',
+                'string',
                 'min:8',
+                'max:64',
                 'confirmed',
             ],
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
-            'name.regex' => 'Nama hanya boleh mengandung huruf, spasi, titik, tanda petik, atau tanda hubung.',
-            'name.max' => 'Nama maksimal 100 karakter.',
+            'name.min' => 'Nama lengkap minimal 2 karakter.',
+            'name.max' => 'Nama lengkap maksimal 60 karakter.',
+            'name.regex' => 'Nama lengkap hanya boleh berisi huruf dan spasi.',
 
             'nik.required' => 'NIK wajib diisi.',
             'nik.digits' => 'NIK harus tepat 16 digit angka.',
@@ -137,6 +150,7 @@ class AuthController extends Controller
 
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
+            'email.max' => 'Email maksimal 100 karakter.',
             'email.unique' => 'Email sudah digunakan.',
 
             'no_hp.required' => 'No. HP wajib diisi.',
@@ -150,6 +164,7 @@ class AuthController extends Controller
 
             'password.required' => 'Kata sandi wajib diisi.',
             'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password.max' => 'Kata sandi maksimal 64 karakter.',
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
         ]);
 

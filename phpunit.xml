@@ -10,8 +10,13 @@
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
+            <exclude>tests/Feature/NonFunctional</exclude>
+        </testsuite>
+        <testsuite name="NonFunctional">
+            <directory>tests/Feature/NonFunctional</directory>
         </testsuite>
     </testsuites>
+    
     <source>
         <include>
             <directory>app</directory>

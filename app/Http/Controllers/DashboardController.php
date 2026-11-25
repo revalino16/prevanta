@@ -6,15 +6,14 @@ use App\Models\Balita;
 use App\Models\Pengukuran;
 use Carbon\Carbon;
 use Illuminate\View\View;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Chart\Chart;
 use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
 use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
 use PhpOffice\PhpSpreadsheet\Chart\Legend;
 use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DashboardController extends Controller
 {
@@ -149,31 +148,42 @@ class DashboardController extends Controller
         ));
     }
 
+    public function exportTrendExcel()
+    {
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
 
+        $sheet->setTitle('Tren Prevalensi');
 
-public function exportTrendExcel()
-{
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
+        // Header tabel
+        $sheet->setCellValue('A1', 'Bulan');
+        $sheet->setCellValue('B1', 'Prevalensi Stunting (%)');
+        $sheet->setCellValue('C1', 'Target Nasional (%)');
 
-    $sheet->setTitle('Tren Prevalensi');
+        // Ambil data enam bulan terakhir
+        $labels = [];
+        $values = [];
 
-    // Header tabel
-    $sheet->setCellValue('A1', 'Bulan');
-    $sheet->setCellValue('B1', 'Prevalensi Stunting (%)');
-    $sheet->setCellValue('C1', 'Target Nasional (%)');
+        for ($i = 5; $i >= 0; $i--) {
+            $bulan = Carbon::now('Asia/Jakarta')
+                ->startOfMonth()
+                ->subMonths($i);
 
-    // Ambil data enam bulan terakhir
-    $labels = [];
-    $values = [];
+            $awalBulan = $bulan->copy()->startOfMonth();
+            $akhirBulan = $bulan->copy()->endOfMonth();
 
-    for ($i = 5; $i >= 0; $i--) {
-        $bulan = Carbon::now('Asia/Jakarta')
-            ->startOfMonth()
-            ->subMonths($i);
+            $total = Pengukuran::whereBetween(
+                'tanggal_pengukuran',
+                [$awalBulan, $akhirBulan]
+            )->count();
 
-        $awalBulan = $bulan->copy()->startOfMonth();
-        $akhirBulan = $bulan->copy()->endOfMonth();
+            $stunting = Pengukuran::whereBetween(
+                'tanggal_pengukuran',
+                [$awalBulan, $akhirBulan]
+            )->whereIn('status_pertumbuhan', [
+                'pendek',
+                'sangat pendek',
+            ])->count();
 
         $total = Pengukuran::whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
             ->whereBetween(
@@ -189,115 +199,117 @@ public function exportTrendExcel()
                 'pendek',
                 'sangat pendek',
             ])->count();
+            $prevalensi = $total > 0
+                ? round(($stunting / $total) * 100, 2)
+                : 0;
 
-        $prevalensi = $total > 0
-            ? round(($stunting / $total) * 100, 2)
-            : 0;
+            $labels[] = $bulan->translatedFormat('M Y');
+            $values[] = $prevalensi;
+        }
 
-        $labels[] = $bulan->translatedFormat('M Y');
-        $values[] = $prevalensi;
+        // Masukkan data ke tabel Excel
+        foreach ($labels as $index => $label) {
+            $row = $index + 2;
+
+            $sheet->setCellValue("A{$row}", $label);
+            $sheet->setCellValue("B{$row}", $values[$index]);
+            $sheet->setCellValue("C{$row}", 14);
+        }
+
+        // Atur tampilan tabel
+        $sheet->getStyle('A1:C1')->getFont()->setBold(true);
+
+        foreach (['A', 'B', 'C'] as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        // Nama seri grafik
+        $seriesLabels = [
+            new DataSeriesValues(
+                DataSeriesValues::DATASERIES_TYPE_STRING,
+                "'Tren Prevalensi'!\$B\$1",
+                null,
+                1
+            ),
+            new DataSeriesValues(
+                DataSeriesValues::DATASERIES_TYPE_STRING,
+                "'Tren Prevalensi'!\$C\$1",
+                null,
+                1
+            ),
+        ];
+
+        // Label bulan pada sumbu horizontal (satu per seri data)
+        $categories = [
+            new DataSeriesValues(
+                DataSeriesValues::DATASERIES_TYPE_STRING,
+                "'Tren Prevalensi'!\$A\$2:\$A\$7",
+                null,
+                6
+            ),
+            new DataSeriesValues(
+                DataSeriesValues::DATASERIES_TYPE_STRING,
+                "'Tren Prevalensi'!\$A\$2:\$A\$7",
+                null,
+                6
+            ),
+        ];
+
+        // Nilai untuk kedua garis
+        $dataSeriesValues = [
+            new DataSeriesValues(
+                DataSeriesValues::DATASERIES_TYPE_NUMBER,
+                "'Tren Prevalensi'!\$B\$2:\$B\$7",
+                null,
+                6
+            ),
+            new DataSeriesValues(
+                DataSeriesValues::DATASERIES_TYPE_NUMBER,
+                "'Tren Prevalensi'!\$C\$2:\$C\$7",
+                null,
+                6
+            ),
+        ];
+
+        // Buat satu grafik garis dengan dua seri data
+        $series = [
+            new DataSeries(
+                DataSeries::TYPE_LINECHART,
+                DataSeries::GROUPING_STANDARD,
+                [0, 1],
+                $seriesLabels,
+                $categories,
+                $dataSeriesValues
+            ),
+        ];
+
+        $chart = new Chart(
+            'trenPrevalensi',
+            new Title('Tren Prevalensi Stunting'),
+            new Legend(Legend::POSITION_BOTTOM),
+            new PlotArea(null, $series)
+        );
+
+        $chart->setTopLeftPosition('E2');
+        $chart->setBottomRightPosition('N18');
+
+        // Tambahkan grafik asli ke worksheet
+        $sheet->addChart($chart);
+
+        // Ekspor file Excel beserta grafiknya
+        $filename = 'tren_prevalensi_stunting.xlsx';
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->setIncludeCharts(true);
+
+        return response()->streamDownload(
+            function () use ($writer) {
+                $writer->save('php://output');
+            },
+            $filename,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]
+        );
     }
-
-    // Masukkan data ke tabel Excel
-    foreach ($labels as $index => $label) {
-        $row = $index + 2;
-
-        $sheet->setCellValue("A{$row}", $label);
-        $sheet->setCellValue("B{$row}", $values[$index]);
-        $sheet->setCellValue("C{$row}", 14);
-    }
-
-    // Atur tampilan tabel
-    $sheet->getStyle('A1:C1')->getFont()->setBold(true);
-
-    foreach (['A', 'B', 'C'] as $column) {
-        $sheet->getColumnDimension($column)->setAutoSize(true);
-    }
-
-    // Nama seri grafik
-    $seriesLabels = [
-        new DataSeriesValues(
-            DataSeriesValues::DATASERIES_TYPE_STRING,
-            "'Tren Prevalensi'!\$B\$1",
-            null,
-            1
-        ),
-        new DataSeriesValues(
-            DataSeriesValues::DATASERIES_TYPE_STRING,
-            "'Tren Prevalensi'!\$C\$1",
-            null,
-            1
-        ),
-    ];
-
-    // Label bulan pada sumbu horizontal
-    $categories = [
-        new DataSeriesValues(
-            DataSeriesValues::DATASERIES_TYPE_STRING,
-            "'Tren Prevalensi'!\$A\$2:\$A\$7",
-            null,
-            6
-        ),
-    ];
-
-    // Nilai untuk kedua garis
-    $dataSeriesValues = [
-        new DataSeriesValues(
-            DataSeriesValues::DATASERIES_TYPE_NUMBER,
-            "'Tren Prevalensi'!\$B\$2:\$B\$7",
-            null,
-            6
-        ),
-        new DataSeriesValues(
-            DataSeriesValues::DATASERIES_TYPE_NUMBER,
-            "'Tren Prevalensi'!\$C\$2:\$C\$7",
-            null,
-            6
-        ),
-    ];
-
-    // Buat satu grafik garis dengan dua seri data
-    $series = [
-        new DataSeries(
-            DataSeries::TYPE_LINECHART,
-            DataSeries::GROUPING_STANDARD,
-            [0, 1],
-            $seriesLabels,
-            $categories,
-            $dataSeriesValues
-        ),
-    ];
-
-    $chart = new Chart(
-        'trenPrevalensi',
-        new Title('Tren Prevalensi Stunting'),
-        new Legend(Legend::POSITION_BOTTOM),
-        new PlotArea(null, $series)
-    );
-
-    $chart->setTopLeftPosition('E2');
-    $chart->setBottomRightPosition('N18');
-
-    // Tambahkan grafik asli ke worksheet
-    $sheet->addChart($chart);
-
-    // Ekspor file Excel beserta grafiknya
-    $filename = 'tren_prevalensi_stunting.xlsx';
-
-    $writer = new Xlsx($spreadsheet);
-    $writer->setIncludeCharts(true);
-
-    return response()->streamDownload(
-        function () use ($writer) {
-            $writer->save('php://output');
-        },
-        $filename,
-        [
-            'Content-Type' =>
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ]
-    );
-}
-
-
 }

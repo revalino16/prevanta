@@ -30,8 +30,18 @@ class OrangTuaBalitaSeederTest extends TestCase
 
         $defaultParent = Users::where('email', 'orangtua@gmail.com')->first();
         $this->assertNotNull($defaultParent);
+        $this->assertSame('Siti Aminah', $defaultParent->nama);
         $this->assertEquals('orang_tua', $defaultParent->role);
         $this->assertTrue(Hash::check('password123', $defaultParent->password));
+
+        $parents = Users::where('role', 'orang_tua')->get();
+        $this->assertNotEmpty($parents);
+
+        foreach ($parents as $parent) {
+            $this->assertMatchesRegularExpression('/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/', $parent->nama);
+            $this->assertGreaterThanOrEqual(2, strlen($parent->nama));
+            $this->assertLessThanOrEqual(60, strlen($parent->nama));
+        }
 
         $orangTua = OrangTua::where('users_id', $defaultParent->id)->first();
         $this->assertNotNull($orangTua);

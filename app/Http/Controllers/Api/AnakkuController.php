@@ -154,6 +154,7 @@ class AnakkuController extends Controller
             ]);
         }
 
+        $notifCount = Jadwal::where('tanggal', '>=', $now->toDateString())->count();
         $namaPosyandu = 'Posyandu Terpadu Prevanta';
         $sapaan = ($user?->nama ?? $orangTua?->user?->nama ?? 'Bunda & Ayah') . '!';
         $tglHariIni = $now->locale('id')->translatedFormat('l, d F Y');
@@ -164,7 +165,7 @@ class AnakkuController extends Controller
             'message' => 'Data dashboard anakku berhasil dimuat.',
             'data' => [
                 'posyandu_nama' => $namaPosyandu,
-                'notif_count' => 0,
+                'notif_count' => $notifCount,
                 'sapaan_keluarga' => $sapaan,
                 'tanggal_hari_ini' => $tglHariIni,
                 'periode_siklus' => $periodeSiklus,
@@ -360,6 +361,8 @@ class AnakkuController extends Controller
             ];
         }
 
+        $notifCount = Jadwal::where('tanggal', '>=', $now->toDateString())->count();
+
         return response()->json([
             'success' => true,
             'message' => 'Data KMS balita berhasil dimuat.',
@@ -374,7 +377,7 @@ class AnakkuController extends Controller
                 'nama_orang_tua'       => $namaOrtu,
                 'domisili'             => $balita->alamat ?? '-',
                 'posyandu_nama'        => 'Posyandu Terpadu Prevanta',
-                'notif_count'          => 0,
+                'notif_count'          => $notifCount,
                 'pengukuran_terakhir'  => $pengukuranTerakhirData,
                 'imunisasi_vitamin'    => [],
                 'charts'               => [
@@ -668,12 +671,14 @@ class AnakkuController extends Controller
             ? Carbon::parse($pengukuranTerbaru->tanggal_pengukuran)->locale('id')->translatedFormat('d F Y')
             : $now->locale('id')->translatedFormat('d F Y');
 
+        $notifCount = Jadwal::where('tanggal', '>=', $now->toDateString())->count();
+
         return response()->json([
             'success' => true,
             'message' => 'Data riwayat balita berhasil dimuat.',
             'data' => [
                 'posyandu_nama' => 'Posyandu Terpadu Prevanta',
-                'notif_count' => 0,
+                'notif_count' => $notifCount,
                 'status_pendampingan' => $statusPendampingan,
                 'anak_aktif' => $anakAktifData,
                 'daftar_anak' => $daftarAnak,

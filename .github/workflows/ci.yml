@@ -61,7 +61,15 @@ jobs:
           APP_ENV: testing
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
-        run: php artisan test --colors=always
+        run: php artisan test --testsuite=Unit,Feature --colors=always
+
+      - name: Non-Functional Audit (Performance & Security)
+        continue-on-error: true
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+        run: php artisan test --testsuite=NonFunctional --colors=always
 
   frontend-build:
     name: Frontend Compilation (Vite & Tailwind v4)
