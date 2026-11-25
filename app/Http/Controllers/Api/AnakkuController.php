@@ -35,7 +35,8 @@ class AnakkuController extends Controller
             ? $orangTua->balita()
                 ->with([
                     'pengukuran' => function ($query) {
-                        $query->with('verifikasi')
+                        $query->whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
+                            ->with('verifikasi')
                             ->orderByDesc('tanggal_pengukuran')
                             ->orderByDesc('id');
                     },
@@ -46,7 +47,8 @@ class AnakkuController extends Controller
         // Fallback jika belum terkait tapi ada balita di database
         if ($balitaList->isEmpty() && (! $orangTua || $balitaList->count() === 0)) {
             $firstOt = OrangTua::with(['balita.pengukuran' => function ($query) {
-                $query->with('verifikasi')->orderByDesc('tanggal_pengukuran')->orderByDesc('id');
+                $query->whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
+                    ->with('verifikasi')->orderByDesc('tanggal_pengukuran')->orderByDesc('id');
             }])->first();
 
             if ($firstOt && $firstOt->balita->isNotEmpty()) {
@@ -214,8 +216,9 @@ class AnakkuController extends Controller
             ? $balitaList->firstWhere('id', (int) $balitaId) ?? $balitaList->first()
             : $balitaList->first();
 
-        // Load semua pengukuran balita ini (urut dari yang paling lama → paling baru)
+        // Load hanya pengukuran yang sudah terverifikasi (urut dari paling lama → paling baru)
         $allPengukuran = $balita->pengukuran()
+            ->whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
             ->with(['verifikasi.bidan', 'kader'])
             ->orderBy('tanggal_pengukuran')
             ->orderBy('id')
@@ -406,7 +409,8 @@ class AnakkuController extends Controller
             ? $orangTua->balita()
                 ->with([
                     'pengukuran' => function ($q) {
-                        $q->with(['verifikasi.bidan', 'kader'])
+                        $q->whereHas('verifikasi', fn ($sq) => $sq->where('status', 'terverifikasi'))
+                            ->with(['verifikasi.bidan', 'kader'])
                             ->orderByDesc('tanggal_pengukuran')
                             ->orderByDesc('id');
                     },
@@ -417,7 +421,8 @@ class AnakkuController extends Controller
         // Fallback jika belum terkait
         if ($balitaList->isEmpty() && (! $orangTua || $balitaList->count() === 0)) {
             $firstOt = OrangTua::with(['balita.pengukuran' => function ($q) {
-                $q->with(['verifikasi.bidan', 'kader'])->orderByDesc('tanggal_pengukuran')->orderByDesc('id');
+                $q->whereHas('verifikasi', fn ($sq) => $sq->where('status', 'terverifikasi'))
+                    ->with(['verifikasi.bidan', 'kader'])->orderByDesc('tanggal_pengukuran')->orderByDesc('id');
             }])->first();
 
             if ($firstOt && $firstOt->balita->isNotEmpty()) {
@@ -485,8 +490,9 @@ class AnakkuController extends Controller
             'info_posyandu' => 'Posyandu Terpadu • Data tersinkronisasi KMS',
         ];
 
-        // Pengukuran balita aktif
+        // Pengukuran balita aktif — hanya yang sudah terverifikasi
         $semuaPengukuran = $balitaAktif->pengukuran()
+            ->whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
             ->with(['verifikasi.bidan', 'kader'])
             ->orderByDesc('tanggal_pengukuran')
             ->orderByDesc('id')

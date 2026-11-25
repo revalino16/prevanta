@@ -41,6 +41,11 @@ class AuthController extends Controller
             ]);
         }
 
+        if (Hash::needsRehash($user->password)) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
+
         // Login user
         Auth::login($user, $request->boolean('remember'));
 

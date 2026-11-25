@@ -171,6 +171,9 @@ class BalitaController extends Controller
                 'tanggal_lahir' => $item->tanggal_lahir ? Carbon::parse($item->tanggal_lahir)->format('Y-m-d') : null,
                 'jenis_kelamin' => $item->jenis_kelamin,
                 'alamat' => $item->alamat,
+                'foto_profil' => $item->foto_profil,
+                'foto_profil_url' => $item->foto_profil_url,
+                'inisial' => $item->inisial,
                 'orang_tua' => $item->orangTua ? [
                     'id' => $item->orangTua->id,
                     'nik' => $item->orangTua->nik,
@@ -244,10 +247,25 @@ class BalitaController extends Controller
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat' => 'required|string',
+            'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
         ], [
             'nama.regex' => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh melebihi hari ini.',
+            'foto_profil.image' => 'File foto profil harus berupa gambar.',
+            'foto_profil.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'foto_profil.max' => 'Ukuran foto profil maksimal 3 MB.',
         ]);
+
+        if ($request->hasFile('foto_profil')) {
+            $file = $request->file('foto_profil');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/balita');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $validated['foto_profil'] = 'uploads/balita/' . $filename;
+        }
 
         $balita = Balita::create($validated);
 
@@ -296,6 +314,9 @@ class BalitaController extends Controller
                 'tanggal_lahir' => $balita->tanggal_lahir ? Carbon::parse($balita->tanggal_lahir)->format('Y-m-d') : null,
                 'jenis_kelamin' => $balita->jenis_kelamin,
                 'alamat' => $balita->alamat,
+                'foto_profil' => $balita->foto_profil,
+                'foto_profil_url' => $balita->foto_profil_url,
+                'inisial' => $balita->inisial,
                 'orang_tua' => $balita->orangTua ? [
                     'id' => $balita->orangTua->id,
                     'nik' => $balita->orangTua->nik,
@@ -335,10 +356,28 @@ class BalitaController extends Controller
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat' => 'nullable|string',
+            'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
         ], [
             'nama.regex' => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh melebihi hari ini.',
+            'foto_profil.image' => 'File foto profil harus berupa gambar.',
+            'foto_profil.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'foto_profil.max' => 'Ukuran foto profil maksimal 3 MB.',
         ]);
+
+        if ($request->hasFile('foto_profil')) {
+            if ($balita->foto_profil && file_exists(public_path($balita->foto_profil))) {
+                @unlink(public_path($balita->foto_profil));
+            }
+            $file = $request->file('foto_profil');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/balita');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $validated['foto_profil'] = 'uploads/balita/' . $filename;
+        }
 
         $balita->update($validated);
 
@@ -357,6 +396,11 @@ class BalitaController extends Controller
     public function destroy(int|string $id): JsonResponse
     {
         $balita = Balita::findOrFail($id);
+
+        if ($balita->foto_profil && file_exists(public_path($balita->foto_profil))) {
+            @unlink(public_path($balita->foto_profil));
+        }
+
         $balita->delete();
 
         return response()->json([

@@ -61,6 +61,38 @@ class HeightForAgeZScoreCalculator
         ],
     ];
 
+    /**
+     * Mengambil nilai referensi kurva standar WHO (Median, +3, +2, -2, -3 SD) untuk bulan tertentu.
+     *
+     * @return array{median: float, sd: float, sd_plus_3: float, sd_plus_2: float, sd_0: float, sd_minus_2: float, sd_minus_3: float}
+     */
+    public static function getReferenceForMonth(string $sex, int $month): array
+    {
+        $sex = strtoupper($sex) === 'P' ? 'P' : 'L';
+
+        if ($month <= 24) {
+            $m = min(24, max(0, $month));
+            $median = self::LENGTH_REFERENCES[$sex]['median'][$m];
+            $coeff = self::LENGTH_REFERENCES[$sex]['coefficient'][$m];
+        } else {
+            $m = min(36, max(0, $month - 24));
+            $median = self::HEIGHT_REFERENCES[$sex]['median'][$m];
+            $coeff = self::HEIGHT_REFERENCES[$sex]['coefficient'][$m];
+        }
+
+        $sd = $median * $coeff;
+
+        return [
+            'median' => round($median, 2),
+            'sd' => round($sd, 2),
+            'sd_plus_3' => round($median + (3 * $sd), 2),
+            'sd_plus_2' => round($median + (2 * $sd), 2),
+            'sd_0' => round($median, 2),
+            'sd_minus_2' => round($median - (2 * $sd), 2),
+            'sd_minus_3' => round($median - (3 * $sd), 2),
+        ];
+    }
+
     public function calculate(
         string $sex,
         CarbonInterface $birthDate,

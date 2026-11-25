@@ -21,14 +21,16 @@ class DashboardController extends Controller
         // Total balita terdaftar
         $totalBalita = Balita::count();
 
-        // Balita diukur bulan ini (unique per balita)
-        $hadirDitimbang = Pengukuran::whereMonth('tanggal_pengukuran', $now->month)
+        // Balita diukur bulan ini (unique per balita) — hanya yang terverifikasi
+        $hadirDitimbang = Pengukuran::whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
+            ->whereMonth('tanggal_pengukuran', $now->month)
             ->whereYear('tanggal_pengukuran', $now->year)
             ->distinct('balita_id')
             ->count('balita_id');
 
-        // Status terbaru per balita (DI BULAN INI)
-        $latestIds = Pengukuran::whereMonth('tanggal_pengukuran', $now->month)
+        // Status terbaru per balita (DI BULAN INI) — hanya yang terverifikasi
+        $latestIds = Pengukuran::whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
+            ->whereMonth('tanggal_pengukuran', $now->month)
             ->whereYear('tanggal_pengukuran', $now->year)
             ->selectRaw('MAX(id) as id')
             ->groupBy('balita_id')
@@ -56,7 +58,8 @@ class DashboardController extends Controller
 
         for ($i = 5; $i >= 0; $i--) {
             $tgl = $now->copy()->subMonths($i);
-            $records = Pengukuran::whereMonth('tanggal_pengukuran', $tgl->month)
+            $records = Pengukuran::whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
+                ->whereMonth('tanggal_pengukuran', $tgl->month)
                 ->whereYear('tanggal_pengukuran', $tgl->year)
                 ->get();
 
@@ -117,8 +120,9 @@ class DashboardController extends Controller
         $stat023 = $hitungStatus($group023);
         $stat2459 = $hitungStatus($group2459);
 
-        // Total diukur hari ini
-        $totalDiukurHariIni = Pengukuran::whereDate('tanggal_pengukuran', $now->toDateString())
+        // Total diukur hari ini — hanya yang terverifikasi
+        $totalDiukurHariIni = Pengukuran::whereHas('verifikasi', fn ($q) => $q->where('status', 'terverifikasi'))
+            ->whereDate('tanggal_pengukuran', $now->toDateString())
             ->distinct('balita_id')
             ->count('balita_id');
 

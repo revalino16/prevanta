@@ -479,6 +479,341 @@
     flex-shrink: 0;
 }
 
+/* ========================================================
+   STANDAR FISIK GRAFIK KMS WHO / BUKU KIA KEMENKES
+   ======================================================== */
+.who-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border: 1px solid #e5dbd5;
+}
+
+.who-theme-l {
+    background: linear-gradient(135deg, #ebf4fb 0%, #d8ecf8 100%);
+    border-color: #b8d9f0;
+}
+
+.who-theme-p {
+    background: linear-gradient(135deg, #fdf0f4 0%, #fae3eb 100%);
+    border-color: #f2c6d7;
+}
+
+.who-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.who-header-badge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #486581;
+}
+
+.who-theme-p .who-header-badge {
+    color: #8c4260;
+}
+
+.who-header-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #102a43;
+    margin: 0;
+}
+
+.who-theme-p .who-header-title {
+    color: #491224;
+}
+
+.who-gender-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 999px;
+}
+
+.who-gender-l {
+    background: #0b69a3;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(11, 105, 163, 0.25);
+}
+
+.who-gender-p {
+    background: #b83265;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(184, 50, 101, 0.25);
+}
+
+.who-chart-wrapper {
+    background: #ffffff;
+    border: 1px solid #dcd3cb;
+    border-radius: 12px;
+    padding: 12px 6px;
+    box-shadow: 0 2px 8px rgba(30, 20, 10, 0.04);
+}
+
+.who-chart-canvas-bg {
+    fill: #ffffff;
+}
+
+/* Milimeter Blok Grid Styles */
+.who-grid-minor {
+    stroke: #f1eae2;
+    stroke-width: 0.7;
+}
+
+.who-grid-five {
+    stroke: #e0d5c8;
+    stroke-width: 0.9;
+}
+
+.who-grid-ten {
+    stroke: #c8b9a9;
+    stroke-width: 1.2;
+}
+
+.who-grid-step {
+    stroke: #ded4c8;
+    stroke-width: 1;
+}
+
+.who-grid-year {
+    stroke: #b5a494;
+    stroke-width: 1.4;
+}
+
+.who-chart-frame {
+    fill: none;
+    stroke: #806f60;
+    stroke-width: 1.6;
+}
+
+/* Axis Numbers */
+.who-axis-num {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    fill: #483d34;
+}
+
+.who-num-left {
+    text-anchor: end;
+}
+
+.who-num-right {
+    text-anchor: start;
+}
+
+.who-x-label {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    fill: #3b3026;
+    text-anchor: middle;
+}
+
+.who-title-axis-x {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    fill: #2c2118;
+    text-anchor: middle;
+}
+
+.who-title-axis-y {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    fill: #2c2118;
+}
+
+/* Kurva WHO Baku */
+.who-curve {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.who-curve-neutral {
+    stroke: #333333;
+    stroke-width: 1.5;
+}
+
+.who-curve-green {
+    stroke: #d9383a; /* Garis +2 SD merah khas WHO */
+    stroke-width: 1.8;
+}
+
+.who-curve-median {
+    stroke: #008542; /* Garis Median Hijau Tebal Khas WHO */
+    stroke-width: 2.6;
+}
+
+.who-curve-amber {
+    stroke: #d9383a; /* Garis -2 SD Merah Batas Stunting Khas WHO */
+    stroke-width: 2.2;
+}
+
+.who-curve-red {
+    stroke: #111111; /* Garis -3 SD Hitam Tegas Khas WHO */
+    stroke-width: 1.8;
+}
+
+/* Badge Z-score di Ujung Kurva */
+.who-badge-bg {
+    stroke-width: 1;
+}
+
+.who-badge-bg-neutral {
+    fill: #f0f0f0;
+    stroke: #555555;
+}
+
+.who-badge-bg-green {
+    fill: #fff0f0;
+    stroke: #d9383a;
+}
+
+.who-badge-bg-median {
+    fill: #e6f6ed;
+    stroke: #008542;
+}
+
+.who-badge-bg-amber {
+    fill: #fff0f0;
+    stroke: #d9383a;
+}
+
+.who-badge-bg-red {
+    fill: #333333;
+    stroke: #111111;
+}
+
+.who-badge-text {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    text-anchor: start;
+}
+
+.who-badge-text-neutral {
+    fill: #222222;
+}
+
+.who-badge-text-green {
+    fill: #d9383a;
+}
+
+.who-badge-text-median {
+    fill: #008542;
+}
+
+.who-badge-text-amber {
+    fill: #d9383a;
+}
+
+.who-badge-text-red {
+    fill: #111111;
+}
+
+/* Garis Plot Pengukuran Balita */
+.who-child-line {
+    fill: none;
+    stroke: #1b2a4a;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.who-child-point {
+    fill: #ffffff;
+    stroke: #1b2a4a;
+    stroke-width: 3.5;
+    cursor: pointer;
+    transition: r 0.2s ease, fill 0.2s ease;
+}
+
+.who-child-point:hover {
+    r: 7.5;
+    fill: #1b2a4a;
+}
+
+.chart-axis-title {
+    fill: var(--ink-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+.chart-who-curve {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.chart-who-neutral {
+    stroke: #b5aba2;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+}
+
+.chart-who-green {
+    stroke: #52a874;
+    stroke-width: 1.8;
+}
+
+.chart-who-median {
+    stroke: #2b7a4b;
+    stroke-width: 2.2;
+}
+
+.chart-who-amber {
+    stroke: #d99b26;
+    stroke-width: 2;
+}
+
+.chart-who-red {
+    stroke: #d9435e;
+    stroke-width: 2;
+}
+
+.chart-who-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    text-anchor: start;
+}
+
+.chart-who-label-neutral {
+    fill: #8f847a;
+}
+
+.chart-who-label-green {
+    fill: #2f8352;
+}
+
+.chart-who-label-median {
+    fill: #1b6037;
+}
+
+.chart-who-label-amber {
+    fill: #b37912;
+}
+
+.chart-who-label-red {
+    fill: #b52943;
+}
+
 .legend-line {
     border: 2px solid #91455a;
     background: #fff;

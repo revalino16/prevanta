@@ -56,9 +56,49 @@
 
         </div>
 
-        <form action="{{ route('kader.balita.store') }}" method="POST" id="tambahBalitaForm">
+        <form action="{{ route('kader.balita.store') }}" method="POST" id="tambahBalitaForm" enctype="multipart/form-data">
 
             @csrf
+
+            {{-- FOTO PROFIL BALITA (OPSIONAL) --}}
+            <div class="form-group">
+                <div class="form-label-row">
+                    <label>
+                        Foto Profil Balita <span style="font-size: 12px; font-weight: normal; color: var(--ink-soft);">(Opsional)</span>
+                    </label>
+                    <span class="field-hint-top">
+                        JPG, PNG, atau WebP (Maks. 3MB)
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 18px; margin-top: 8px;">
+                    <div id="avatarPreviewContainer" style="width: 72px; height: 72px; border-radius: 50%; background: #FDE8EF; border: 2px dashed #B02A5A; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 2px 8px rgba(176,42,90,0.12);">
+                        <img id="avatarPreviewImg" src="" alt="Preview Foto" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <span id="avatarPreviewInitial" style="font-size: 26px; font-weight: 800; color: #B02A5A;">B</span>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <input
+                            type="file"
+                            name="foto_profil"
+                            id="fotoProfilInput"
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
+                            style="display: none;"
+                        >
+                        <button type="button" onclick="document.getElementById('fotoProfilInput').click()" class="btn-cancel" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-size: 13px;">
+                            <i class="fa-solid fa-camera"></i>
+                            Pilih Foto Balita
+                        </button>
+                        <button type="button" id="btnHapusFoto" onclick="resetFotoProfil()" style="display: none; margin-left: 8px; background: none; border: none; color: #dc2626; font-size: 13px; font-weight: 600; cursor: pointer;">
+                            <i class="fa-regular fa-trash-can"></i> Hapus
+                        </button>
+                        <div class="form-hint" style="margin-top: 6px;">
+                            <i class="fa-regular fa-circle-question"></i>
+                            Jika tidak diisi, avatar otomatis menggunakan gambar inisial nama balita.
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {{-- NAMA BALITA --}}
             <div class="form-group">
@@ -412,4 +452,62 @@
 
 @push('scripts')
     @vite('resources/js/kader/create.js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById('fotoProfilInput');
+            const previewImg = document.getElementById('avatarPreviewImg');
+            const previewInitial = document.getElementById('avatarPreviewInitial');
+            const btnHapus = document.getElementById('btnHapusFoto');
+            const namaInput = document.querySelector('input[name="nama"]');
+
+            function updateInitial(name) {
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    const words = (name || '').trim().split(' ').filter(Boolean);
+                    let inisial = '';
+                    for (let i = 0; i < Math.min(words.length, 2); i++) {
+                        inisial += words[i].charAt(0).toUpperCase();
+                    }
+                    if (previewInitial) {
+                        previewInitial.textContent = inisial || 'B';
+                        previewInitial.style.display = 'block';
+                    }
+                    if (previewImg) previewImg.style.display = 'none';
+                }
+            }
+
+            if (namaInput) {
+                namaInput.addEventListener('input', function () {
+                    updateInitial(this.value);
+                });
+                updateInitial(namaInput.value);
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            if (previewImg) {
+                                previewImg.src = e.target.result;
+                                previewImg.style.display = 'block';
+                            }
+                            if (previewInitial) previewInitial.style.display = 'none';
+                            if (btnHapus) btnHapus.style.display = 'inline-flex';
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
+
+            window.resetFotoProfil = function () {
+                if (fileInput) fileInput.value = '';
+                if (previewImg) {
+                    previewImg.src = '';
+                    previewImg.style.display = 'none';
+                }
+                if (btnHapus) btnHapus.style.display = 'none';
+                if (namaInput) updateInitial(namaInput.value);
+            };
+        });
+    </script>
 @endpush

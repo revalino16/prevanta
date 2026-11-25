@@ -36,6 +36,11 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (Hash::needsRehash($user->password)) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
+
         if (! in_array($user->role, ['kader', 'bidan', 'orang_tua'])) {
             return response()->json([
                 'success' => false,

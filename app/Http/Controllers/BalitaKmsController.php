@@ -7,6 +7,7 @@ use App\Models\ImunisasiBalita;
 use App\Models\Pengukuran;
 use App\Models\Verifikasi;
 use App\Models\VitaminBalita;
+use App\Support\HeightForAgeZScoreCalculator;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -15,7 +16,7 @@ class BalitaKmsController extends Controller
 {
     private const CHART_LEFT = 68;
 
-    private const CHART_RIGHT = 892;
+    private const CHART_RIGHT = 860;
 
     private const CHART_TOP = 28;
 
@@ -24,14 +25,14 @@ class BalitaKmsController extends Controller
     public function __invoke(Balita $balita): View
     {
         $balita->load([
-            'pengukuran' => fn ($query) => $query->oldest('tanggal_pengukuran'),
+            'pengukuran' => fn($query) => $query->oldest('tanggal_pengukuran'),
             'pengukuran.kader',
             'pengukuran.verifikasi',
             'pengukuran.verifikasi.bidan',
-            'imunisasi' => fn ($query) => $query->latest('tanggal_pemberian'),
+            'imunisasi' => fn($query) => $query->latest('tanggal_pemberian'),
             'imunisasi.jenisImunisasi',
             'imunisasi.kader',
-            'vitamin' => fn ($query) => $query->latest('tanggal_pemberian'),
+            'vitamin' => fn($query) => $query->latest('tanggal_pemberian'),
             'vitamin.jenisVitamin',
             'vitamin.kader',
         ]);
@@ -39,16 +40,15 @@ class BalitaKmsController extends Controller
         $birthDate = Carbon::parse($balita->tanggal_lahir);
 
         $verifiedMeasurements = $balita->pengukuran
-            ->filter(fn (Pengukuran $m) => $m->verifikasi?->status === 'terverifikasi')
+            ->filter(fn(Pengukuran $m) => $m->verifikasi?->status === 'terverifikasi')
             ->values();
 
         $measurementHistory = $verifiedMeasurements
-            ->map(fn (Pengukuran $measurement): array => $this->measurementCard($measurement, $birthDate));
+            ->map(fn(Pengukuran $measurement): array => $this->measurementCard($measurement, $birthDate));
 
         $healthHistory = $this->healthHistory($balita, $birthDate);
 
-        $view = request()->user()->role === 'orang_tua'
-
+        $view = request()->user()?->role === 'orang_tua'
             ? 'orangtua.profil-balita'
             : 'kader.profil-balita';
 
@@ -56,10 +56,10 @@ class BalitaKmsController extends Controller
             'balita' => $balita,
             'birthDateLabel' => $this->dateLabel($birthDate),
             'currentAgeLabel' => $this->ageLabel($birthDate, now('Asia/Jakarta')),
-            'childCode' => 'BLT-'.str_pad((string) $balita->getKey(), 3, '0', STR_PAD_LEFT),
+            'childCode' => 'BLT-' . str_pad((string) $balita->getKey(), 3, '0', STR_PAD_LEFT),
             'latestMeasurement' => $measurementHistory->last(),
             'measurementHistory' => $measurementHistory->reverse()->values(),
-            'growthCharts' => $this->growthCharts($verifiedMeasurements, $birthDate),
+            'growthCharts' => $this->growthCharts($verifiedMeasurements, $birthDate, (string) ($balita->jenis_kelamin ?? 'L')),
             'healthHistory' => $healthHistory,
             'healthLastUpdated' => $healthHistory->first()['date'] ?? null,
         ]);
@@ -98,10 +98,10 @@ class BalitaKmsController extends Controller
      * @param  Collection<int, Pengukuran>  $measurements
      * @return array<string, array<string, mixed>>
      */
-    private function growthCharts(Collection $measurements, Carbon $birthDate): array
+    private function growthCharts(Collection $measurements, Carbon $birthDate, string $gender = 'L'): array
     {
         return [
-            'tb-u' => $this->heightForAgeChart($measurements, $birthDate),
+            'tb-u' => $this->heightForAgeChart($measurements, $birthDate, $gender),
             'bb-u' => $this->weightForAgeChart($measurements, $birthDate),
             'bb-tb' => $this->weightForHeightChart($measurements),
         ];
@@ -111,44 +111,164 @@ class BalitaKmsController extends Controller
      * @param  Collection<int, Pengukuran>  $measurements
      * @return array<string, mixed>
      */
-    private function heightForAgeChart(Collection $measurements, Carbon $birthDate): array
+    private function heightForAgeChart(Collection $measurements, Carbon $birthDate, string $gender = 'L'): array
     {
         $chartMeasurements = $measurements
-            ->filter(fn (Pengukuran $measurement): bool => $measurement->z_score !== null)
+            ->filter(fn(Pengukuran $measurement): bool => $measurement->tinggi_badan !== null)
             ->map(function (Pengukuran $measurement) use ($birthDate): array {
                 $measurementDate = Carbon::parse($measurement->tanggal_pengukuran);
                 $age = max(0, (int) $birthDate->diffInMonths($measurementDate));
+                $tb = (float) $measurement->tinggi_badan;
 
                 return [
                     'xValue' => (float) $age,
-                    'yValue' => (float) $measurement->z_score,
+                    'yValue' => $tb,
                     'tooltip' => $this->dateLabel($measurementDate)
-                        .' — usia '.$age.' bulan — '.$this->signedValue($measurement->z_score).' SD',
+                        . ' — Usia: ' . $age . ' Bulan — TB: ' . $this->measurementValue($tb) . ' cm'
+                        . ($measurement->z_score !== null ? ' (Z-Score: ' . $this->signedValue($measurement->z_score) . ' SD)' : ''),
                 ];
             })
+            ->sortBy('xValue')
             ->values();
 
-        [$maxAge, $ageStep] = $this->ageBounds($chartMeasurements->pluck('xValue'));
-        $points = $this->plotPoints($chartMeasurements, 0, $maxAge, -4, 3);
+        $latestAge = $chartMeasurements->pluck('xValue')->max() ?? 0;
+        $maxAge = $latestAge <= 24 ? 24 : 60;
+        $ageStep = $maxAge <= 24 ? 3 : 6;
+
+        $minY = 40.0;
+        $maxY = $maxAge <= 24 ? 100.0 : 130.0;
+        $yStep = 10.0;
+
+        $points = $this->plotPoints($chartMeasurements, 0, $maxAge, $minY, $maxY);
+
+        // Generate WHO Growth Curves & Polygon Zones
+        $whoCurveMonths = range(0, $maxAge);
+        $curvePlus3 = [];
+        $curvePlus2 = [];
+        $curveMedian = [];
+        $curveMinus2 = [];
+        $curveMinus3 = [];
+
+        foreach ($whoCurveMonths as $m) {
+            $ref = HeightForAgeZScoreCalculator::getReferenceForMonth($gender, $m);
+            $xCoord = $this->scale((float) $m, 0, $maxAge, self::CHART_LEFT, self::CHART_RIGHT);
+
+            $curvePlus3[] = ['x' => $xCoord, 'y' => $this->scale($ref['sd_plus_3'], $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP)];
+            $curvePlus2[] = ['x' => $xCoord, 'y' => $this->scale($ref['sd_plus_2'], $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP)];
+            $curveMedian[] = ['x' => $xCoord, 'y' => $this->scale($ref['sd_0'], $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP)];
+            $curveMinus2[] = ['x' => $xCoord, 'y' => $this->scale($ref['sd_minus_2'], $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP)];
+            $curveMinus3[] = ['x' => $xCoord, 'y' => $this->scale($ref['sd_minus_3'], $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP)];
+        }
+
+        // Polygon points
+        // Normal Zone (Hijau): Antara +2 SD dan -2 SD
+        $normalPoints = array_merge($curvePlus2, array_reverse($curveMinus2));
+        // Warning Zone (Kuning - Stunting): Antara -2 SD dan -3 SD
+        $warningPoints = array_merge($curveMinus2, array_reverse($curveMinus3));
+        // Danger Zone (Merah - Sangat Pendek / Severely Stunted): Antara -3 SD dan garis bawah chart
+        $bottomRight = ['x' => self::CHART_RIGHT, 'y' => self::CHART_BOTTOM];
+        $bottomLeft = ['x' => self::CHART_LEFT, 'y' => self::CHART_BOTTOM];
+        $dangerPoints = array_merge($curveMinus3, [$bottomRight, $bottomLeft]);
+
+        $curvedZones = [
+            ['type' => 'normal', 'points' => $this->polyline($normalPoints)],
+            ['type' => 'warning', 'points' => $this->polyline($warningPoints)],
+            ['type' => 'danger', 'points' => $this->polyline($dangerPoints)],
+        ];
+
+        $whoCurves = [
+            ['label' => '+3 SD (Tinggi)', 'short' => '3', 'tone' => 'neutral', 'points' => $this->polyline($curvePlus3), 'end' => end($curvePlus3)],
+            ['label' => '+2 SD (Batas Atas Normal)', 'short' => '2', 'tone' => 'green', 'points' => $this->polyline($curvePlus2), 'end' => end($curvePlus2)],
+            ['label' => '0 SD (Median Standar WHO)', 'short' => '0', 'tone' => 'median', 'points' => $this->polyline($curveMedian), 'end' => end($curveMedian)],
+            ['label' => '-2 SD (Garis Batas Stunting/Pendek)', 'short' => '-2', 'tone' => 'amber', 'points' => $this->polyline($curveMinus2), 'end' => end($curveMinus2)],
+            ['label' => '-3 SD (Garis Batas Sangat Pendek)', 'short' => '-3', 'tone' => 'red', 'points' => $this->polyline($curveMinus3), 'end' => end($curveMinus3)],
+        ];
+
+        // Sumbu Y ticks (Major per 5 cm, Minor per 1 cm untuk grid milimeter blok)
+        $yTicks = [];
+        $yMinorGrid = [];
+        for ($val = $minY; $val <= $maxY; $val += 1.0) {
+            $yCoord = $this->scale($val, $minY, $maxY, self::CHART_BOTTOM, self::CHART_TOP);
+            $isMajor = ((int) $val % 5 === 0);
+            $yMinorGrid[] = [
+                'y' => $yCoord,
+                'isMajor' => $isMajor,
+                'val' => (int) $val,
+            ];
+            if ($isMajor) {
+                $yTicks[] = [
+                    'y' => $yCoord,
+                    'label' => (string) (int) $val,
+                    'tone' => 'neutral',
+                ];
+            }
+        }
+
+        // Sumbu X ticks (Major per interval ageStep, Minor per 1 bulan)
+        $xTicks = [];
+        $xMinorGrid = [];
+        for ($m = 0; $m <= $maxAge; $m++) {
+            $xCoord = $this->scale((float) $m, 0, $maxAge, self::CHART_LEFT, self::CHART_RIGHT);
+            $isYear = ($m % 12 === 0);
+            $isStep = ($m % $ageStep === 0);
+
+            $xMinorGrid[] = [
+                'x' => $xCoord,
+                'isYear' => $isYear,
+                'isStep' => $isStep,
+                'month' => $m,
+            ];
+
+            if ($isStep) {
+                $label = $m === 0 ? '0' : ($m % 12 === 0 ? ($m / 12) . ' thn (' . $m . ')' : (string) $m);
+                $xTicks[] = [
+                    'x' => $xCoord,
+                    'label' => $label,
+                ];
+            }
+        }
+
+        $genderUpper = strtoupper($gender);
+        $genderLabel = $genderUpper === 'P' ? 'Anak Perempuan' : 'Anak Laki-Laki';
+        $chartTitle = $maxAge <= 24
+            ? 'Panjang Badan Menurut Umur (0 - 24 Bulan)'
+            : 'Tinggi Badan Menurut Umur (2 - 5 Tahun)';
+        $standardTag = 'Standar Pertumbuhan Anak (WHO Growth Standards)';
 
         return [
             'label' => 'TB/U',
-            'subLabel' => 'Tinggi/Umur',
-            'description' => 'Z-Score tinggi badan menurut usia berdasarkan data pengukuran.',
+            'subLabel' => 'Tinggi Badan menurut Umur',
+            'chartTitle' => $chartTitle,
+            'standardTag' => $standardTag,
+            'gender' => $genderUpper,
+            'genderLabel' => $genderLabel,
+            'description' => 'Grafik pertumbuhan Tinggi/Panjang Badan menurut Umur standar Buku KIA & WHO.',
+            'xAxisTitle' => 'Umur (Bulan dan Tahun)',
+            'yAxisTitle' => 'Tinggi Badan (cm)',
             'points' => $points,
             'polyline' => $this->polyline($points),
-            'xTicks' => $this->ageTicks($maxAge, $ageStep),
-            'yTicks' => $this->zScoreTicks(),
-            'showsZones' => true,
-            'emptyTitle' => 'Belum ada data Z-Score TB/U',
-            'emptyCopy' => 'Grafik akan terisi setelah Z-Score pengukuran dicatat.',
-            'legends' => [
-                ['tone' => 'line', 'label' => 'Pertumbuhan anak'],
-                ['tone' => 'normal', 'label' => 'Zona Hijau (Normal: -2 s/d +2 SD)'],
-                ['tone' => 'warning', 'label' => 'Zona Kuning (Pendek: -3 s/d -2 SD)'],
-                ['tone' => 'danger', 'label' => 'Zona Merah (Sangat Pendek: < -3 SD)'],
+            'xTicks' => $xTicks,
+            'xMinorGrid' => $xMinorGrid,
+            'yTicks' => array_reverse($yTicks),
+            'yMinorGrid' => $yMinorGrid,
+            'chartBounds' => [
+                'left' => self::CHART_LEFT,
+                'right' => self::CHART_RIGHT,
+                'top' => self::CHART_TOP,
+                'bottom' => self::CHART_BOTTOM,
             ],
-            'note' => 'Interpretasi TB/U mengikuti Z-Score yang dicatat pada setiap pemeriksaan.',
+            'showsZones' => false,
+            'curvedZones' => $curvedZones,
+            'whoCurves' => $whoCurves,
+            'emptyTitle' => 'Belum ada data tinggi badan',
+            'emptyCopy' => 'Grafik akan terisi otomatis setelah pemeriksaan tinggi badan balita dicatat.',
+            'legends' => [
+                ['tone' => 'line', 'label' => 'Hasil Pengukuran Balita'],
+                ['tone' => 'normal', 'label' => 'Normal (-2 s/d +2 SD)'],
+                ['tone' => 'warning', 'label' => 'Pendek / Stunting (-3 s/d -2 SD)'],
+                ['tone' => 'danger', 'label' => 'Sangat Pendek / Severely Stunted (< -3 SD)'],
+            ],
+            'note' => 'Standar baku WHO Child Growth Standards (Kemenkes / Buku KIA). Garis -2 SD adalah batas stunting.',
         ];
     }
 
@@ -159,7 +279,7 @@ class BalitaKmsController extends Controller
     private function weightForAgeChart(Collection $measurements, Carbon $birthDate): array
     {
         $chartMeasurements = $measurements
-            ->filter(fn (Pengukuran $measurement): bool => $measurement->berat_badan !== null)
+            ->filter(fn(Pengukuran $measurement): bool => $measurement->berat_badan !== null)
             ->map(function (Pengukuran $measurement) use ($birthDate): array {
                 $measurementDate = Carbon::parse($measurement->tanggal_pengukuran);
                 $age = max(0, (int) $birthDate->diffInMonths($measurementDate));
@@ -168,7 +288,7 @@ class BalitaKmsController extends Controller
                     'xValue' => (float) $age,
                     'yValue' => (float) $measurement->berat_badan,
                     'tooltip' => $this->dateLabel($measurementDate)
-                        .' — usia '.$age.' bulan — BB '.$this->measurementValue($measurement->berat_badan).' kg',
+                        . ' — usia ' . $age . ' bulan — BB ' . $this->measurementValue($measurement->berat_badan) . ' kg',
                 ];
             })
             ->values();
@@ -203,7 +323,7 @@ class BalitaKmsController extends Controller
     private function weightForHeightChart(Collection $measurements): array
     {
         $chartMeasurements = $measurements
-            ->filter(fn (Pengukuran $measurement): bool => $measurement->berat_badan !== null
+            ->filter(fn(Pengukuran $measurement): bool => $measurement->berat_badan !== null
                 && $measurement->tinggi_badan !== null)
             ->map(function (Pengukuran $measurement): array {
                 $measurementDate = Carbon::parse($measurement->tanggal_pengukuran);
@@ -212,8 +332,8 @@ class BalitaKmsController extends Controller
                     'xValue' => (float) $measurement->tinggi_badan,
                     'yValue' => (float) $measurement->berat_badan,
                     'tooltip' => $this->dateLabel($measurementDate)
-                        .' — TB '.$this->measurementValue($measurement->tinggi_badan).' cm'
-                        .' — BB '.$this->measurementValue($measurement->berat_badan).' kg',
+                        . ' — TB ' . $this->measurementValue($measurement->tinggi_badan) . ' cm'
+                        . ' — BB ' . $this->measurementValue($measurement->berat_badan) . ' kg',
                 ];
             })
             ->sortBy('xValue')
@@ -274,7 +394,7 @@ class BalitaKmsController extends Controller
     private function polyline(array $points): string
     {
         return collect($points)
-            ->map(fn (array $point): string => "{$point['x']},{$point['y']}")
+            ->map(fn(array $point): string => "{$point['x']},{$point['y']}")
             ->join(' ');
     }
 
@@ -301,7 +421,7 @@ class BalitaKmsController extends Controller
         $ticks = [];
 
         for ($age = 0; $age <= $maxAge; $age += $step) {
-            $label = $age === 0 ? '0 bln' : ($age % 12 === 0 ? ($age / 12).' thn' : $age.' bln');
+            $label = $age === 0 ? '0 bln' : ($age % 12 === 0 ? ($age / 12) . ' thn' : $age . ' bln');
             $ticks[] = [
                 'x' => $this->scale($age, 0, $maxAge, self::CHART_LEFT, self::CHART_RIGHT),
                 'label' => $label,
@@ -362,7 +482,7 @@ class BalitaKmsController extends Controller
 
                 return [
                     'y' => round(self::CHART_TOP + (($index / 5) * (self::CHART_BOTTOM - self::CHART_TOP)), 2),
-                    'label' => $this->axisValue($value).' '.$unit,
+                    'label' => $this->axisValue($value) . ' ' . $unit,
                     'tone' => 'neutral',
                 ];
             })
@@ -380,7 +500,7 @@ class BalitaKmsController extends Controller
 
                 return [
                     'x' => round(self::CHART_LEFT + (($index / 5) * (self::CHART_RIGHT - self::CHART_LEFT)), 2),
-                    'label' => $this->axisValue($value).' '.$unit,
+                    'label' => $this->axisValue($value) . ' ' . $unit,
                 ];
             })
             ->all();
@@ -472,10 +592,10 @@ class BalitaKmsController extends Controller
         }
 
         if ($ageInMonths === 0) {
-            return 'Usia '.$difference->days.' Hari';
+            return 'Usia ' . $difference->days . ' Hari';
         }
 
-        return 'Usia '.$ageInMonths.' Bulan';
+        return 'Usia ' . $ageInMonths . ' Bulan';
     }
 
     private function healthRecorderRole(?string $role): string
@@ -533,7 +653,7 @@ class BalitaKmsController extends Controller
 
         return match ($verification->status) {
             'terverifikasi' => $bidanName
-                ? 'Terverifikasi oleh: '.$bidanName
+                ? 'Terverifikasi oleh: ' . $bidanName
                 : 'Terverifikasi oleh bidan',
             default => 'Menunggu verifikasi bidan',
         };
@@ -559,10 +679,10 @@ class BalitaKmsController extends Controller
         $parts = [];
 
         if ($difference->y > 0) {
-            $parts[] = $difference->y.' thn';
+            $parts[] = $difference->y . ' thn';
         }
 
-        $parts[] = $difference->m.' bln';
+        $parts[] = $difference->m . ' bln';
 
         return implode(' ', $parts);
     }
@@ -584,6 +704,6 @@ class BalitaKmsController extends Controller
 
         $numericValue = (float) $value;
 
-        return ($numericValue > 0 ? '+' : '').number_format($numericValue, 2, ',', '.');
+        return ($numericValue > 0 ? '+' : '') . number_format($numericValue, 2, ',', '.');
     }
 }

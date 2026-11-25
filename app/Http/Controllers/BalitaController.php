@@ -78,10 +78,25 @@ class BalitaController extends Controller
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat' => 'required|string',
+            'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
         ], [
             'nama.regex' => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh melebihi hari ini.',
+            'foto_profil.image' => 'File foto profil harus berupa gambar.',
+            'foto_profil.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'foto_profil.max' => 'Ukuran foto profil maksimal 3 MB.',
         ]);
+
+        if ($request->hasFile('foto_profil')) {
+            $file = $request->file('foto_profil');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/balita');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $validated['foto_profil'] = 'uploads/balita/' . $filename;
+        }
 
         Balita::create($validated);
 
@@ -102,26 +117,38 @@ class BalitaController extends Controller
     {
         $balita = Balita::findOrFail($id);
 
-        $request->validate([
+        $validated = $request->validate([
             'orang_tua_id' => 'required|exists:orang_tua,id',
             'nama' => 'required|string|max:255|regex:/^[a-zA-Z\s\.\'\-]+$/',
             'nik' => 'required|digits:16|unique:balita,nik,'.$id,
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'jenis_kelamin' => 'required|in:L,P',
-            'alamat' => 'nullable',
+            'alamat' => 'nullable|string',
+            'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
         ], [
             'nama.regex' => 'Nama balita hanya boleh berisi huruf, spasi, titik, atau tanda kutip (tidak boleh ada simbol atau angka).',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh melebihi hari ini.',
+            'foto_profil.image' => 'File foto profil harus berupa gambar.',
+            'foto_profil.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'foto_profil.max' => 'Ukuran foto profil maksimal 3 MB.',
         ]);
 
-        $balita->update([
-            'orang_tua_id' => $request->orang_tua_id,
-            'nama' => $request->nama,
-            'nik' => $request->nik,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-        ]);
+        if ($request->hasFile('foto_profil')) {
+            // Hapus foto lama jika ada
+            if ($balita->foto_profil && file_exists(public_path($balita->foto_profil))) {
+                @unlink(public_path($balita->foto_profil));
+            }
+            $file = $request->file('foto_profil');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/balita');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $validated['foto_profil'] = 'uploads/balita/' . $filename;
+        }
+
+        $balita->update($validated);
 
         return redirect()
             ->route('kader.monitoringbalita')
@@ -131,6 +158,11 @@ class BalitaController extends Controller
     public function destroy(int|string $id): RedirectResponse
     {
         $balita = Balita::findOrFail($id);
+
+        if ($balita->foto_profil && file_exists(public_path($balita->foto_profil))) {
+            @unlink(public_path($balita->foto_profil));
+        }
+
         $balita->delete();
 
         return redirect()

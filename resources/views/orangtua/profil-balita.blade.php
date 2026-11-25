@@ -23,7 +23,7 @@
     <section class="child-profile-card" aria-labelledby="child-name">
         <div class="child-photo-wrap">
             <img
-                src="{{ asset($balita->jenis_kelamin === 'L' ? 'images/cowo.jpg' : 'images/cewe.jpg') }}"
+                src="{{ $balita->foto_profil ? asset($balita->foto_profil) : $balita->foto_profil_url }}"
                 alt="Foto {{ $balita->nama }}"
                 class="child-photo"
             >

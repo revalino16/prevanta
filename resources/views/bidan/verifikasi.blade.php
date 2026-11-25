@@ -79,7 +79,7 @@
 
                                 <div class="avatar-wrap">
 
-                                    <img src="{{ asset($item->jenis_kelamin === 'L' ? 'images/cowo.jpg' : 'images/cewe.jpg') }}"
+                                    <img src="{{ $item->foto_profil ? asset($item->foto_profil) : $item->foto_profil_url }}"
                                         alt="Avatar Balita" class="avatar" style="object-fit: cover;">
 
                                     @if (in_array($item->jenis_kelamin, ['L', 'P']))
