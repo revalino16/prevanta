@@ -18,6 +18,7 @@
         $tanggalHariIni = $tanggalHariIni ?? now()->translatedFormat('l, d F Y');
         $periodeSiklus = $periodeSiklus ?? null;
         $agendaList = $agendaList ?? collect();
+        $edukasiTerbaru = $edukasiTerbaru ?? collect();
 
         // Sapaan menggunakan nama user
         $sapaanKeluarga = $sapaanKeluarga ?? (Auth::user()?->nama ?? 'Bunda & Ayah');
@@ -65,14 +66,10 @@
                 </div>
 
             </div>
-
             <div class="anakku-hero-right">
-                <div class="anakku-hero-child">
-
-                    <img src="{{ asset('images/bayi.png') }}" alt="Ilustrasi bayi" class="anakku-hero-img">
-
-                </div>
+                <img src="{{ asset('images/hero-anakku.png') }}" alt="Ibu dan anak" class="anakku-hero-img">
             </div>
+
         </div>
 
 
@@ -199,8 +196,25 @@
                     // Ambil pengukuran terbaru
                     $p = $anak->pengukuranTerakhir ?? $anak->pengukuran->first();
 
-                    // Hitung usia dalam bulan dari tanggal lahir
-                    $usiaBulan = $anak->tanggal_lahir ? $anak->tanggal_lahir->diffInMonths(now()) : null;
+                    // Format usia (Tahun & Bulan) seperti di monitoring balita kader
+                    $lahir = $anak->tanggal_lahir ? \Carbon\Carbon::parse($anak->tanggal_lahir) : null;
+                    $now = \Carbon\Carbon::now('Asia/Jakarta');
+                    $usiaTeks = '';
+                    if ($lahir) {
+                        $diff = $lahir->diff($now);
+                        $tahun = $diff->y;
+                        $bulan = $diff->m;
+                        if ($tahun > 0) {
+                            $usiaTeks .= $tahun . ' Tahun ';
+                        }
+                        $usiaTeks .= $bulan . ' Bulan';
+                    } else {
+                        $usiaTeks = '-';
+                    }
+
+                    // Inisial nama anak otomatis (misal: "Arif Hidayatullah" -> "AH", "Azmillah" -> "A")
+                    $inisial = $anak->inisial;
+                    $jk = strtoupper(substr($anak->jenis_kelamin ?? 'L', 0, 1));
 
                     // Nama orang tua
                     $namaOrangTua = $anak->orangTua?->user?->nama ?? ($orangTua?->user?->nama ?? '-');
@@ -208,7 +222,7 @@
                     // Status pertumbuhan dari database
                     $statusPertumbuhan = $p?->status_pertumbuhan;
 
-                    // Level hanya untuk kebutuhan tampilan warna
+                    // Level dan highlight label disesuaikan sama persis seperti kader
                     $statusLower = strtolower($statusPertumbuhan ?? '');
 
                     if (
@@ -217,14 +231,17 @@
                         str_contains($statusLower, 'buruk')
                     ) {
                         $level = 'danger';
+                        $highlightLabel = 'Perlu Rujukan';
                     } elseif (
                         str_contains($statusLower, 'pendek') ||
                         str_contains($statusLower, 'kurus') ||
                         str_contains($statusLower, 'kurang')
                     ) {
                         $level = 'warning';
+                        $highlightLabel = 'Perlu Pemantauan';
                     } else {
-                        $level = 'ok';
+                        $level = 'success';
+                        $highlightLabel = 'Sesuai KMS';
                     }
                 @endphp
 
@@ -239,15 +256,21 @@
                         <div class="anak-identity">
 
                             <div class="anak-photo-wrap">
+                                @if ($anak->foto_profil)
+                                    <img
+                                        src="{{ asset($anak->foto_profil) }}"
+                                        alt="{{ $anak->nama }}"
+                                        class="anak-photo"
+                                    >
+                                @else
+                                    <div class="anak-photo anak-photo-initial">
+                                        {{ $inisial }}
+                                    </div>
+                                @endif
 
-                                <div class="anak-photo anak-photo-placeholder">
-                                    <i class="fa-solid fa-child"></i>
-                                </div>
-
-                                <span class="anak-gender-badge">
-                                    {{ strtoupper(substr($anak->jenis_kelamin ?? 'L', 0, 1)) }}
+                                <span class="anak-gender-badge anak-gender-{{ $jk }}">
+                                    {{ $jk }}
                                 </span>
-
                             </div>
 
 
@@ -262,29 +285,23 @@
                                 </p>
 
                                 <div class="anak-meta-row">
-
-                                    @if ($usiaBulan !== null)
-                                        <span class="anak-age-pill">
-                                            {{ number_format($usiaBulan, 1, ',', '.') }} Bulan
-                                        </span>
-                                    @endif
+                                    <span class="anak-age-pill">
+                                        <i class="fa-solid fa-cake-candles"></i>
+                                        {{ $usiaTeks }}
+                                    </span>
 
                                     @if ($anak->tanggal_lahir)
-                                        <span>
-                                            &bull; Lahir:
-                                            {{ $anak->tanggal_lahir->translatedFormat('d M Y') }}
+                                        <span class="anak-meta-dot">&bull;</span>
+                                        <span class="anak-meta-birth">
+                                            Lahir: {{ $anak->tanggal_lahir->translatedFormat('d M Y') }}
                                         </span>
                                     @endif
-
                                 </div>
 
-                                <p class="anak-parent">
+                                {{-- <p class="anak-parent">
                                     <i class="fa-solid fa-baby-carriage"></i>
-
-                                    Orang Tua:
-                                    {{ $namaOrangTua }}
-
-                                </p>
+                                    Orang Tua: {{ $namaOrangTua }}
+                                </p> --}}
 
                                 @if ($anak->alamat)
                                     <p class="anak-parent">
@@ -315,8 +332,8 @@
                                 </span>
 
                                 @if ($statusPertumbuhan)
-                                    <span class="anak-measure-flag">
-                                        {{ $statusPertumbuhan }}
+                                    <span class="anak-measure-flag anak-measure-flag--{{ $level }}">
+                                        {{ $highlightLabel }}
                                     </span>
                                 @endif
 
@@ -332,8 +349,8 @@
                                         PB / TB
                                     </p>
 
-                                    <p class="anak-measure-value {{ $level === 'danger' ? 'is-danger' : '' }}">
-                                        {{ $p?->tinggi_badan ?? '-' }}
+                                    <p class="anak-measure-value is-{{ $level }}">
+                                        {{ $p?->tinggi_badan !== null ? number_format((float) $p->tinggi_badan, 2, '.', '') : '-' }}
                                     </p>
 
                                     <p class="anak-measure-unit">
@@ -351,7 +368,7 @@
                                     </p>
 
                                     <p class="anak-measure-value">
-                                        {{ $p?->berat_badan ?? '-' }}
+                                        {{ $p?->berat_badan !== null ? number_format((float) $p->berat_badan, 2, '.', '') : '-' }}
                                     </p>
 
                                     <p class="anak-measure-unit">
@@ -369,7 +386,7 @@
                                     </p>
 
                                     <p class="anak-measure-value">
-                                        {{ $p?->lingkar_lengan_atas ?? '-' }}
+                                        {{ $p?->lingkar_lengan_atas !== null ? number_format((float) $p->lingkar_lengan_atas, 2, '.', '') : '-' }}
                                     </p>
 
                                     <p class="anak-measure-unit">
@@ -452,6 +469,112 @@
                         oleh kader/bidan posyandu.
                     </p>
 
+                </div>
+
+            @endforelse
+
+        </div>
+
+
+        {{-- ══ EDUKASI & INFORMASI TERBARU ════════════════════════════ --}}
+        <div class="anakku-section-head" style="margin-top: 40px;">
+
+            <div class="anakku-section-title">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Edukasi Terpopuler</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                {{-- <span class="anakku-periode-pill">
+                    <i class="fa-regular fa-calendar-check" style="color: var(--primary); margin-right: 4px;"></i>
+                    Periode 2 Minggu
+                </span> --}}
+
+                <a href="{{ route('orangtua.edukasi') }}" class="anakku-selengkapnya-btn">
+                    <span>Selengkapnya</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <p class="anakku-section-sub">
+            Tips gizi seimbang, stimulasi perkembangan, serta panduan kesehatan terkini.
+        </p>
+
+        <div class="agenda-grid">
+
+            @forelse($edukasiTerbaru as $item)
+                @php
+                    $katLabel = $item->kategori ?: 'Tips & Edukasi';
+                    $tglEdukasi = $item->created_at ? \Illuminate\Support\Carbon::parse($item->created_at) : null;
+                    $waktuUpload = $tglEdukasi ? $tglEdukasi->translatedFormat('d M Y') : now()->translatedFormat('d M Y');
+
+                    // Fallback gambar jika kosong
+                    $imgUrl = $item->gambar;
+                    if (empty($imgUrl)) {
+                        $imgUrl = 'https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=800&q=80';
+                    } elseif (!str_starts_with($imgUrl, 'http')) {
+                        $imgUrl = asset($imgUrl);
+                    }
+                @endphp
+
+                <div class="agenda-card edukasi-card">
+
+                    <div class="agenda-card-top">
+                        <span class="agenda-tag">
+                            {{ $katLabel }}
+                        </span>
+
+                        <span class="agenda-countdown">
+                            <i class="fa-regular fa-calendar-days" style="margin-right: 4px;"></i>
+                            {{ $waktuUpload }}
+                        </span>
+                    </div>
+
+                    {{-- GAMBAR DI ATAS --}}
+                    <a href="{{ route('orangtua.edukasi') }}" class="edukasi-cover-wrap">
+                        <img src="{{ $imgUrl }}" alt="{{ $item->judul }}" class="edukasi-cover-img" loading="lazy">
+                    </a>
+
+                    {{-- JUDUL --}}
+                    <h3 class="agenda-title" title="{{ $item->judul }}">
+                        <a href="{{ route('orangtua.edukasi') }}">
+                            {{ $item->judul }}
+                        </a>
+                    </h3>
+
+                    {{-- DESKRIPSI DI BAWAH --}}
+                    <p class="agenda-desc">
+                        {{ \Illuminate\Support\Str::limit(strip_tags($item->konten), 95, '...') }}
+                    </p>
+
+                    {{-- FOOTER SELENGKAPNYA (TANPA INFO EDITING/AUTHOR) --}}
+                    <div class="edukasi-card-bottom">
+                        <a href="{{ route('orangtua.edukasi') }}" class="edukasi-card-link">
+                            <span>Selengkapnya</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+            @empty
+
+                <div class="empty-state">
+                    <i class="fa-solid fa-book-open-reader"></i>
+
+                    <h3>Belum Ada Materi Edukasi Aktif</h3>
+
+                    <p>
+                        Materi edukasi baru ditampilkan selama periode 2 minggu setelah diunggah oleh kader posyandu.
+                    </p>
+
+                    <div style="margin-top: 14px;">
+                        <a href="{{ route('orangtua.edukasi') }}" class="anakku-selengkapnya-btn">
+                            Lihat Semua Arsip Edukasi
+                        </a>
+                    </div>
                 </div>
 
             @endforelse

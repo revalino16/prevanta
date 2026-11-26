@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Balita;
+use App\Models\Edukasi;
 use App\Models\Jadwal;
 use App\Models\OrangTua;
 use Carbon\Carbon;
@@ -160,6 +161,44 @@ class AnakkuController extends Controller
         $tglHariIni = $now->locale('id')->translatedFormat('l, d F Y');
         $periodeSiklus = 'Siklus ' . $now->locale('id')->translatedFormat('M Y');
 
+        // Edukasi terbaru dengan rentang waktu 2 minggu (14 hari) setelah diupload kader
+        $batasPeriode = Carbon::now()->subDays(14);
+        $edukasiTerbaru = Edukasi::with('user')
+            ->where('created_at', '>=', $batasPeriode)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->take(5)
+            ->get();
+
+        // Fallback jika belum ada materi dalam 14 hari terakhir
+        if ($edukasiTerbaru->isEmpty()) {
+            $edukasiTerbaru = Edukasi::with('user')
+                ->orderByDesc('id')
+                ->take(5)
+                ->get();
+        }
+
+        $edukasiList = $edukasiTerbaru->map(function ($item) {
+            $imgUrl = $item->gambar;
+            if (empty($imgUrl)) {
+                $imgUrl = 'https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=800&q=80';
+            } elseif (!str_starts_with($imgUrl, 'http')) {
+                $imgUrl = url($imgUrl);
+            }
+
+            $tgl = $item->created_at ? Carbon::parse($item->created_at) : Carbon::now();
+
+            return [
+                'id' => $item->id,
+                'judul' => $item->judul,
+                'kategori' => $item->kategori ?: 'Tips & Edukasi',
+                'konten' => $item->konten,
+                'gambar_url' => $imgUrl,
+                'tanggal_formatted' => $tgl->locale('id')->translatedFormat('d M Y'),
+                'created_at' => $item->created_at?->format('Y-m-d H:i:s'),
+            ];
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'Data dashboard anakku berhasil dimuat.',
@@ -171,6 +210,7 @@ class AnakkuController extends Controller
                 'periode_siklus' => $periodeSiklus,
                 'agenda_list' => $agendaList,
                 'anak_list' => $anakData,
+                'edukasi_terbaru' => $edukasiList,
             ],
         ]);
     }

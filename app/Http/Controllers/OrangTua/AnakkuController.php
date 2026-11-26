@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\OrangTua;
 
 use App\Http\Controllers\Controller;
+use App\Models\Edukasi;
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -233,6 +234,28 @@ class AnakkuController extends Controller
                 ];
             });
 
+        /*
+         * ==========================================================
+         * EDUKASI TERBARU (PERIODE 2 MINGGU SETELAH DIUPLOAD KADER)
+         * ==========================================================
+         */
+        $batasPeriode = Carbon::now()->subDays(14);
+
+        $edukasiTerbaru = Edukasi::with('user')
+            ->where('created_at', '>=', $batasPeriode)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->take(3)
+            ->get();
+
+        // Fallback jika belum ada edukasi dalam 14 hari terakhir agar tampilan card tidak kosong
+        if ($edukasiTerbaru->isEmpty()) {
+            $edukasiTerbaru = Edukasi::with('user')
+                ->orderByDesc('id')
+                ->take(3)
+                ->get();
+        }
+
         return view(
             'orangtua.anakku',
             compact(
@@ -242,6 +265,7 @@ class AnakkuController extends Controller
                 'tanggalHariIni',
                 'periodeSiklus',
                 'agendaList',
+                'edukasiTerbaru',
                 'anakList',
                 'anakUtama',
                 'sapaanKeluarga'
