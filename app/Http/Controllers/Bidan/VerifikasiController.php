@@ -16,37 +16,26 @@ class VerifikasiController extends Controller
 {
     public function index(): View
     {
-        $balita = Balita::whereHas('pengukuran', function ($query) {
-            $query->whereDoesntHave('verifikasi')
-                ->orWhereHas('verifikasi', function ($q) {
-                    $q->where('status', 'menunggu');
-                });
-        })->with([
-            'orangTua.user',
-            'pengukuran' => function ($query) {
+        $pengukurans = Pengukuran::query()
+            ->with(['balita.orangTua.user'])
+            ->where(function ($query) {
                 $query->whereDoesntHave('verifikasi')
                     ->orWhereHas('verifikasi', function ($q) {
                         $q->where('status', 'menunggu');
-                    })
-                    ->latest('tanggal_pengukuran');
-            },
-        ])->get();
+                    });
+            })
+            ->orderBy('tanggal_pengukuran')
+            ->orderBy('id')
+            ->get();
 
         $countNormal = 0;
         $countPendek = 0;
         $countSangatPendek = 0;
 
-        foreach ($balita as $item) {
-            $pengukuran = $item->pengukuran->first();
-            $item->latest_pengukuran = $pengukuran;
-
-            if (! $pengukuran) {
-                continue;
-            }
-
+        foreach ($pengukurans as $pengukuran) {
             $statusPertumbuhan = $pengukuran->status_pertumbuhan;
 
-            [$item->status_key, $item->highlight_label] = match ($statusPertumbuhan) {
+            [$pengukuran->status_key, $pengukuran->highlight_label] = match ($statusPertumbuhan) {
                 'sangat pendek' => ['danger', 'Perlu Rujukan'],
                 'pendek' => ['warning', 'Perlu Pemantauan'],
                 'normal' => ['success', 'Sesuai KMS'],
@@ -62,7 +51,7 @@ class VerifikasiController extends Controller
         }
 
         return view('bidan.verifikasi', compact(
-            'balita',
+            'pengukurans',
             'countNormal',
             'countPendek',
             'countSangatPendek'

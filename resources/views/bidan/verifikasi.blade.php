@@ -51,7 +51,7 @@
                 </div>
 
                 <span class="panel-count" id="visibleCount">
-                    Menampilkan {{ $balita->count() }} Balita
+                    Menampilkan {{ $pengukurans->count() }} Pengukuran
                 </span>
 
             </div>
@@ -59,17 +59,19 @@
 
             <div class="balita-list">
 
-                @forelse ($balita as $item)
+                @forelse ($pengukurans as $pengukuran)
 
                     @php
-                        $pengukuran = $item->latest_pengukuran;
+                        $item = $pengukuran->balita;
+                        $statusKey = $pengukuran->status_key;
+                        $highlightLabel = $pengukuran->highlight_label;
                     @endphp
 
                     <div class="balita-row" data-name="{{ strtolower($item->nama) }}" data-nik="{{ $item->nik }}"
-                        data-gender="{{ $item->jenis_kelamin }}" data-status="{{ $item->status_key }}">
+                        data-gender="{{ $item->jenis_kelamin }}" data-status="{{ $statusKey }}">
 
                         {{-- STATUS BAR --}}
-                        <span class="row-bar {{ $item->status_key ? 'bar-' . $item->status_key : '' }}"></span>
+                        <span class="row-bar {{ $statusKey ? 'bar-' . $statusKey : '' }}"></span>
 
 
                         <div class="row-body">
@@ -142,8 +144,8 @@
                                 <div class="m-top">
 
                                     @if ($pengukuran)
-                                        <span class="highlight highlight-{{ $item->status_key }}">
-                                            {{ $item->highlight_label }}
+                                        <span class="highlight highlight-{{ $statusKey }}">
+                                            {{ $highlightLabel }}
                                         </span>
                                     @else
                                         Belum ada pengukuran
@@ -159,7 +161,7 @@
 
                                         <div class="val-label">PB/TB</div>
 
-                                        <div class="val-num {{ $item->status_key ? 'val-' . $item->status_key : '' }}">
+                                        <div class="val-num {{ $statusKey ? 'val-' . $statusKey : '' }}">
 
                                             {{ $pengukuran->tinggi_badan ?? '-' }}
 
@@ -216,13 +218,13 @@
                             <div class="status-col">
 
                                 @if ($pengukuran)
-                                    <span class="status-badge status-{{ $item->status_key }}">
+                                    <span class="status-badge status-{{ $statusKey }}">
 
-                                        @if ($item->status_key === 'danger')
+                                        @if ($statusKey === 'danger')
                                             <i class="fa-solid fa-triangle-exclamation"></i>
-                                        @elseif ($item->status_key === 'success')
+                                        @elseif ($statusKey === 'success')
                                             <i class="fa-solid fa-circle-check"></i>
-                                        @elseif ($item->status_key === 'warning')
+                                        @elseif ($statusKey === 'warning')
                                             <i class="fa-regular fa-circle-exclamation"></i>
                                         @else
                                             <i class="fa-regular fa-circle-question"></i>
@@ -261,7 +263,7 @@
                                         data-lila="{{ $pengukuran->lingkar_lengan_atas ?? '-' }}"
                                         data-zscore="{{ $pengukuran->z_score ?? '-' }}"
                                         data-status="{{ $pengukuran->status_pertumbuhan ?? '-' }}"
-                                        data-status-key="{{ $item->status_key }}" onclick="openVerifModal(this)">
+                                        data-status-key="{{ $statusKey }}" onclick="openVerifModal(this)">
                                         <i class="fa-solid fa-circle-check"></i>
                                         Verifikasi
                                     </button>
