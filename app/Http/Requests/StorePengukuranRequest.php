@@ -58,14 +58,6 @@ class StorePengukuranRequest extends FormRequest
             'tinggi_badan' => ['bail', 'required', 'numeric', 'decimal:0,2', 'between:'.AnthropometricMeasurementLimits::HEIGHT_MIN_CM.','.AnthropometricMeasurementLimits::HEIGHT_MAX_CM],
             'lingkar_lengan_atas' => ['bail', 'required', 'numeric', 'decimal:0,2', 'between:'.AnthropometricMeasurementLimits::ARM_CIRCUMFERENCE_MIN_CM.','.AnthropometricMeasurementLimits::ARM_CIRCUMFERENCE_MAX_CM],
             'lingkar_kepala' => ['bail', 'required', 'numeric', 'decimal:0,2', 'between:'.AnthropometricMeasurementLimits::HEAD_CIRCUMFERENCE_MIN_CM.','.AnthropometricMeasurementLimits::HEAD_CIRCUMFERENCE_MAX_CM],
-            'foto_pertumbuhan' => [
-                'bail',
-                'nullable',
-                File::image()
-                    ->types(['jpg', 'jpeg', 'png', 'webp'])
-                    ->max('2mb')
-                    ->dimensions(Rule::dimensions()->maxWidth(4096)->maxHeight(4096)),
-            ],
             'jenis_imunisasi_id' => ['nullable', 'integer', 'exists:jenis_imunisasi,id'],
             'jenis_vitamin_id' => ['nullable', 'integer', 'exists:jenis_vitamin,id'],
         ];
@@ -97,10 +89,6 @@ class StorePengukuranRequest extends FormRequest
             'lingkar_kepala.numeric' => 'Lingkar kepala harus berupa angka.',
             'lingkar_kepala.decimal' => 'Lingkar kepala hanya boleh menggunakan maksimal 2 angka di belakang koma.',
             'lingkar_kepala.between' => 'Lingkar kepala harus berada antara 20 sampai 60 cm.',
-            'foto_pertumbuhan.image' => 'Berkas dokumentasi harus berupa gambar.',
-            'foto_pertumbuhan.mimes' => 'Berkas dokumentasi harus berupa gambar JPG, JPEG, PNG, atau WEBP.',
-            'foto_pertumbuhan.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
-            'foto_pertumbuhan.dimensions' => 'Ukuran sisi gambar tidak boleh lebih dari 4096 piksel.',
             'jenis_imunisasi_id.integer' => 'Pilihan imunisasi tidak valid.',
             'jenis_imunisasi_id.exists' => 'Jenis imunisasi yang dipilih tidak tersedia.',
             'jenis_vitamin_id.integer' => 'Pilihan vitamin tidak valid.',

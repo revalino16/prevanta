@@ -23,7 +23,6 @@ class Pengukuran extends Model
         'lingkar_lengan_atas',
         'z_score',
         'status_pertumbuhan',
-        'foto_pertumbuhan',
     ];
 
     protected function casts(): array
