@@ -15,41 +15,45 @@ class BidanController extends Controller
 {
     /**
      * GET /api/bidan/verifikasi
-     * Mengambil daftar balita yang sudah diukur dan siap diverifikasi oleh bidan.
+     * Mengambil daftar data pengukuran yang perlu diverifikasi oleh bidan.
+     * Setiap pengukuran (meskipun balitanya sama) dibuat sebagai 1 item/card terpisah,
+     * dan diurutkan berdasarkan tanggal pengukuran terlama (FIFO).
      */
     public function verifikasi(): JsonResponse
     {
-        // Hanya ambil balita yang sudah memiliki data pengukuran di posyandu
-        $balitaList = Balita::whereHas('pengukuran')
-            ->with([
-                'orangTua.user',
-                'pengukuran' => function ($q) {
-                    $q->with('verifikasi')->latest('tanggal_pengukuran')->latest('id');
-                },
-            ])->get();
+        // Ambil data pengukuran yang belum diverifikasi atau status verifikasi masih 'menunggu'
+        // Diurutkan berdasarkan tanggal pengukuran terlama (terdahulu lebih dulu diverifikasi)
+        $pengukuranList = Pengukuran::whereDoesntHave('verifikasi')
+            ->orWhereHas('verifikasi', function ($q) {
+                $q->where('status', 'menunggu');
+            })
+            ->with(['balita.orangTua.user', 'verifikasi'])
+            ->orderBy('tanggal_pengukuran', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
 
-        $data = $balitaList->map(function ($b) {
-            $latestPengukuran = $b->pengukuran->first();
-            $verif = $latestPengukuran?->verifikasi;
+        $data = $pengukuranList->map(function ($p) {
+            $b = $p->balita;
+            $verif = $p->verifikasi;
             $now = Carbon::now('Asia/Jakarta');
-            $umurBulan = $b->tanggal_lahir ? Carbon::parse($b->tanggal_lahir)->diffInMonths($now) : 0;
+            $umurBulan = ($b && $b->tanggal_lahir) ? Carbon::parse($b->tanggal_lahir)->diffInMonths($now) : 0;
 
             return [
-                'id' => (string) $b->id,
-                'nama' => $b->nama,
-                'nama_ibu' => $b->orangTua?->user?->nama ?? '-',
-                'nik' => $b->nik,
+                'id' => (string) ($b?->id ?? ''),
+                'nama' => $b?->nama ?? '-',
+                'nama_ibu' => $b?->orangTua?->user?->nama ?? '-',
+                'nik' => $b?->nik ?? '-',
                 'umur_bulan' => $umurBulan,
-                'jenis_kelamin' => strtoupper($b->jenis_kelamin ?? 'L'),
-                'tanggal_ukur' => $latestPengukuran ? Carbon::parse($latestPengukuran->tanggal_pengukuran)->isoFormat('DD MMM YYYY') : '-',
-                'pb_tb' => (float) ($latestPengukuran?->tinggi_badan ?? 0),
-                'bb' => (float) ($latestPengukuran?->berat_badan ?? 0),
-                'lila' => (float) ($latestPengukuran?->lingkar_lengan_atas ?? 0),
-                'z_score' => (float) ($latestPengukuran?->z_score ?? 0),
-                'status_pertumbuhan' => $latestPengukuran?->status_pertumbuhan ?? 'normal',
+                'jenis_kelamin' => strtoupper($b?->jenis_kelamin ?? 'L'),
+                'tanggal_ukur' => $p->tanggal_pengukuran ? Carbon::parse($p->tanggal_pengukuran)->isoFormat('DD MMM YYYY') : '-',
+                'pb_tb' => (float) ($p->tinggi_badan ?? 0),
+                'bb' => (float) ($p->berat_badan ?? 0),
+                'lila' => (float) ($p->lingkar_lengan_atas ?? 0),
+                'z_score' => (float) ($p->z_score ?? 0),
+                'status_pertumbuhan' => $p->status_pertumbuhan ?? 'normal',
                 'sudah_sah' => $verif ? ($verif->status === 'terverifikasi') : false,
-                'pengukuran_id' => $latestPengukuran?->id,
-                'alamat' => $b->alamat,
+                'pengukuran_id' => $p->id,
+                'alamat' => $b?->alamat,
                 'catatan_penyuluhan' => $verif?->catatan_penyuluhan,
                 'tindak_lanjut' => $verif?->tindak_lanjut,
             ];
