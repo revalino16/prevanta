@@ -229,19 +229,6 @@
                 </div>
             </div>
 
-            <div class="photo-upload-field @error('foto_pertumbuhan') has-error @enderror">
-                <div>
-                    <label for="foto_pertumbuhan"><i class="fa-regular fa-image"></i> Dokumentasi Pengukuran <span>Opsional</span></label>
-                    <p>JPG, JPEG, PNG, atau WEBP. Maksimal 2 MB dan 4096 × 4096 piksel.</p>
-                </div>
-                <label class="photo-upload-button" for="foto_pertumbuhan">
-                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                    <span id="photo-file-name">Pilih gambar</span>
-                </label>
-                <input type="file" name="foto_pertumbuhan" id="foto_pertumbuhan" accept="image/jpeg,image/png,image/webp">
-                @error('foto_pertumbuhan')<span class="field-error">{{ $message }}</span>@enderror
-            </div>
-
             <div class="automatic-calculation-note">
                 <i class="fa-solid fa-circle-info"></i>
                 <div>
@@ -271,8 +258,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const measurementForm = document.getElementById('measurement-entry-form');
-    const photoInput = document.getElementById('foto_pertumbuhan');
-    const photoFileName = document.getElementById('photo-file-name');
 
     const getIndonesianValidationMessage = function (field) {
         const validity = field.validity;
@@ -317,11 +302,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof field.setCustomValidity === 'function') {
             field.setCustomValidity('');
         }
-    });
-
-    photoInput.addEventListener('change', function () {
-        const file = photoInput.files[0];
-        photoFileName.textContent = file ? file.name : 'Pilih gambar';
     });
 });
 </script>

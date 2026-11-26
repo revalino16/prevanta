@@ -67,18 +67,9 @@ class PengukuranController extends Controller
             (float) $validated['tinggi_badan'],
             $posisiPengukuran,
         );
-        $photoPath = null;
 
         try {
-            if ($request->hasFile('foto_pertumbuhan')) {
-                $photoPath = $request->file('foto_pertumbuhan')?->store('pengukuran-balita', 'public');
-
-                if ($photoPath === false) {
-                    throw new RuntimeException('Gambar pengukuran tidak dapat disimpan.');
-                }
-            }
-
-            DB::transaction(function () use ($validated, $balita, $calculator, $zScore, $photoPath, $request, $posisiPengukuran): void {
+            DB::transaction(function () use ($validated, $balita, $calculator, $zScore, $request, $posisiPengukuran): void {
                 $kaderId = (int) $request->user()->getAuthIdentifier();
 
                 Pengukuran::create([
@@ -92,7 +83,6 @@ class PengukuranController extends Controller
                     'lingkar_kepala' => $validated['lingkar_kepala'],
                     'z_score' => $zScore,
                     'status_pertumbuhan' => $calculator->status($zScore),
-                    'foto_pertumbuhan' => $photoPath,
                 ]);
 
                 if (! empty($validated['jenis_imunisasi_id'])) {

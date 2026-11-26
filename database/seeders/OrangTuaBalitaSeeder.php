@@ -92,7 +92,6 @@ class OrangTuaBalitaSeeder extends Seeder
                                 'lingkar_lengan_atas' => $measurementData['lingkar_lengan_atas'],
                                 'z_score' => $measurementData['z_score'],
                                 'status_pertumbuhan' => $measurementData['status_pertumbuhan'],
-                                'foto_pertumbuhan' => null,
                             ]
                         );
 
