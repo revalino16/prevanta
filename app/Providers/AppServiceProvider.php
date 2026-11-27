@@ -34,8 +34,9 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('password-otp-request', function (Request $request): array {
             $email = $this->resolvePasswordResetEmail($request);
             $throttleResponse = function (Request $request, array $headers) {
-                $retryAfter = (int) ($headers['Retry-After'] ?? 60);
-                $message = 'Terlalu banyak permintaan kode OTP. Silakan coba lagi beberapa saat lagi.';
+                $retryAfter = (int) ($headers['Retry-After'] ?? $headers['retry-after'] ?? 60);
+                $waitText = $this->formatRetryAfter($retryAfter);
+                $message = "Terlalu banyak permintaan kode OTP. Silakan coba lagi dalam {$waitText}.";
 
                 if ($request->expectsJson()) {
                     return response()->json([
@@ -73,8 +74,9 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinutes(15, 10)
                 ->by('password-otp-verify:'.$email.'|'.$request->ip())
                 ->response(function (Request $request, array $headers) {
-                    $retryAfter = (int) ($headers['Retry-After'] ?? 60);
-                    $message = 'Terlalu banyak percobaan verifikasi OTP. Silakan tunggu beberapa menit lalu coba lagi.';
+                    $retryAfter = (int) ($headers['Retry-After'] ?? $headers['retry-after'] ?? 60);
+                    $waitText = $this->formatRetryAfter($retryAfter);
+                    $message = "Terlalu banyak percobaan verifikasi OTP. Silakan coba lagi dalam {$waitText}.";
 
                     if ($request->expectsJson()) {
                         return response()->json([
@@ -96,8 +98,9 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinutes(15, 5)
                 ->by('password-otp-reset:'.$email.'|'.$request->ip())
                 ->response(function (Request $request, array $headers) {
-                    $retryAfter = (int) ($headers['Retry-After'] ?? 60);
-                    $message = 'Terlalu banyak percobaan atur ulang kata sandi. Silakan coba lagi beberapa menit lagi.';
+                    $retryAfter = (int) ($headers['Retry-After'] ?? $headers['retry-after'] ?? 60);
+                    $waitText = $this->formatRetryAfter($retryAfter);
+                    $message = "Terlalu banyak percobaan atur ulang kata sandi. Silakan coba lagi dalam {$waitText}.";
 
                     if ($request->expectsJson()) {
                         return response()->json([
@@ -112,6 +115,33 @@ class AppServiceProvider extends ServiceProvider
                     return back()->withErrors(['password' => $message]);
                 });
         });
+    }
+
+    /**
+     * Memformat sisa detik rate limiter menjadi teks durasi ramah pengguna (detik / menit / jam).
+     */
+    protected function formatRetryAfter(int $seconds): string
+    {
+        $seconds = max(1, $seconds);
+
+        if ($seconds < 60) {
+            return "{$seconds} detik";
+        }
+
+        $totalMinutes = (int) ceil($seconds / 60);
+
+        if ($totalMinutes < 60) {
+            return "{$totalMinutes} menit";
+        }
+
+        $hours = intdiv($totalMinutes, 60);
+        $remainingMinutes = $totalMinutes % 60;
+
+        if ($remainingMinutes === 0) {
+            return "{$hours} jam";
+        }
+
+        return "{$hours} jam {$remainingMinutes} menit";
     }
 
     /**
