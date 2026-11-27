@@ -27,11 +27,6 @@ class AnakkuController extends Controller
         // ditampilkan hanya yang sudah diverifikasi oleh bidan.
         $anakList = $orangTua
     ? $orangTua->balita()
-        ->whereHas('pengukuran', function ($query) {
-            $query->whereHas('verifikasi', function ($q) {
-                $q->where('status', 'terverifikasi');
-            });
-        })
         ->with([
             'pengukuran' => function ($query) {
                 $query->whereHas('verifikasi', function ($q) {

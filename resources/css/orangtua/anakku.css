@@ -366,6 +366,13 @@ border-radius: 50%;
 .anak-accent--warning { background: #C9820A; }
 .anak-accent--danger  { background: #E15D6F; }
 .anak-accent--ok      { background: #2FA36B; }
+.anak-accent--muted   { background: #B0B8C1; }
+
+.anak-measure-flag--muted {
+    background: #E9EBED;
+    color: #7A8490;
+    border: 1px solid #CDD2D7;
+}
 
 .anak-card {
     flex: 1;
@@ -595,6 +602,10 @@ border-radius: 50%;
     color: #2FA36B;
 }
 
+.anak-measure-value.is-muted {
+    color: #9AA3AC;
+}
+
 .anak-measure-value.is-warning {
     color: #C9820A;
 }
@@ -672,6 +683,12 @@ border-radius: 50%;
     background: #E8F6EE;
     border-color: #CDE9D6;
     color: #2FA36B;
+}
+
+.anak-status-badge--muted {
+    background: #F0F2F4;
+    border-color: #DDE1E5;
+    color: #7A8490;
 }
 
 .anak-followup-link {
