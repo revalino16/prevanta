@@ -9,6 +9,7 @@ use App\Http\Controllers\Kader;
 use App\Http\Controllers\OrangTua;
 use App\Http\Controllers\OrangTua\EdukasiController;
 use App\Http\Controllers\OrangTua\ProfilController;
+use App\Http\Controllers\PasswordResetOtpController;
 use Illuminate\Support\Facades\Route;
 
 // Landing Page
@@ -34,6 +35,37 @@ Route::post('/registrasi', [AuthController::class, 'register'])
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
+
+// =====================================================
+// FORGOT PASSWORD FLOW (role-agnostic)
+// =====================================================
+
+Route::middleware('guest')->group(function () {
+    Route::get('/lupa-kata-sandi', [PasswordResetOtpController::class, 'showRequestForm'])
+        ->name('password.request');
+
+    Route::post('/lupa-kata-sandi', [PasswordResetOtpController::class, 'sendOtp'])
+        ->middleware('throttle:password-otp-request')
+        ->name('password.otp.send');
+
+    Route::get('/lupa-kata-sandi/verifikasi-otp', [PasswordResetOtpController::class, 'showVerifyForm'])
+        ->name('password.otp.form');
+
+    Route::post('/lupa-kata-sandi/verifikasi-otp', [PasswordResetOtpController::class, 'verifyOtp'])
+        ->middleware('throttle:password-otp-verify')
+        ->name('password.otp.verify');
+
+    Route::post('/lupa-kata-sandi/kirim-ulang-otp', [PasswordResetOtpController::class, 'resendOtp'])
+        ->middleware('throttle:password-otp-request')
+        ->name('password.otp.resend');
+
+    Route::get('/lupa-kata-sandi/atur-ulang', [PasswordResetOtpController::class, 'showResetForm'])
+        ->name('password.reset.form');
+
+    Route::post('/lupa-kata-sandi/atur-ulang', [PasswordResetOtpController::class, 'resetPassword'])
+        ->middleware('throttle:password-otp-reset')
+        ->name('password.reset.update');
+});
 
 // =====================================================
 // ORANG TUA

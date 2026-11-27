@@ -36,7 +36,7 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
 }
@@ -292,13 +292,12 @@
     margin: 0;
 }
 
-/* ══════════ 3. MAIN 2-COLUMN FORM GRID ══════════ */
+/* ══════════ 3. MAIN IDENTITY & CONTACT CARD ══════════ */
 
 .op-form-grid {
     display: grid;
-    grid-template-columns: 1.42fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
-    align-items: stretch;
     margin-bottom: 20px;
 }
 
@@ -306,7 +305,7 @@
     background: var(--op-card);
     border: 1px solid var(--op-line);
     border-radius: 18px;
-    padding: 22px 24px;
+    padding: 24px 28px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 8px 24px -16px rgba(60, 30, 24, 0.14);
@@ -353,13 +352,13 @@
 /* ══════════ FORM FIELDS ══════════ */
 
 .op-field-group {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 .op-field-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    gap: 20px;
 }
 
 .op-label-row {
@@ -367,6 +366,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    min-height: 22px;
     margin-bottom: 7px;
 }
 
@@ -435,40 +435,17 @@
     font-weight: 400;
 }
 
-.op-input:focus {
+.op-input:focus-visible {
     background: #FFFFFF;
     border-color: var(--op-wine);
-    box-shadow: 0 0 0 3px rgba(162, 59, 85, 0.12);
-}
-
-.op-input.is-password {
-    padding-right: 48px;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(162, 59, 85, 0.14);
 }
 
 .op-input.is-invalid {
     border-color: var(--op-red);
     background: #FFF9FA;
-}
-
-.op-eye-btn {
-    position: absolute;
-    right: 8px;
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    color: var(--op-ink-soft);
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background .15s ease, color .15s ease;
-}
-
-.op-eye-btn:hover {
-    background: rgba(42, 36, 32, 0.06);
-    color: var(--op-ink);
 }
 
 .op-help-text {
@@ -487,10 +464,10 @@
     margin-top: 5px;
 }
 
-/* ══════════ INFO BOXES (DOMISILI & AMBER & SECURITY) ══════════ */
+/* ══════════ INFO BOX (DOMISILI) ══════════ */
 
 .op-domisili-box {
-    margin-top: auto;
+    margin-top: 4px;
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -511,40 +488,6 @@
 
 .op-domisili-box strong {
     color: var(--op-ink);
-}
-
-.op-amber-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: var(--op-amber-tint);
-    border: 1px solid var(--op-amber-line);
-    color: var(--op-amber);
-    font-size: 12.5px;
-    line-height: 1.45;
-    margin-bottom: 18px;
-}
-
-.op-amber-note i {
-    margin-top: 2px;
-    flex-shrink: 0;
-}
-
-.op-security-note {
-    margin-top: auto;
-    padding-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--op-ink-soft);
-}
-
-.op-security-note i {
-    color: var(--op-green);
-    flex-shrink: 0;
 }
 
 /* ══════════ 4. BOTTOM ACTION BAR ══════════ */
@@ -692,12 +635,6 @@
 }
 
 /* ══════════ RESPONSIVE ══════════ */
-
-@media (max-width: 1024px) {
-    .op-form-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 @media (max-width: 768px) {
     .op-page {
