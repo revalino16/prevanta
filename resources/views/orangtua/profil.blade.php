@@ -37,7 +37,7 @@
             <div>
                 <h1 class="op-title">Profil &amp; Pengaturan Akun</h1>
                 <p class="op-subtitle">
-                    Kelola identitas akun, informasi kontak, foto profil orang tua, dan keamanan kata sandi Anda.
+                    Kelola identitas akun, informasi kontak, dan foto profil orang tua Anda.
                 </p>
             </div>
 
@@ -157,10 +157,10 @@
                 </div>
             </section>
 
-            {{-- ══ 3. MAIN 2-COLUMN FORM GRID ════════════════════════ --}}
+            {{-- ══ 3. MAIN IDENTITY & CONTACT CARD ═══════════════════ --}}
             <div class="op-form-grid">
 
-                {{-- 3A. CARD KIRI: INFORMASI IDENTITAS & KONTAK --}}
+                {{-- INFORMASI IDENTITAS & KONTAK --}}
                 <section class="op-card" aria-labelledby="op-identitas-heading">
                     <div class="op-card-head">
                         <div class="op-card-icon">
@@ -176,74 +176,80 @@
                         </div>
                     </div>
 
-                    <div class="op-field-group">
-                        <div class="op-label-row">
-                            <label for="nama" class="op-label">
-                                Nama Lengkap Orang Tua <span class="op-required">*</span>
-                            </label>
+                    <div class="op-field-row">
+                        <div class="op-field-group">
+                            <div class="op-label-row">
+                                <label for="nama" class="op-label">
+                                    Nama Lengkap Orang Tua <span class="op-required" aria-hidden="true">*</span>
+                                </label>
+                            </div>
+                            <div class="op-input-wrap">
+                                <i class="fa-regular fa-user op-input-icon" aria-hidden="true"></i>
+                                <input
+                                    type="text"
+                                    id="nama"
+                                    name="nama"
+                                    class="op-input @error('nama') is-invalid @enderror"
+                                    value="{{ old('nama', $user->nama) }}"
+                                    data-initial="{{ $user->nama }}"
+                                    minlength="2"
+                                    maxlength="60"
+                                    pattern="[A-Za-z]+( [A-Za-z]+)*"
+                                    title="Nama lengkap hanya boleh berisi huruf dan spasi (2–60 karakter)."
+                                    autocomplete="name"
+                                    aria-describedby="nama-feedback"
+                                    @error('nama') aria-invalid="true" @enderror
+                                    required
+                                >
+                            </div>
+                            @error('nama')
+                                <span id="nama-feedback" class="op-error-text">{{ $message }}</span>
+                            @else
+                                <span id="nama-feedback" class="op-help-text">Sesuai KTP, hanya huruf dan spasi (2–60 karakter, tanpa gelar, angka, atau simbol).</span>
+                            @enderror
                         </div>
-                        <div class="op-input-wrap">
-                            <i class="fa-regular fa-user op-input-icon"></i>
-                            <input
-                                type="text"
-                                id="nama"
-                                name="nama"
-                                class="op-input @error('nama') is-invalid @enderror"
-                                value="{{ old('nama', $user->nama) }}"
-                                data-initial="{{ $user->nama }}"
-                                minlength="2"
-                                maxlength="60"
-                                pattern="[A-Za-z]+( [A-Za-z]+)*"
-                                title="Nama lengkap hanya boleh berisi huruf dan spasi (2–60 karakter)."
-                                autocomplete="name"
-                                required
-                            >
-                        </div>
-                        @error('nama')
-                            <span class="op-error-text">{{ $message }}</span>
-                        @else
-                            <span class="op-help-text">Sesuai KTP, hanya huruf dan spasi (2–60 karakter, tanpa gelar, angka, atau simbol).</span>
-                        @enderror
-                    </div>
 
-                    <div class="op-field-group">
-                        <div class="op-label-row">
-                            <label for="nik" class="op-label">
-                                NIK (Nomor Induk Kependudukan) <span class="op-required">*</span>
-                            </label>
-                            <span id="nik-counter" class="op-digit-badge">0/16 Digit</span>
+                        <div class="op-field-group">
+                            <div class="op-label-row">
+                                <label for="nik" class="op-label">
+                                    NIK (Nomor Induk Kependudukan) <span class="op-required" aria-hidden="true">*</span>
+                                </label>
+                                <span id="nik-counter" class="op-digit-badge">0/16 Digit</span>
+                            </div>
+                            <div class="op-input-wrap">
+                                <i class="fa-solid fa-fingerprint op-input-icon" aria-hidden="true"></i>
+                                <input
+                                    type="text"
+                                    id="nik"
+                                    name="nik"
+                                    class="op-input @error('nik') is-invalid @enderror"
+                                    value="{{ old('nik', $orangTua?->nik) }}"
+                                    data-initial="{{ $orangTua?->nik ?? '' }}"
+                                    inputmode="numeric"
+                                    maxlength="16"
+                                    pattern="[0-9]{16}"
+                                    aria-describedby="nik-feedback"
+                                    @error('nik') aria-invalid="true" @enderror
+                                    required
+                                >
+                            </div>
+                            @error('nik')
+                                <span id="nik-feedback" class="op-error-text">{{ $message }}</span>
+                            @else
+                                <span id="nik-feedback" class="op-help-text">16 digit angka resmi kependudukan Indonesia.</span>
+                            @enderror
                         </div>
-                        <div class="op-input-wrap">
-                            <i class="fa-solid fa-fingerprint op-input-icon"></i>
-                            <input
-                                type="text"
-                                id="nik"
-                                name="nik"
-                                class="op-input @error('nik') is-invalid @enderror"
-                                value="{{ old('nik', $orangTua?->nik) }}"
-                                data-initial="{{ $orangTua?->nik ?? '' }}"
-                                inputmode="numeric"
-                                maxlength="16"
-                                pattern="[0-9]{16}"
-                                required
-                            >
-                        </div>
-                        @error('nik')
-                            <span class="op-error-text">{{ $message }}</span>
-                        @else
-                            <span class="op-help-text">16 digit angka resmi kependudukan Indonesia.</span>
-                        @enderror
                     </div>
 
                     <div class="op-field-row">
                         <div class="op-field-group">
                             <div class="op-label-row">
                                 <label for="email" class="op-label">
-                                    Email <span class="op-required">*</span>
+                                    Email <span class="op-required" aria-hidden="true">*</span>
                                 </label>
                             </div>
                             <div class="op-input-wrap">
-                                <i class="fa-regular fa-envelope op-input-icon"></i>
+                                <i class="fa-regular fa-envelope op-input-icon" aria-hidden="true"></i>
                                 <input
                                     type="email"
                                     id="email"
@@ -253,24 +259,29 @@
                                     data-initial="{{ $user->email }}"
                                     maxlength="100"
                                     autocomplete="email"
+                                    autocorrect="off"
+                                    autocapitalize="none"
+                                    spellcheck="false"
+                                    aria-describedby="email-feedback"
+                                    @error('email') aria-invalid="true" @enderror
                                     required
                                 >
                             </div>
                             @error('email')
-                                <span class="op-error-text">{{ $message }}</span>
+                                <span id="email-feedback" class="op-error-text">{{ $message }}</span>
                             @else
-                                <span class="op-help-text">Untuk notifikasi hasil KMS &amp; buletin.</span>
+                                <span id="email-feedback" class="op-help-text">Untuk notifikasi hasil KMS &amp; buletin.</span>
                             @enderror
                         </div>
 
                         <div class="op-field-group">
                             <div class="op-label-row">
                                 <label for="no_hp" class="op-label">
-                                    No. HP / WhatsApp <span class="op-required">*</span>
+                                    No. HP / WhatsApp <span class="op-required" aria-hidden="true">*</span>
                                 </label>
                             </div>
                             <div class="op-input-wrap">
-                                <i class="fa-solid fa-phone op-input-icon"></i>
+                                <i class="fa-solid fa-phone op-input-icon" aria-hidden="true"></i>
                                 <input
                                     type="text"
                                     id="no_hp"
@@ -282,147 +293,25 @@
                                     maxlength="13"
                                     pattern="[0-9]{8,13}"
                                     autocomplete="tel"
+                                    aria-describedby="no_hp-feedback"
+                                    @error('no_hp') aria-invalid="true" @enderror
                                     required
                                 >
                             </div>
                             @error('no_hp')
-                                <span class="op-error-text">{{ $message }}</span>
+                                <span id="no_hp-feedback" class="op-error-text">{{ $message }}</span>
                             @else
-                                <span class="op-help-text">8–13 digit aktif untuk pesan Posyandu.</span>
+                                <span id="no_hp-feedback" class="op-help-text">8–13 digit aktif untuk pesan Posyandu.</span>
                             @enderror
                         </div>
                     </div>
 
                     <div class="op-domisili-box">
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                         <span>
                             Terkait domisili Posyandu aktif: <strong>Posyandu Mawar Melati</strong>.
                             Apabila pindah domisili atau pos pelayanan, hubungi kader Posyandu terkait.
                         </span>
-                    </div>
-                </section>
-
-                {{-- 3B. CARD KANAN: UBAH KATA SANDI --}}
-                <section class="op-card" aria-labelledby="op-password-heading">
-                    <div class="op-card-head">
-                        <div class="op-card-icon">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                        </div>
-                        <div>
-                            <h2 id="op-password-heading" class="op-card-title">
-                                Ubah Kata Sandi
-                            </h2>
-                            <p class="op-card-desc">
-                                Opsional &mdash; isi hanya jika ingin memperbarui kunci akses akun Anda.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="op-amber-note">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>
-                            Biarkan seluruh kolom kata sandi kosong jika Anda tidak ingin mengubah kata sandi saat ini.
-                        </span>
-                    </div>
-
-                    <div class="op-field-group">
-                        <div class="op-label-row">
-                            <label for="current_password" class="op-label">Kata Sandi Saat Ini</label>
-                        </div>
-                        <div class="op-input-wrap">
-                            <i class="fa-solid fa-key op-input-icon"></i>
-                            <input
-                                type="password"
-                                id="current_password"
-                                name="current_password"
-                                class="op-input is-password @error('current_password') is-invalid @enderror"
-                                placeholder="Masukkan kata sandi saat ini"
-                                maxlength="72"
-                                autocomplete="current-password"
-                            >
-                            <button
-                                type="button"
-                                class="op-eye-btn"
-                                data-toggle-password="current_password"
-                                aria-label="Tampilkan atau sembunyikan kata sandi saat ini"
-                            >
-                                <i class="fa-regular fa-eye"></i>
-                            </button>
-                        </div>
-                        @error('current_password')
-                            <span class="op-error-text">{{ $message }}</span>
-                        @else
-                            <span class="op-help-text">Wajib diisi hanya jika Anda ingin mengganti kata sandi.</span>
-                        @enderror
-                    </div>
-
-                    <div class="op-field-group">
-                        <div class="op-label-row">
-                            <label for="password" class="op-label">Kata Sandi Baru</label>
-                        </div>
-                        <div class="op-input-wrap">
-                            <i class="fa-solid fa-lock op-input-icon"></i>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="op-input is-password @error('password') is-invalid @enderror"
-                                placeholder="8–64 karakter"
-                                minlength="8"
-                                maxlength="64"
-                                autocomplete="new-password"
-                            >
-                            <button
-                                type="button"
-                                class="op-eye-btn"
-                                data-toggle-password="password"
-                                aria-label="Tampilkan atau sembunyikan kata sandi baru"
-                            >
-                                <i class="fa-regular fa-eye"></i>
-                            </button>
-                        </div>
-                        @error('password')
-                            <span class="op-error-text">{{ $message }}</span>
-                        @else
-                            <span class="op-help-text">8–64 karakter. Disarankan menggunakan kombinasi huruf dan angka.</span>
-                        @enderror
-                    </div>
-
-                    <div class="op-field-group">
-                        <div class="op-label-row">
-                            <label for="password_confirmation" class="op-label">Konfirmasi Kata Sandi Baru</label>
-                        </div>
-                        <div class="op-input-wrap">
-                            <i class="fa-solid fa-shield-halved op-input-icon"></i>
-                            <input
-                                type="password"
-                                id="password_confirmation"
-                                name="password_confirmation"
-                                class="op-input is-password @error('password_confirmation') is-invalid @enderror"
-                                placeholder="Ulangi kata sandi baru"
-                                minlength="8"
-                                maxlength="64"
-                                autocomplete="new-password"
-                            >
-                            <button
-                                type="button"
-                                class="op-eye-btn"
-                                data-toggle-password="password_confirmation"
-                                aria-label="Tampilkan atau sembunyikan konfirmasi kata sandi baru"
-                            >
-                                <i class="fa-regular fa-eye"></i>
-                            </button>
-                        </div>
-                        @error('password_confirmation')
-                            <span class="op-error-text">{{ $message }}</span>
-                        @else
-                            <span class="op-help-text">Pastikan sama dengan kata sandi baru.</span>
-                        @enderror
-                    </div>
-
-                    <div class="op-security-note">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Terenkripsi standar keamanan data Kementerian Kesehatan RI.</span>
                     </div>
                 </section>
 
@@ -462,7 +351,7 @@
                 </div>
                 <h3 id="op-confirm-title" class="op-modal-title">Simpan Perubahan Profil?</h3>
                 <p class="op-modal-text">
-                    Apakah Anda yakin data identitas, kontak, foto profil, dan pengaturan kata sandi yang dimasukkan sudah sesuai?
+                    Apakah Anda yakin data identitas, kontak, dan foto profil yang dimasukkan sudah sesuai?
                 </p>
                 <div class="op-modal-actions">
                     <button type="button" id="btn-close-confirm-modal" class="op-btn-cancel">
@@ -490,9 +379,6 @@
             const nikInput = document.getElementById('nik');
             const emailInput = document.getElementById('email');
             const noHpInput = document.getElementById('no_hp');
-            const currentPasswordInput = document.getElementById('current_password');
-            const passwordInput = document.getElementById('password');
-            const passwordConfirmInput = document.getElementById('password_confirmation');
             const nikCounter = document.getElementById('nik-counter');
 
             const fotoInput = document.getElementById('foto_profil');
@@ -524,12 +410,6 @@
                 }
 
                 namaInput.setCustomValidity('');
-            };
-
-            const clearPasswordValidity = () => {
-                [currentPasswordInput, passwordInput, passwordConfirmInput].forEach((input) => {
-                    input?.setCustomValidity('');
-                });
             };
 
             const updateNikCounter = () => {
@@ -592,9 +472,6 @@
             namaInput?.addEventListener('input', sanitizeNama);
             nikInput?.addEventListener('input', updateNikCounter);
             noHpInput?.addEventListener('input', sanitizeNoHp);
-            [currentPasswordInput, passwordInput, passwordConfirmInput].forEach((input) => {
-                input?.addEventListener('input', clearPasswordValidity);
-            });
             updateNikCounter();
 
             // Live preview upload foto profil
@@ -633,24 +510,6 @@
                 btnHapusFoto.disabled = true;
             });
 
-            // Toggle Show / Hide Kata Sandi
-            document.querySelectorAll('[data-toggle-password]').forEach((button) => {
-                button.addEventListener('click', () => {
-                    const targetId = button.getAttribute('data-toggle-password');
-                    const input = targetId ? document.getElementById(targetId) : null;
-                    const icon = button.querySelector('i');
-
-                    if (!input || !icon) {
-                        return;
-                    }
-
-                    const isHidden = input.type === 'password';
-                    input.type = isHidden ? 'text' : 'password';
-                    icon.classList.toggle('fa-eye', !isHidden);
-                    icon.classList.toggle('fa-eye-slash', isHidden);
-                });
-            });
-
             // Tombol Batal: reset seluruh input form & preview foto kembali ke data awal
             btnBatal?.addEventListener('click', () => {
                 [namaInput, nikInput, emailInput, noHpInput].forEach((input) => {
@@ -659,20 +518,7 @@
                     }
                 });
 
-                [currentPasswordInput, passwordInput, passwordConfirmInput].forEach((input) => {
-                    if (input) {
-                        input.value = '';
-                        input.type = 'password';
-                        input.setCustomValidity('');
-                    }
-                });
-
                 namaInput?.setCustomValidity('');
-
-                document.querySelectorAll('[data-toggle-password] i').forEach((icon) => {
-                    icon.classList.add('fa-eye');
-                    icon.classList.remove('fa-eye-slash');
-                });
 
                 revokeObjectUrl();
                 if (fotoInput) {
@@ -732,31 +578,6 @@
                         namaInput.setCustomValidity('Nama lengkap maksimal 60 karakter.');
                     } else if (normalizedNama.length > 0 && !/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(normalizedNama)) {
                         namaInput.setCustomValidity('Nama lengkap hanya boleh berisi huruf dan spasi.');
-                    }
-                }
-
-                clearPasswordValidity();
-
-                const curr = currentPasswordInput?.value ?? '';
-                const next = passwordInput?.value ?? '';
-                const conf = passwordConfirmInput?.value ?? '';
-                const isChangingPassword = curr !== '' || next !== '' || conf !== '';
-
-                if (isChangingPassword) {
-                    if (curr === '' && currentPasswordInput) {
-                        currentPasswordInput.setCustomValidity('Kata sandi saat ini wajib diisi jika ingin mengubah kata sandi.');
-                    } else if (next === '' && passwordInput) {
-                        passwordInput.setCustomValidity('Kata sandi baru wajib diisi jika ingin mengubah kata sandi.');
-                    } else if (next.length < 8 && passwordInput) {
-                        passwordInput.setCustomValidity('Kata sandi baru minimal 8 karakter.');
-                    } else if (next.length > 64 && passwordInput) {
-                        passwordInput.setCustomValidity('Kata sandi baru maksimal 64 karakter.');
-                    } else if (next === curr && passwordInput) {
-                        passwordInput.setCustomValidity('Kata sandi baru harus berbeda dengan kata sandi saat ini.');
-                    } else if (conf === '' && passwordConfirmInput) {
-                        passwordConfirmInput.setCustomValidity('Konfirmasi kata sandi baru wajib diisi.');
-                    } else if (conf !== next && passwordConfirmInput) {
-                        passwordConfirmInput.setCustomValidity('Konfirmasi kata sandi baru tidak cocok.');
                     }
                 }
             };
