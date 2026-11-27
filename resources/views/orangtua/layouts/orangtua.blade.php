@@ -72,6 +72,14 @@
                     <span>Edukasi</span>
                 </a>
 
+                <a
+                    href="{{ route('orangtua.profil.edit') }}"
+                    class="nav-item {{ request()->routeIs('orangtua.profil*') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-user nav-icon"></i>
+                    <span>Profil</span>
+                </a>
+
         </nav>
 
         <div class="sidebar-bottom">

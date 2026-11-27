@@ -83,6 +83,8 @@ class ProfilOrangTuaTest extends TestCase
             ->assertSeeText('8–64 karakter. Disarankan menggunakan kombinasi huruf dan angka.')
             ->assertSee('value="Siti Aminah"', false)
             ->assertSee('value="'.$orangTua->nik.'"', false)
+            ->assertSee('nav-item active', false)
+            ->assertSee('<span>Profil</span>', false)
             ->assertSee('topbar-user is-active', false);
     }
 
