@@ -364,6 +364,14 @@
     fill: #fff0f3;
 }
 
+.chart-zone-overweight {
+    fill: #fff4df;
+}
+
+.chart-zone-obese {
+    fill: #ffe8e8;
+}
+
 .chart-grid-line {
     stroke: #eee7df;
     stroke-width: 1;
@@ -830,6 +838,10 @@
 
 .legend-danger {
     background: #df6f84;
+}
+
+.legend-obese {
+    background: #e9a2aa;
 }
 
 .legend-recorded {

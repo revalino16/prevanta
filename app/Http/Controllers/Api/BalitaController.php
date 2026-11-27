@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Balita;
 use App\Models\OrangTua;
+use App\Support\BalitaGrowthChartBuilder;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class BalitaController extends Controller
      * GET /api/kader/balita/{id}/kms
      * Mengambil profil balita dan seluruh riwayat pengukuran untuk KMS kader.
      */
-    public function kms(int|string $id): JsonResponse
+    public function kms(int|string $id, BalitaGrowthChartBuilder $growthChartBuilder): JsonResponse
     {
         $balita = Balita::with([
             'orangTua.user',
@@ -87,6 +88,16 @@ class BalitaController extends Controller
 
         $ageMonths = $birthDate ? (int) $birthDate->diffInMonths($now) : 0;
         $parent = $balita->orangTua;
+        $growthCharts = $birthDate === null
+            ? []
+            : $growthChartBuilder->build(
+                $balita->pengukuran
+                    ->filter(fn ($measurement) => strtolower($measurement->verifikasi?->status ?? '') === 'terverifikasi')
+                    ->sortBy('tanggal_pengukuran')
+                    ->values(),
+                $birthDate,
+                (string) ($balita->jenis_kelamin ?? 'L'),
+            );
 
         return response()->json([
             'success' => true,
@@ -103,6 +114,7 @@ class BalitaController extends Controller
                 'domisili' => $balita->alamat ?? '-',
                 'posyandu_nama' => 'Posyandu Terpadu Prevanta',
                 'pengukuran' => $measurements,
+                'growth_charts' => $growthCharts,
                 'riwayat_layanan' => $serviceHistory,
             ],
         ]);
@@ -258,13 +270,13 @@ class BalitaController extends Controller
 
         if ($request->hasFile('foto_profil')) {
             $file = $request->file('foto_profil');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $destination = public_path('uploads/balita');
-            if (!file_exists($destination)) {
+            if (! file_exists($destination)) {
                 mkdir($destination, 0755, true);
             }
             $file->move($destination, $filename);
-            $validated['foto_profil'] = 'uploads/balita/' . $filename;
+            $validated['foto_profil'] = 'uploads/balita/'.$filename;
         }
 
         $balita = Balita::create($validated);
@@ -370,13 +382,13 @@ class BalitaController extends Controller
                 @unlink(public_path($balita->foto_profil));
             }
             $file = $request->file('foto_profil');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $destination = public_path('uploads/balita');
-            if (!file_exists($destination)) {
+            if (! file_exists($destination)) {
                 mkdir($destination, 0755, true);
             }
             $file->move($destination, $filename);
-            $validated['foto_profil'] = 'uploads/balita/' . $filename;
+            $validated['foto_profil'] = 'uploads/balita/'.$filename;
         }
 
         $balita->update($validated);
