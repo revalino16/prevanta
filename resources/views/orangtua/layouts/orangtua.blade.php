@@ -72,6 +72,14 @@
                     <span>Edukasi</span>
                 </a>
 
+                <a
+                    href="{{ route('orangtua.profil.edit') }}"
+                    class="nav-item {{ request()->routeIs('orangtua.profil*') ? 'active' : '' }}"
+                >
+                    <i class="fa-solid fa-user nav-icon"></i>
+                    <span>Profil</span>
+                </a>
+
         </nav>
 
         <div class="sidebar-bottom">
@@ -105,14 +113,7 @@
                 <div class="topbar-meta">
                     <i class="fa-regular fa-calendar"></i>
                     <span id="today-label"></span>
-                    <span class="topbar-divider"></span>
-                    <span>Posko RW 03</span>
                 </div>
-
-                {{-- <button class="topbar-bell" type="button" title="Notifikasi">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="notif-dot">3</span>
-                </button> --}}
 
                 @auth
                     @php

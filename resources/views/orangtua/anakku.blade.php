@@ -224,8 +224,12 @@
 
                     // Level dan highlight label disesuaikan sama persis seperti kader
                     $statusLower = strtolower($statusPertumbuhan ?? '');
+                    $belumDiukur = $p === null;
 
-                    if (
+                    if ($belumDiukur) {
+                        $level = 'muted';
+                        $highlightLabel = 'Belum Diukur';
+                    } elseif (
                         str_contains($statusLower, 'sangat pendek') ||
                         str_contains($statusLower, 'sangat kurus') ||
                         str_contains($statusLower, 'buruk')
@@ -331,7 +335,11 @@
 
                                 </span>
 
-                                @if ($statusPertumbuhan)
+                                @if ($belumDiukur)
+                                    <span class="anak-measure-flag anak-measure-flag--muted">
+                                        {{ $highlightLabel }}
+                                    </span>
+                                @elseif ($statusPertumbuhan)
                                     <span class="anak-measure-flag anak-measure-flag--{{ $level }}">
                                         {{ $highlightLabel }}
                                     </span>

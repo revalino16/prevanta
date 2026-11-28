@@ -132,7 +132,7 @@
 
             <span class="topbar-posyandu">
                 <i class="fa-solid fa-location-dot"></i>
-                Posyandu Mawar Melati - Desa Sukamaju
+                Posyandu Jambu 77 - Desa Rowo Indah
             </span>
 
             <div class="topbar-right">
@@ -140,14 +140,7 @@
                 <div class="topbar-meta">
                     <i class="fa-regular fa-calendar"></i>
                     <span id="today-label"></span>
-                    <span class="topbar-divider"></span>
-                    <span>Posko RW 03</span>
                 </div>
-
-                {{-- <button class="topbar-bell" type="button" title="Notifikasi">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="notif-dot">3</span>
-                </button> --}}
 
                 @auth
                     <div class="topbar-user">

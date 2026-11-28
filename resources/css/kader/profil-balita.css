@@ -43,6 +43,7 @@
     margin-bottom: 4px;
     font-size: 28px;
     line-height: 1.15;
+    font-weight: 900;
 }
 
 .kms-heading p {
@@ -361,6 +362,14 @@
 
 .chart-zone-danger {
     fill: #fff0f3;
+}
+
+.chart-zone-overweight {
+    fill: #fff4df;
+}
+
+.chart-zone-obese {
+    fill: #ffe8e8;
 }
 
 .chart-grid-line {
@@ -829,6 +838,10 @@
 
 .legend-danger {
     background: #df6f84;
+}
+
+.legend-obese {
+    background: #e9a2aa;
 }
 
 .legend-recorded {

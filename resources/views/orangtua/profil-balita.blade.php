@@ -15,7 +15,7 @@
             <h1>Profil Anak</h1>
             <p>Informasi dan perkembangan tumbuh kembang anak</p>
         </div>
-        
+
         {{-- Tombol "Catat Pengukuran" sudah dihapus untuk orang tua (Read Only) --}}
     </div>
 
@@ -233,14 +233,14 @@
                 <p class="counseling-note-text" style="margin: 0 0 16px; font-size: 0.95rem; color: #374151; line-height: 1.6;">
                     {{ $latestMeasurement['counselingNote'] }}
                 </p>
-                
+
                 <div class="counseling-meta" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #d1d5db; padding-top: 12px; font-size: 0.8125rem; color: #4b5563;">
                     <div class="counseling-authors">
                         <span>Konselor: <strong>{{ $latestMeasurement['counselor'] ?? 'Bidan Desa' }}</strong></span>
                         <span style="margin: 0 8px;">&bull;</span>
                         <span>Pendamping: <strong>{{ $latestMeasurement['companion'] ?? 'Kader Posyandu' }}</strong></span>
                     </div>
-                    
+
                     <span class="counseling-badge" style="color: #059669; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-circle-check"></i> Tercatat di Kohort Posyandu
                     </span>

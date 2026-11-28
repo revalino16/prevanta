@@ -3,7 +3,7 @@
     data-chart-panel="{{ $chartKey }}"
     @if ($chartKey !== 'tb-u') hidden @endif
 >
-    @if ($chartKey === 'tb-u' && !empty($chart['chartTitle']))
+    @if (!empty($chart['chartTitle']))
         {{-- Header Khas Buku KIA / WHO --}}
         <div class="who-chart-header who-theme-{{ strtolower($chart['gender'] ?? 'l') }}">
             <div class="who-header-left">

@@ -79,10 +79,17 @@ class ProfilOrangTuaTest extends TestCase
             ->assertSeeText('Orang Tua / Wali')
             ->assertSeeText('Perempuan')
             ->assertSeeText('Posyandu Mawar Melati')
-            ->assertSeeText('Kata Sandi Saat Ini')
-            ->assertSeeText('8–64 karakter. Disarankan menggunakan kombinasi huruf dan angka.')
+            ->assertDontSeeText('Ubah Kata Sandi')
+            ->assertDontSeeText('Kata Sandi Saat Ini')
+            ->assertDontSeeText('Kata Sandi Baru')
+            ->assertDontSeeText('Konfirmasi Kata Sandi Baru')
+            ->assertDontSee('name="current_password"', false)
+            ->assertDontSee('name="password"', false)
+            ->assertDontSee('name="password_confirmation"', false)
             ->assertSee('value="Siti Aminah"', false)
             ->assertSee('value="'.$orangTua->nik.'"', false)
+            ->assertSee('nav-item active', false)
+            ->assertSee('<span>Profil</span>', false)
             ->assertSee('topbar-user is-active', false);
     }
 
