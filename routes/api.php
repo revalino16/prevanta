@@ -109,6 +109,7 @@ Route::middleware(['auth:sanctum', 'role:bidan'])
         // Monitoring balita (bidan juga bisa lihat, sama seperti di web)
         Route::get('/monitoring-balita', [BalitaController::class, 'index'])->name('monitoring-balita');
         Route::get('/balita/{id}', [BalitaController::class, 'show'])->name('balita.show');
+        Route::get('/balita/{id}/kms', [BalitaController::class, 'kms'])->name('balita.kms');
         Route::get('/verifikasi', [BidanController::class, 'verifikasi'])->name('verifikasi');
         Route::post('/verifikasi/{pengukuranId}', [BidanController::class, 'storeVerifikasi'])->name('verifikasi.store');
     });
