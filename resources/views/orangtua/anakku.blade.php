@@ -93,7 +93,7 @@
             Pastikan hadir tepat waktu untuk menjaga kesinambungan tumbuh kembang optimal balita.
         </p>
 
-        <div class="agenda-grid">
+        <div class="agenda-grid agenda-horizontal">
 
             @forelse($agendaList as $agenda)
                 <div class="agenda-card">
@@ -489,14 +489,10 @@
 
             <div class="anakku-section-title">
                 <i class="fa-solid fa-newspaper"></i>
-                <span>Edukasi Terpopuler</span>
+                <span>Edukasi Terbaru</span>
             </div>
 
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                {{-- <span class="anakku-periode-pill">
-                    <i class="fa-regular fa-calendar-check" style="color: var(--primary); margin-right: 4px;"></i>
-                    Periode 2 Minggu
-                </span> --}}
 
                 <a href="{{ route('orangtua.edukasi') }}" class="anakku-selengkapnya-btn">
                     <span>Selengkapnya</span>
