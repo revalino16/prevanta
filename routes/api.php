@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BidanController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EdukasiController;
 use App\Http\Controllers\Api\JadwalController;
+use App\Http\Controllers\Api\PasswordResetOtpController;
 use App\Http\Controllers\Api\PengukuranController;
 use App\Http\Controllers\Api\ProfilOrangTuaController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,19 @@ Route::get('/media/profil-orangtua/{filename}', [ProfilOrangTuaController::class
 // =========================================================
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 Route::post('/register', [AuthController::class, 'register'])->name('api.register');
+Route::prefix('forgot-password')
+    ->name('api.password.')
+    ->group(function () {
+        Route::post('/request-otp', [PasswordResetOtpController::class, 'requestOtp'])
+            ->middleware('throttle:password-otp-request')
+            ->name('otp.request');
+        Route::post('/verify-otp', [PasswordResetOtpController::class, 'verifyOtp'])
+            ->middleware('throttle:password-otp-verify')
+            ->name('otp.verify');
+        Route::post('/reset-password', [PasswordResetOtpController::class, 'resetPassword'])
+            ->middleware('throttle:password-otp-reset')
+            ->name('reset');
+    });
 
 // =========================================================
 // SEMUA ROLE YANG SUDAH LOGIN (auth:sanctum)
