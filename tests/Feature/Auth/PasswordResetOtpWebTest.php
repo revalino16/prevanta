@@ -358,6 +358,7 @@ class PasswordResetOtpWebTest extends TestCase
     public function test_hourly_rate_limit_blocks_excessive_requests_from_same_ip(): void
     {
         Mail::fake();
+        Carbon::setTestNow(Carbon::parse('2026-11-28 10:00:00'));
 
         for ($i = 1; $i <= 15; $i++) {
             $this->from(route('password.request'))
@@ -370,14 +371,26 @@ class PasswordResetOtpWebTest extends TestCase
                 ]);
         }
 
-        // Permintaan ke-16 dari IP yang sama dalam 1 jam terkena rate limit
+        // Permintaan ke-16 dari IP yang sama menampilkan sisa waktu tunggu (1 jam)
         $this->from(route('password.request'))
             ->post(route('password.otp.send'), [
                 'email' => 'unknown16@example.test',
             ])
             ->assertRedirect(route('password.request'))
             ->assertSessionHasErrors([
-                'email' => 'Terlalu banyak permintaan kode OTP. Silakan coba lagi beberapa saat lagi.',
+                'email' => 'Terlalu banyak permintaan kode OTP. Silakan coba lagi dalam 1 jam.',
+            ]);
+
+        // Setelah 15 menit berlalu, sisa waktu tunggu otomatis berkurang menjadi 45 menit
+        Carbon::setTestNow(Carbon::parse('2026-11-28 10:15:00'));
+
+        $this->from(route('password.request'))
+            ->post(route('password.otp.send'), [
+                'email' => 'unknown17@example.test',
+            ])
+            ->assertRedirect(route('password.request'))
+            ->assertSessionHasErrors([
+                'email' => 'Terlalu banyak permintaan kode OTP. Silakan coba lagi dalam 45 menit.',
             ]);
     }
 
