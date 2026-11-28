@@ -47,34 +47,39 @@
 
 
         {{-- FILTER PANEL --}}
+        <form method="GET" action="{{ request()->url() }}" id="filterForm">
         <div class="filter-panel">
 
             <div class="filter-row">
 
                 <div class="tabs" id="tabs">
 
-                    <button type="button" class="tab active" data-status="">
-                        Semua Status ({{ $balita->count() }})
-                    </button>
+                    <a href="{{ request()->fullUrlWithQuery(['status' => '', 'page' => 1]) }}"
+                        class="tab {{ $status === '' ? 'active' : '' }}">
+                        Semua Status ({{ $totalBalita }})
+                    </a>
 
-                    <button type="button" class="tab" data-status="success">
+                    <a href="{{ request()->fullUrlWithQuery(['status' => 'success', 'page' => 1]) }}"
+                        class="tab {{ $status === 'success' ? 'active' : '' }}">
                         Normal ({{ $countNormal }})
-                    </button>
+                    </a>
 
-                    <button type="button" class="tab" data-status="warning">
+                    <a href="{{ request()->fullUrlWithQuery(['status' => 'warning', 'page' => 1]) }}"
+                        class="tab {{ $status === 'warning' ? 'active' : '' }}">
                         Pendek ({{ $countPendek }})
-                    </button>
+                    </a>
 
-                    <button type="button" class="tab" data-status="danger">
+                    <a href="{{ request()->fullUrlWithQuery(['status' => 'danger', 'page' => 1]) }}"
+                        class="tab {{ $status === 'danger' ? 'active' : '' }}">
                         Sangat Pendek ({{ $countSangatPendek }})
-                    </button>
+                    </a>
 
                 </div>
 
-                <button type="button" class="reset-link" id="resetFilter">
+                <a href="{{ request()->url() }}" class="reset-link">
                     <i class="fa-solid fa-rotate-left"></i>
                     Reset Filter
-                </button>
+                </a>
 
             </div>
 
@@ -85,30 +90,38 @@
 
                     <i class="fa-solid fa-magnifying-glass"></i>
 
-                    <input type="text" id="searchInput" placeholder="Cari nama balita atau NIK...">
+                    <input type="text" name="search" id="searchInput"
+                        value="{{ $search }}"
+                        placeholder="Cari nama balita atau NIK...">
 
                 </div>
 
 
-                <select id="genderFilter">
+                <select name="gender" id="genderFilter" onchange="document.getElementById('filterForm').submit()">
 
-                    <option value="">
+                    <option value="" {{ $gender === '' ? 'selected' : '' }}>
                         Semua Gender
                     </option>
 
-                    <option value="L">
+                    <option value="L" {{ $gender === 'L' ? 'selected' : '' }}>
                         Laki-laki
                     </option>
 
-                    <option value="P">
+                    <option value="P" {{ $gender === 'P' ? 'selected' : '' }}>
                         Perempuan
                     </option>
 
                 </select>
 
+                {{-- Retain tab status filter saat submit search/gender --}}
+                @if($status !== '')
+                    <input type="hidden" name="status" value="{{ $status }}">
+                @endif
+
             </div>
 
         </div>
+        </form>
 
 
         {{-- MONITORING LIST --}}
@@ -122,7 +135,8 @@
                 </div>
 
                 <span class="panel-count" id="visibleCount">
-                    Menampilkan {{ $balita->count() }} Balita
+                    Menampilkan {{ $balita->firstItem() }}–{{ $balita->lastItem() }}
+                    dari {{ $balita->total() }} Balita
                 </span>
 
             </div>
@@ -371,6 +385,42 @@
                 @endforelse
 
             </div>
+
+            {{-- PAGINATION --}}
+            @if ($balita->hasPages())
+                <div class="pagination-wrap">
+                    {{-- Prev --}}
+                    @if ($balita->onFirstPage())
+                        <span class="page-btn page-btn-disabled">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </span>
+                    @else
+                        <a href="{{ $balita->previousPageUrl() }}" class="page-btn">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </a>
+                    @endif
+
+                    {{-- Page numbers --}}
+                    @foreach ($balita->getUrlRange(1, $balita->lastPage()) as $page => $url)
+                        @if ($page == $balita->currentPage())
+                            <span class="page-btn page-btn-active">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="page-btn">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    {{-- Next --}}
+                    @if ($balita->hasMorePages())
+                        <a href="{{ $balita->nextPageUrl() }}" class="page-btn">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    @else
+                        <span class="page-btn page-btn-disabled">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </span>
+                    @endif
+                </div>
+            @endif
 
         </div>
 

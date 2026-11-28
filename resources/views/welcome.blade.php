@@ -5,45 +5,60 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
-        content="Prevanta - Posyandu Jambu 77 RW 03 Desa Sukamaju. Pemantauan tumbuh kembang anak, pencegahan stunting, dan layanan kesehatan balita terpadu.">
+        content="Prevanta - Posyandu Jambu 77 RW 03 Desa Sukamaju. Pemantauan tumbuh kembang anak, KMS digital standar WHO, dan pencegahan stunting terpadu.">
 
-    <title>Prevanta - Posyandu Jambu 77 RW 03</title>
+    <title>Prevanta &bull; Pemantauan Tumbuh Kembang Posyandu Jambu 77</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display / Serif for Warm Editorial Style -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap"
         rel="stylesheet">
 
-    <!-- Tailwind CSS & Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- AOS (Animate on Scroll) CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+        integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9kcIE9mN4MvyWD2ULqcGxFybCDhok9fRb5MWxDhxArMD3gEKh3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
                     },
                     colors: {
-                        brand: {
-                            50: '#fdf2f4',
-                            100: '#fce7eb',
-                            200: '#f9d1d9',
-                            300: '#f4aebd',
-                            400: '#eb7f97',
-                            500: '#dc5274',
-                            600: '#c5345b',
-                            700: '#a52648',
-                            800: '#8c223e',
-                            900: '#772038',
-                            950: '#430d1c',
+                        prevanta: {
+                            50: '#FDF2F5',
+                            100: '#FCEEF2',
+                            200: '#F7D6DF',
+                            300: '#EEADC0',
+                            400: '#E07C9A',
+                            500: '#CC5075',
+                            600: '#A93657',
+                            700: '#8A2743',
+                            800: '#7C2740', /* Primary Prevanta */
+                            900: '#5E1C31', /* Primary Dark Prevanta */
+                            950: '#3D0D1C',
+                        },
+                        sage: {
+                            50: '#F3F7F4',
+                            100: '#E4EDE7',
+                            200: '#C9DCD0',
+                            600: '#3D6B4E',
+                            700: '#2E533B',
+                            800: '#233E2C',
                         }
                     }
                 }
@@ -53,204 +68,198 @@
 
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-            background-color: #fcfbfa;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #FDF7F9;
+            color: #241A1E;
+            overflow-x: hidden;
+        }
+
+        .font-headline {
+            font-family: 'Playfair Display', Georgia, serif;
+            letter-spacing: -0.015em;
+        }
+
+        .warm-card-shadow {
+            box-shadow: 0 14px 32px -8px rgba(124, 39, 64, 0.08), 0 4px 12px -2px rgba(124, 39, 64, 0.03);
+        }
+
+        /* Floating animations for hero badges */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes floatMedium {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float-slow {
+            animation: floatSlow 4.5s ease-in-out infinite;
+        }
+        .animate-float-medium {
+            animation: floatMedium 3.8s ease-in-out infinite 1.2s;
         }
     </style>
 </head>
 
-<body id="top" class="text-[#1f2937] antialiased bg-[#fcfbfa] selection:bg-rose-100 selection:text-rose-800">
-
-    <!-- Ambient Glow Elements -->
-    <div
-        class="fixed top-0 left-0 -z-10 w-96 h-96 bg-emerald-100/50 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2">
-    </div>
-    <div
-        class="fixed top-20 right-0 -z-10 w-[480px] h-[480px] bg-rose-100/40 rounded-full blur-3xl pointer-events-none translate-x-1/3">
-    </div>
+<body id="top" class="antialiased selection:bg-prevanta-100 selection:text-prevanta-900">
 
     <!-- ============================================== -->
-    <!-- HEADER / NAVBAR -->
+    <!-- HEADER / NAVIGATION                           -->
     <!-- ============================================== -->
-    <header class="sticky top-0 z-50 bg-[#fcfbfa]/90 backdrop-blur-md border-b border-rose-100/60 transition-all">
+    <header class="sticky top-0 z-50 bg-[#FDF7F9]/90 backdrop-blur-md border-b border-prevanta-200/50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-20 sm:h-24">
 
-                <!-- Left: Brand Logo & Title -->
-                <a href="#top" class="flex items-center gap-3 group">
-                    <div class="relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo Prevanta"
-                            class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-200">
-                    </div>
+                <!-- Left: Logo & Brand Name -->
+                <a href="#top" class="flex items-center gap-3.5 group">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Prevanta" class="w-10 h-10 sm:w-11 sm:h-11 object-contain transform group-hover:scale-105 transition-transform duration-300">
                     <div class="flex flex-col">
-                        <span class="text-xl sm:text-2xl font-extrabold tracking-tight text-[#9b2c45] leading-none">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-prevanta-800 tracking-tight leading-none">
                             Prevanta
                         </span>
-                        <span class="text-[11px] sm:text-xs font-semibold text-gray-500 mt-1 tracking-tight">
-                            Posyandu Jambu 77 RW 03
+                        <span class="text-[11px] font-semibold text-stone-500 mt-1">
+                            Posyandu Jambu 77 &bull; RW 03
                         </span>
                     </div>
                 </a>
 
-                <!-- Center: Navigation Pills -->
-                <nav
-                    class="hidden md:flex items-center gap-1.5 bg-white/90 border border-rose-100/80 rounded-full p-1.5 shadow-sm">
-                    <a href="#top"
-                        class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-rose-100 text-[#9b2c45] transition-all">
-                        Beranda
-                    </a>
-                    <a href="#tentang"
-                        class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium text-gray-600 hover:text-[#9b2c45] hover:bg-rose-50/60 transition-all">
-                        Tentang Kami
-                    </a>
-                    <a href="#tim"
-                        class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium text-gray-600 hover:text-[#9b2c45] hover:bg-rose-50/60 transition-all">
-                        Tim Pelaksana
-                    </a>
-                    <a href="#alur"
-                        class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium text-gray-600 hover:text-[#9b2c45] hover:bg-rose-50/60 transition-all">
-                        Alur Kunjungan
-                    </a>
+                <!-- Center: Navigation Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-stone-700">
+                    <a href="#top" class="text-prevanta-800 font-bold hover:text-prevanta-900 transition">Beranda</a>
+                    <a href="#tentang" class="hover:text-prevanta-800 transition">Tentang</a>
+                    <a href="#program" class="hover:text-prevanta-800 transition">Layanan KMS</a>
+                    <a href="#alur" class="hover:text-prevanta-800 transition">Alur 5 Meja</a>
+                    <a href="#tim" class="hover:text-prevanta-800 transition">Tim Kader</a>
                 </nav>
 
-                <!-- Right: Action Buttons -->
-                <div class="flex items-center gap-2.5 sm:gap-3">
+                <!-- Right: Action Button -->
+                <div class="flex items-center gap-3">
                     <a href="{{ route('login') }}"
-                        class="inline-flex items-center justify-center px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-[#9b2c45] border border-rose-200 hover:border-[#9b2c45] hover:bg-rose-50 shadow-sm transition-all">
-                        Masuk Portal
+                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-prevanta-800 text-white hover:bg-prevanta-900 transition shadow-sm hover:shadow-md transform hover:-translate-y-0.5 active:translate-y-0">
+                        <span>Masuk Portal</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
                     </a>
 
-                    <a href="{{ route('login') }}" aria-label="Profil Pengguna"
-                        class="w-10 h-10 rounded-full bg-[#9b2c45] text-white flex items-center justify-center shadow-sm hover:bg-[#832239] transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                    </a>
-
-                    <!-- Mobile Menu Hamburger Button -->
-                    <button type="button" id="mobile-menu-btn"
-                        class="md:hidden p-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-rose-50 transition"
-                        aria-label="Buka Menu">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                    <!-- Mobile Hamburger -->
+                    <button type="button" id="mobile-menu-btn" onclick="toggleMobileMenu()"
+                        class="md:hidden p-2 rounded-xl text-stone-700 hover:text-prevanta-800 hover:bg-prevanta-100"
+                        aria-label="Menu">
+                        <i class="fa-solid fa-bars text-lg"></i>
                     </button>
                 </div>
 
             </div>
 
             <!-- Mobile Menu Dropdown -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4 pt-2 border-t border-rose-100 flex flex-col gap-2">
-                <a href="#top"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold bg-rose-50 text-[#9b2c45]">Beranda</a>
-                <a href="#tentang"
-                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-rose-50">Tentang Kami</a>
-                <a href="#tim" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-rose-50">Tim
-                    Pelaksana</a>
-                <a href="#alur" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-rose-50">Alur
-                    Kunjungan</a>
-                <a href="{{ route('login') }}"
-                    class="px-4 py-2 text-center rounded-lg text-sm font-bold bg-[#9b2c45] text-white mt-1">Masuk
-                    Portal</a>
+            <div id="mobile-menu" class="hidden md:hidden pb-5 pt-3 bg-white/95 rounded-2xl p-4 mt-2 border border-prevanta-200/60 shadow-lg flex flex-col gap-2 text-sm font-semibold text-stone-700">
+                <a href="#top" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-prevanta-50 text-prevanta-800 font-bold">Beranda</a>
+                <a href="#tentang" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg hover:bg-prevanta-50">Tentang Posyandu</a>
+                <a href="#program" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg hover:bg-prevanta-50">Layanan KMS</a>
+                <a href="#alur" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg hover:bg-prevanta-50">Alur Kunjungan 5 Meja</a>
+                <a href="#tim" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg hover:bg-prevanta-50">Tim Pelaksana</a>
+                <a href="{{ route('login') }}" class="px-3 py-2.5 text-center rounded-xl bg-prevanta-800 text-white font-bold mt-1">Masuk Portal</a>
             </div>
         </div>
     </header>
 
     <main>
+
         <!-- ============================================== -->
-        <!-- SECTION 1: HERO SECTION -->
+        <!-- SECTION 1: HERO SECTION                       -->
         <!-- ============================================== -->
         <section class="relative pt-8 pb-16 lg:pt-14 lg:pb-24 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
 
-                    <!-- Left Content Column -->
-                    <div class="lg:col-span-7 flex flex-col items-start">
+                    <!-- Left: Warm Editorial Headline & Content -->
+                    <div class="lg:col-span-6 flex flex-col items-start" data-aos="fade-right" data-aos-duration="700">
 
-                        <!-- Badge Posko -->
-                        <div
-                            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-[#9b2c45] text-[11px] sm:text-xs font-bold tracking-wider uppercase mb-5 shadow-xs">
-                            <svg class="w-3.5 h-3.5 text-[#9b2c45]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>POSKO RESMI KOMUNITAS SEHAT</span>
+                        <!-- Badge -->
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-prevanta-100 border border-prevanta-200 text-prevanta-800 text-xs font-bold tracking-wide uppercase mb-6">
+                            <i class="fa-solid fa-heart-pulse text-xs text-prevanta-600"></i>
+                            <span>Kesehatan Ibu &amp; Buah Hati Terpadu</span>
                         </div>
 
-                        <!-- Hero Headline -->
-                        <h1
-                            class="text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-black text-gray-950 tracking-tight leading-[1.2] max-w-2xl">
-                            Pantau Tumbuh Kembang Si Kecil , <br class="hidden sm:inline">
-                            Wujudkan <span class="text-[#9b2c45]">Generasi Bebas Stunting</span>
+                        <!-- Main Headline with Elegant Serif Accent -->
+                        <h1 class="font-headline text-4xl sm:text-5xl lg:text-[58px] font-bold text-stone-900 leading-[1.12]">
+                            Kasih Sayang dan Perawatan Terbaik untuk Si Kecil
                         </h1>
 
-                        <!-- Hero Subtitle -->
-                        <p class="mt-5 text-sm sm:text-base text-gray-600 leading-relaxed max-w-xl">
-                            Selamat datang di posko terpadu <strong>Posyandu Jambu 77</strong>. Berdedikasi penuh
-                            mengawal 1000 Hari Pertama Kehidupan (HPK) balita dengan pemantauan antropometri presisi,
-                            pendampingan nutrisi protein hewani, dan kehangatan gotong royong warga Sukamaju.
+                        <!-- Subtitle -->
+                        <p class="mt-6 text-base sm:text-lg text-stone-600 leading-relaxed font-normal max-w-xl">
+                            Mengawal 1.000 Hari Pertama Kehidupan anak dengan pemantauan tumbuh kembang presisi standar WHO, KMS digital, pendampingan gizi, dan kepedulian tulus kader Posyandu Jambu 77 RW 03.
                         </p>
 
-                        <!-- Feature Badges -->
-                        <div class="mt-7 flex flex-wrap items-center gap-2.5 sm:gap-3">
-                            <!-- Standar Kemenkes RI -->
-                            <div
-                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold shadow-xs">
-                                <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Standar Kemenkes RI</span>
-                            </div>
+                        <!-- Action Buttons -->
+                        <div class="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
+                            <a href="{{ route('login') }}"
+                                class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-prevanta-800 text-white font-bold text-sm sm:text-base hover:bg-prevanta-900 transition shadow-lg shadow-prevanta-900/15 hover:-translate-y-0.5 active:translate-y-0">
+                                <span>Buka Layanan Posyandu</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
 
-                            <!-- Pendampingan ASI Eksklusif -->
-                            <div
-                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200 text-xs font-semibold shadow-xs">
-                                <svg class="w-4 h-4 text-[#9b2c45] flex-shrink-0" fill="currentColor"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Pendampingan ASI Eksklusif</span>
-                            </div>
+                            <a href="#alur"
+                                class="inline-flex items-center gap-2 px-6 py-4 rounded-full bg-white text-stone-700 font-bold text-sm border border-prevanta-200 hover:bg-prevanta-50 transition shadow-xs">
+                                <span>Alur Interaktif 5 Meja</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-prevanta-600"></i>
+                            </a>
+                        </div>
 
-                            <!-- Binaan Puskesmas Pembantu -->
-                            <div
-                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200 text-xs font-semibold shadow-xs">
-                                <svg class="w-4 h-4 text-[#9b2c45] flex-shrink-0" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                                <span>Binaan Puskesmas Pembantu</span>
+                        <!-- Animated Micro Metrics -->
+                        <div class="mt-10 pt-8 border-t border-prevanta-200/80 flex items-center gap-8 w-full">
+                            <div>
+                                <span class="block text-2xl sm:text-3xl font-extrabold text-prevanta-800">100%</span>
+                                <span class="block text-xs text-stone-500 font-medium mt-0.5">Standar Baku WHO</span>
+                            </div>
+                            <div class="w-px h-10 bg-prevanta-200"></div>
+                            <div>
+                                <span class="block text-2xl sm:text-3xl font-extrabold text-stone-900">RW 03</span>
+                                <span class="block text-xs text-stone-500 font-medium mt-0.5">Sukamaju Cikarang</span>
+                            </div>
+                            <div class="w-px h-10 bg-prevanta-200"></div>
+                            <div>
+                                <span class="block text-2xl sm:text-3xl font-extrabold text-sage-700">0 Stunting</span>
+                                <span class="block text-xs text-stone-500 font-medium mt-0.5">Target Nol Kasus</span>
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- Right Image Column -->
-                    <div class="lg:col-span-5">
-                        <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-rose-100 group">
-                            <img src="{{ asset('images/posyandu.jpg') }}" alt="Kegiatan Posyandu Jambu 77"
-                                class="w-full h-[380px] sm:h-[420px] object-cover object-center transform transition duration-500 group-hover:scale-105">
+                    <!-- Right: Large Hero Image with Warm Semi-Circle/Arch Backdrop (Ibunda Style) -->
+                    <div class="lg:col-span-6 relative flex justify-center items-end" data-aos="fade-left" data-aos-duration="800">
 
-                            <!-- Floating Badge / Card Overlay at Bottom -->
-                            <div
-                                class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-6 sm:p-7 text-white">
-                                <span
-                                    class="text-[10px] sm:text-[11px] font-bold tracking-widest text-white/80 uppercase block">
-                                    KOMPAK & BERSAMA KITA
-                                </span>
-                                <h2 class="text-lg sm:text-xl font-bold text-white mt-1">
-                                    Tumbuh Sehat, Bahagia Bersama
-                                </h2>
+                        <!-- Warm Pink-Peach Semi-Circle Arch Backdrop -->
+                        <div class="absolute bottom-0 w-[320px] sm:w-[420px] lg:w-[450px] h-[320px] sm:h-[420px] lg:h-[430px] bg-gradient-to-t from-prevanta-200 via-prevanta-200/80 to-prevanta-100 rounded-t-full -z-10 transform translate-y-3"></div>
+
+                        <!-- Main Image: logoorangtua.png prominently displayed -->
+                        <div class="relative z-10 w-full max-w-[420px] sm:max-w-[480px]">
+                            <img src="{{ asset('images/logoorangtua.png') }}"
+                                alt="Ibu dan Bayi Posyandu Prevanta"
+                                class="w-full h-auto object-contain mx-auto filter drop-shadow-xl transform hover:scale-[1.02] transition-transform duration-500">
+                        </div>
+
+                        <!-- Interactive Floating Badge 1 (Kiri Atas) with Smooth Float Animation -->
+                        <div class="absolute top-10 -left-2 sm:left-4 z-20 bg-white/95 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-prevanta-200/80 shadow-md flex items-center gap-3 animate-float-slow hover:shadow-lg transition cursor-pointer">
+                            <div class="w-10 h-10 rounded-xl bg-prevanta-100 text-prevanta-800 flex items-center justify-center text-sm font-bold">
+                                <i class="fa-solid fa-baby"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Kawal 1000 HPK</span>
+                                <span class="block text-xs font-bold text-stone-900">Generasi Bebas Stunting</span>
                             </div>
                         </div>
+
+                        <!-- Interactive Floating Badge 2 (Kanan Bawah) with Float Animation -->
+                        <div class="absolute bottom-6 -right-2 sm:right-4 z-20 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl border border-prevanta-200/80 shadow-md flex items-center gap-3 animate-float-medium hover:shadow-lg transition cursor-pointer">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm font-bold">
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Supervisi Medis</span>
+                                <span class="block text-xs font-bold text-stone-900">Bidan Desa Sukamaju</span>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -258,816 +267,790 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- SECTION 2: TENTANG KAMI (PROFIL POSYANDU) -->
+        <!-- SECTION 2: TENTANG KAMI                       -->
         <!-- ============================================== -->
-        <section id="tentang" class="py-16 sm:py-20 border-t border-rose-100/70 bg-white/60">
+        <section id="tentang" class="py-18 lg:py-24 bg-white border-y border-prevanta-200/60">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                <!-- Section Title & Intro -->
-                <div class="max-w-3xl">
-                    <span class="text-xs font-extrabold tracking-wider text-[#9b2c45] uppercase">
-                        TENTANG KAMI
+                <div class="max-w-3xl" data-aos="fade-up">
+                    <span class="text-xs font-extrabold tracking-widest text-prevanta-700 uppercase">
+                        PROFIL POSKO &amp; WILAYAH
                     </span>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-950 mt-1.5 tracking-tight">
-                        Profil Posyandu Jambu 77 RW 03
+                    <h2 class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 mt-2">
+                        Pusat Pelayanan Terpadu Garda Terdepan Keluarga
                     </h2>
-                    <p class="mt-3 text-sm sm:text-base text-gray-600 leading-relaxed">
-                        Pos pelayanan terpadu akar rumput di bawah binaan langsung Puskesmas Pembantu Sukamaju dan Dinas
-                        Kesehatan. Kami hadir sebagai garda terdepan keluarga dalam mengawal tumbuh kembang buah hati
-                        secara ilmiah, manusiawi, dan penuh kekeluargaan.
+                    <p class="mt-4 text-base text-stone-600 leading-relaxed font-normal">
+                        Posyandu Jambu 77 RW 03 Desa Sukamaju hadir di bawah binaan langsung Puskesmas Pembantu Sukamaju. Kami memastikan setiap anak mendapatkan pendampingan tumbuh kembang yang aman, terstandar, dan penuh kehangatan keluarga.
                     </p>
                 </div>
 
                 <!-- 2 Cards Grid -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mt-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
 
-                    <!-- Card 1: Visi & Komitmen Pokok -->
-                    <div
-                        class="bg-white rounded-2xl p-6 sm:p-8 border border-rose-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <!-- Card 1: Visi Pokok -->
+                    <div class="bg-prevanta-50/70 rounded-3xl p-8 sm:p-10 border border-prevanta-200/70 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition-transform duration-300" data-aos="fade-up" data-aos-delay="100">
                         <div>
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-[#9b2c45] mb-5">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                                </svg>
+                            <div class="w-12 h-12 rounded-2xl bg-white text-prevanta-800 flex items-center justify-center text-xl mb-6 shadow-xs border border-prevanta-200">
+                                <i class="fa-solid fa-bullseye"></i>
                             </div>
-                            <span class="text-xs font-bold tracking-wider text-[#9b2c45] uppercase">
-                                VISI & KOMITMEN POKOK
-                            </span>
-                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mt-2 leading-snug">
-                                Target Nol Stunting di RW 03 melalui Pemantauan Presisi dan Pangan Lokal Bergizi
+                            <span class="text-xs font-bold tracking-widest uppercase text-prevanta-800">Komitmen Kami</span>
+                            <h3 class="font-headline text-2xl font-bold text-stone-900 mt-2 leading-snug">
+                                Target Nol Stunting di RW 03 Melalui Pemantauan Antropometri Presisi
                             </h3>
-                            <p class="mt-3 text-sm text-gray-600 leading-relaxed">
-                                Mewujudkan setiap anak di lingkungan RW 03 Desa Sukamaju lahir sehat, tumbuh optimal
-                                sesuai standar Z-Score WHO, serta terbebas dari ancaman defisiensi nutrisi mikro dan
-                                makro sejak masa kehamilan.
+                            <p class="mt-4 text-sm text-stone-600 leading-relaxed">
+                                Memastikan setiap bayi dan balita mendapatkan pengukuran fisik akurat sesuai standar Z-Score WHO, intervensi nutrisi dini, serta pendampingan pemberian makanan bergizi tinggi protein hewani.
                             </p>
                         </div>
 
-                        <!-- Wilayah Pelayanan & Induk Binaan Info Box -->
-                        <div class="mt-6 bg-[#fbf9f8] rounded-xl p-4 border border-rose-100/70 grid grid-cols-2 gap-4">
+                        <div class="mt-8 pt-6 border-t border-prevanta-200 grid grid-cols-2 gap-4">
                             <div>
-                                <span class="block text-[11px] font-medium text-gray-400 uppercase tracking-wider">
-                                    Wilayah Pelayanan
-                                </span>
-                                <span class="block text-xs sm:text-sm font-bold text-gray-800 mt-0.5">
-                                    RT 01 s/d RT 06 RW 03
-                                </span>
+                                <span class="block text-[11px] font-bold text-stone-400 uppercase tracking-wider">Wilayah Pelayanan</span>
+                                <span class="block text-sm font-bold text-stone-800 mt-1">RT 01 s/d RT 06 RW 03</span>
                             </div>
                             <div>
-                                <span class="block text-[11px] font-medium text-gray-400 uppercase tracking-wider">
-                                    Induk Binaan
-                                </span>
-                                <span class="block text-xs sm:text-sm font-bold text-gray-800 mt-0.5">
-                                    Pustu & Puskesmas Sukamaju
-                                </span>
+                                <span class="block text-[11px] font-bold text-stone-400 uppercase tracking-wider">Pembina Medis</span>
+                                <span class="block text-sm font-bold text-stone-800 mt-1">Pustu Sukamaju</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 2: Standarisasi Fasilitas -->
-                    <div
-                        class="bg-white rounded-2xl p-6 sm:p-8 border border-emerald-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <!-- Card 2: Standarisasi Alat -->
+                    <div class="bg-prevanta-50/70 rounded-3xl p-8 sm:p-10 border border-prevanta-200/70 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
                         <div>
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-5">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
+                            <div class="w-12 h-12 rounded-2xl bg-white text-emerald-700 flex items-center justify-center text-xl mb-6 shadow-xs border border-emerald-200">
+                                <i class="fa-solid fa-stethoscope"></i>
                             </div>
-                            <span class="text-xs font-bold tracking-wider text-emerald-700 uppercase">
-                                STANDARISASI FASILITAS
-                            </span>
-                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mt-2 leading-snug">
-                                Sarana Antropometri Kemenkes RI
+                            <span class="text-xs font-bold tracking-widest uppercase text-emerald-800">Fasilitas Standar</span>
+                            <h3 class="font-headline text-2xl font-bold text-stone-900 mt-2 leading-snug">
+                                Peralatan Antropometri Terstandar Kemenkes RI
                             </h3>
-                            <p class="mt-3 text-sm text-gray-600 leading-relaxed">
-                                Kelengkapan posko dipastikan terkalibrasi berkala demi hasil ukur akurat tanpa deviasi
-                                kesalahan:
+                            <p class="mt-4 text-sm text-stone-600 leading-relaxed">
+                                Posko dilengkapi sarana pemeriksaan fisik lengkap demi hasil ukur yang valid:
                             </p>
 
-                            <!-- Checklist Items -->
-                            <ul class="mt-4 space-y-2.5">
-                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-gray-700">
-                                    <svg class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="currentColor"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Infantometer Digital presisi tinggi untuk panjang badan bayi</span>
+                            <ul class="mt-5 space-y-3 text-xs sm:text-sm text-stone-700 font-medium">
+                                <li class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px]">
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    <span>Infantometer digital presisi tinggi untuk panjang badan bayi</span>
                                 </li>
-                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-gray-700">
-                                    <svg class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="currentColor"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Timbangan bayi (baby scale) & timbangan injak digital terkalibrasi</span>
+                                <li class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px]">
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    <span>Timbangan bayi (baby scale) &amp; timbangan injak digital terkalibrasi</span>
                                 </li>
-                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-gray-700">
-                                    <svg class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="currentColor"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Stadiometer terstandar & pita Lingkar Lengan Atas (LiLA)</span>
+                                <li class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px]">
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    <span>Stadiometer presisi &amp; pita Lingkar Lengan Atas (LiLA)</span>
                                 </li>
-                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-gray-700">
-                                    <svg class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="currentColor"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Pojok Laktasi & Edukasi & area bermain edukatif anak (APE)</span>
+                                <li class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px]">
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    <span>Pojok laktasi nyaman dan area edukasi ramah anak</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
                 </div>
+
             </div>
         </section>
 
         <!-- ============================================== -->
-        <!-- SECTION 3: TIM PELAKSANA (TIM KADER & MEDIS) -->
+        <!-- SECTION 3: PROGRAM UTAMA & KMS STANDAR WHO     -->
         <!-- ============================================== -->
-        <section id="tim" class="py-16 sm:py-20">
+        <section id="program" class="py-18 lg:py-24 bg-[#FAF0F4] border-b border-prevanta-200/60">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                <!-- Section Title & Counter Tag -->
-                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                    <div>
-                        <span class="text-xs font-extrabold tracking-wider text-[#9b2c45] uppercase">
-                            STRUKTUR PELAKSANA
-                        </span>
-                        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-950 mt-1.5 tracking-tight">
-                            Tim Kader & Tenaga Medis Posko
-                        </h2>
-                    </div>
-                    <span
-                        class="text-xs font-bold text-[#9b2c45] bg-rose-50 border border-rose-200 px-3.5 py-1.5 rounded-full w-fit">
-                        6 Personel Terampil Siaga
+                <div class="text-center max-w-3xl mx-auto mb-14" data-aos="fade-up">
+                    <span class="text-xs font-extrabold tracking-widest text-prevanta-700 uppercase px-3 py-1 rounded-full bg-white border border-prevanta-200">
+                        LAYANAN KESEHATAN TERPADU
                     </span>
-                </div>
-
-                <!-- 6 Personel Grid (Colored Cards like Card 1) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-
-                    <!-- CARD 1: Bdn. Dewi Anggraini, S.Tr.Keb -->
-                    <div
-                        class="bg-white rounded-2xl p-6 border border-rose-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3.5 mb-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-[#9b2c45] flex items-center justify-center flex-shrink-0 shadow-xs">
-                                    <!-- Stethoscope Icon -->
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 14V6a2 2 0 00-2-2H7a2 2 0 00-2 2v8a5 5 0 0010 0v-1a2 2 0 00-4 0v1a1 1 0 01-2 0V4" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span
-                                        class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-[#9b2c45]">
-                                        Penanggung Jawab Medis
-                                    </span>
-                                    <h3 class="text-base font-bold text-gray-900 mt-1">
-                                        Bdn. Dewi Anggraini, S.Tr.Keb
-                                    </h3>
-                                </div>
-                            </div>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Bidan Desa Sukamaju yang mengawasi tindakan klinis, pemeriksaan ibu hamil, rujukan
-                                faskes, dan verifikasi status tumbuh kembang balita.
-                            </p>
-                        </div>
-                        <div class="mt-5 pt-3.5 border-t border-rose-100/80">
-                            <div
-                                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200/80 text-[11px] font-bold">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>SIPB Aktif Pustu Sukamaju</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 2: Ibu Siti Rahayu -->
-                    <div
-                        class="bg-white rounded-2xl p-6 border border-emerald-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3.5 mb-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center flex-shrink-0 shadow-xs">
-                                    <!-- Leader / People Icon -->
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span
-                                        class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
-                                        Ketua Kader
-                                    </span>
-                                    <h3 class="text-base font-bold text-gray-900 mt-1">
-                                        Ibu Siti Rahayu
-                                    </h3>
-                                </div>
-                            </div>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Mengkoordinasi jadwal posko, manajemen kader 5 langkah, serta memimpin program
-                                pendampingan keluarga risiko stunting di RW 03.
-                            </p>
-                        </div>
-                        <div class="mt-5 pt-3.5 border-t border-emerald-100/80">
-                            <div
-                                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[11px] font-bold">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>12 Tahun Pengabdian Kader</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 3: Ibu Nurhayati (Meja 1) -->
-                    <div
-                        class="bg-white rounded-2xl p-6 border border-rose-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3.5 mb-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-[#9b2c45] flex items-center justify-center flex-shrink-0 shadow-xs">
-                                    <!-- Registration Clipboard Icon -->
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span
-                                        class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-[#9b2c45]">
-                                        Meja 1: Pendaftaran
-                                    </span>
-                                    <h3 class="text-base font-bold text-gray-900 mt-1">
-                                        Ibu Nurhayati
-                                    </h3>
-                                </div>
-                            </div>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Bertanggung jawab atas registrasi berkas Buku KIA, validasi Nomor Kartu Keluarga
-                                (KK)/NIK balita, dan pendataan riwayat kehadiran warga setiap bulan.
-                            </p>
-                        </div>
-                        <div class="mt-5 pt-3.5 border-t border-rose-100/80">
-                            <div
-                                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200/80 text-[11px] font-bold">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Verifikasi NIK Posyandu</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 4: Ibu Endang (Meja 2) -->
-                    <div
-                        class="bg-white rounded-2xl p-6 border border-rose-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3.5 mb-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-[#9b2c45] flex items-center justify-center flex-shrink-0 shadow-xs">
-                                    <!-- Scale / Balance Icon -->
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span
-                                        class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-[#9b2c45]">
-                                        Meja 2: Penimbangan
-                                    </span>
-                                    <h3 class="text-base font-bold text-gray-900 mt-1">
-                                        Ibu Endang
-                                    </h3>
-                                </div>
-                            </div>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Terlatih dalam teknik kalibrasi timbangan bayi, pemantauan berat badan balita tanpa
-                                pakaian tebal, serta pencatatan tare digital.
-                            </p>
-                        </div>
-                        <div class="mt-5 pt-3.5 border-t border-rose-100/80">
-                            <div
-                                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200/80 text-[11px] font-bold">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span>Antropometri Standar</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 5: Ibu Ratna (Meja 3: Pencatatan Antropometri / Pengelola Matang KMS) -->
-                    <div
-                        class="bg-white rounded-2xl p-6 border border-rose-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3.5 mb-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-[#9b2c45] flex items-center justify-center flex-shrink-0 shadow-xs">
-                                    <!-- Chart Analytics Icon -->
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span
-                                        class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-[#9b2c45]">
-                                        Meja 3: Pencatatan Antropometri
-                                    </span>
-                                    <h3 class="text-base font-bold text-gray-900 mt-1">
-                                        Ibu Ratna
-                                    </h3>
-                                </div>
-                            </div>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Pengisian grafik kurva pertumbuhan pada KMS, penghitungan indikator BB/U, TB/U, dan
-                                deteksi dini indikasi T (tidak naik) ke bidan penanggung.
-                            </p>
-                        </div>
-                        <div class="mt-5 pt-3.5 border-t border-rose-100/80">
-                            <div
-                                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200/80 text-[11px] font-bold">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                                <span>Pengelola Matang KMS</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 6: Ibu Farida (Meja 4: PMT & Konseling) -->
-                    <div
-                        class="bg-white rounded-2xl p-6 border border-rose-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3.5 mb-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-[#9b2c45] flex items-center justify-center flex-shrink-0 shadow-xs">
-                                    <!-- Cutlery / Nutrition Icon -->
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span
-                                        class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-[#9b2c45]">
-                                        Meja 4: PMT & Konseling
-                                    </span>
-                                    <h3 class="text-base font-bold text-gray-900 mt-1">
-                                        Ibu Farida
-                                    </h3>
-                                </div>
-                            </div>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Penyediaan Pemberian Makanan Tambahan (PMT) kaya protein hewani, konseling menyusui
-                                eksklusif, serta edukasi PHBS keluarga.
-                            </p>
-                        </div>
-                        <div class="mt-5 pt-3.5 border-t border-rose-100/80">
-                            <div
-                                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-50 text-[#9b2c45] border border-rose-200/80 text-[11px] font-bold">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Konselor PMBA Tersertifikasi</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================== -->
-        <!-- SECTION 4: ALUR KUNJUNGAN POSKO -->
-        <!-- ============================================== -->
-        <section id="alur" class="py-16 sm:py-20 bg-white/70 border-t border-rose-100/70">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                <!-- Section Header -->
-                <div class="text-center max-w-2xl mx-auto">
-                    <span class="text-xs font-extrabold tracking-wider text-[#9b2c45] uppercase">
-                        ALUR KUNJUNGAN POSKO
-                    </span>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-950 mt-1.5 tracking-tight">
-                        Proses Praktis & Humanis di Posko RW 03
+                    <h2 class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 mt-3">
+                        Program Pokok Posyandu Jambu 77
                     </h2>
-                    <p class="mt-3 text-sm sm:text-base text-gray-600">
-                        5 langkah mudah, nyaman, dan ramah anak saat berkunjung ke Posyandu bersama buah hati tercinta.
+                    <p class="mt-4 text-base text-stone-600">
+                        Mengintegrasikan pemeriksaan fisik berkala, imunisasi wajib, dan pencatatan grafik KMS modern.
                     </p>
                 </div>
 
-                <!-- 5 Steps Horizontal / Grid Flow -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mt-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                    <!-- STEP 1 -->
-                    <div
-                        class="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <!-- Program 1: KMS WHO -->
+                    <div class="bg-white rounded-3xl p-8 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
                         <div>
-                            <div class="flex items-center justify-between">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-[#9b2c45] font-black text-sm flex items-center justify-center">
-                                    1
-                                </div>
-                                <div class="text-gray-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                            d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-                                    </svg>
-                                </div>
+                            <div class="w-12 h-12 rounded-2xl bg-prevanta-100 text-prevanta-800 flex items-center justify-center text-xl mb-6">
+                                <i class="fa-solid fa-chart-line"></i>
                             </div>
-                            <span
-                                class="block text-[10px] font-extrabold tracking-widest text-[#9b2c45] uppercase mt-4">
-                                LANGKAH 1
-                            </span>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900 mt-1 leading-snug">
-                                Pendaftaran & NIK
-                            </h3>
-                            <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                                Verifikasi data balita, identitas Buku KIA, dan presensi berkala keluarga.
+                            <span class="text-[10px] font-black uppercase tracking-wider text-prevanta-600">STANDAR PERMENKES 2020</span>
+                            <h3 class="font-headline text-xl font-bold text-stone-900 mt-1">Grafik KMS Standar WHO</h3>
+                            <p class="mt-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Visualisasi kurva pertumbuhan fisik (TB/U) mengikuti grafik Buku KIA resmi dengan garis persentil (+3, +2, Median 0, -2, -3 SD) untuk deteksi akurat status gizi.
                             </p>
                         </div>
-                        <div
-                            class="mt-4 pt-3 border-t border-rose-50 flex items-center gap-1.5 text-[11px] font-semibold text-gray-500">
-                            <svg class="w-3.5 h-3.5 text-[#9b2c45]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Meja 1: Posko</span>
+                        <div class="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-prevanta-800">
+                            <span>Buku KIA Digital</span>
+                            <i class="fa-solid fa-award"></i>
                         </div>
                     </div>
 
-                    <!-- STEP 2 -->
-                    <div
-                        class="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <!-- Program 2: Imunisasi & Vitamin -->
+                    <div class="bg-white rounded-3xl p-8 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
                         <div>
-                            <div class="flex items-center justify-between">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-[#9b2c45] font-black text-sm flex items-center justify-center">
-                                    2
-                                </div>
-                                <div class="text-gray-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                            d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2" />
-                                    </svg>
-                                </div>
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-6">
+                                <i class="fa-solid fa-syringe"></i>
                             </div>
-                            <span
-                                class="block text-[10px] font-extrabold tracking-widest text-[#9b2c45] uppercase mt-4">
-                                LANGKAH 2
-                            </span>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900 mt-1 leading-snug">
-                                Penimbangan Presisi
-                            </h3>
-                            <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                                Penimbangan digital & pengukuran panjang/tinggi serta lingkar kepala/lengan.
+                            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-600">PREVENTIF TERPADU</span>
+                            <h3 class="font-headline text-xl font-bold text-stone-900 mt-1">Imunisasi &amp; Kapsul Vitamin A</h3>
+                            <p class="mt-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Pemberian vaksin wajib berkala (BCG, DPT-HB-Hib, Polio, Campak) serta pembagian vitamin A merah &amp; biru setiap Februari dan Agustus dengan supervisi Bidan.
                             </p>
                         </div>
-                        <div
-                            class="mt-4 pt-3 border-t border-rose-50 flex items-center gap-1.5 text-[11px] font-semibold text-gray-500">
-                            <svg class="w-3.5 h-3.5 text-[#9b2c45]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Meja 2: Posko</span>
+                        <div class="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-emerald-800">
+                            <span>Jadwal Vaksinasi Rutin</span>
+                            <i class="fa-solid fa-shield-virus"></i>
                         </div>
                     </div>
 
-                    <!-- STEP 3 -->
-                    <div
-                        class="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <!-- Program 3: PMT Protein Hewani -->
+                    <div class="bg-white rounded-3xl p-8 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
                         <div>
-                            <div class="flex items-center justify-between">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-[#9b2c45] font-black text-sm flex items-center justify-center">
-                                    3
-                                </div>
-                                <div class="text-gray-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                            d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18" />
-                                    </svg>
-                                </div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl mb-6">
+                                <i class="fa-solid fa-bowl-food"></i>
                             </div>
-                            <span
-                                class="block text-[10px] font-extrabold tracking-widest text-[#9b2c45] uppercase mt-4">
-                                LANGKAH 3
-                            </span>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900 mt-1 leading-snug">
-                                Pencatatan KMS
-                            </h3>
-                            <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                                Plotting kurva WHO secara digital dan evaluasi kenaikan garis pita KMS.
+                            <span class="text-[10px] font-black uppercase tracking-wider text-amber-600">INTERVENSI GIZI</span>
+                            <h3 class="font-headline text-xl font-bold text-stone-900 mt-1">PMT &amp; Edukasi Nutrisi</h3>
+                            <p class="mt-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Pemberian Makanan Tambahan (PMT) kaya protein hewani (telur, ikan, daging) untuk perkembangan sel otak serta pendampingan pemberian ASI eksklusif 6 bulan.
                             </p>
                         </div>
-                        <div
-                            class="mt-4 pt-3 border-t border-rose-50 flex items-center gap-1.5 text-[11px] font-semibold text-gray-500">
-                            <svg class="w-3.5 h-3.5 text-[#9b2c45]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Meja 3: Posko</span>
-                        </div>
-                    </div>
-
-                    <!-- STEP 4 -->
-                    <div
-                        class="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-[#9b2c45] font-black text-sm flex items-center justify-center">
-                                    4
-                                </div>
-                                <div class="text-gray-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <span
-                                class="block text-[10px] font-extrabold tracking-widest text-[#9b2c45] uppercase mt-4">
-                                LANGKAH 4
-                            </span>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900 mt-1 leading-snug">
-                                PMT & Konseling
-                            </h3>
-                            <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                                Pemberian makanan tambahan protein hewani dan bimbingan konseling laktasi.
-                            </p>
-                        </div>
-                        <div
-                            class="mt-4 pt-3 border-t border-rose-50 flex items-center gap-1.5 text-[11px] font-semibold text-gray-500">
-                            <svg class="w-3.5 h-3.5 text-[#9b2c45]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Meja 4: Posko</span>
-                        </div>
-                    </div>
-
-                    <!-- STEP 5 -->
-                    <div
-                        class="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-[#9b2c45] font-black text-sm flex items-center justify-center">
-                                    5
-                                </div>
-                                <div class="text-gray-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <span
-                                class="block text-[10px] font-extrabold tracking-widest text-[#9b2c45] uppercase mt-4">
-                                LANGKAH 5
-                            </span>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900 mt-1 leading-snug">
-                                Layanan & Vaksin
-                            </h3>
-                            <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                                Pemeriksaan langsung oleh Bidan Desa Sukamaju, imunisasi, vitamin A & rujukan.
-                            </p>
-                        </div>
-                        <div
-                            class="mt-4 pt-3 border-t border-rose-50 flex items-center gap-1.5 text-[11px] font-semibold text-gray-500">
-                            <svg class="w-3.5 h-3.5 text-[#9b2c45]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Meja 5: Bidan</span>
+                        <div class="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-amber-800">
+                            <span>Protein Hewani Esensial</span>
+                            <i class="fa-solid fa-egg"></i>
                         </div>
                     </div>
 
                 </div>
+
             </div>
         </section>
 
         <!-- ============================================== -->
-        <!-- SECTION 5: CTA BANNER (CALL TO ACTION) -->
+        <!-- SECTION 4: INTERACTIVE ALUR 5 MEJA KUNJUNGAN   -->
         <!-- ============================================== -->
-        <section class="py-12 sm:py-16">
+        <section id="alur" class="py-18 lg:py-24 bg-white border-b border-prevanta-200/60">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="relative rounded-3xl overflow-hidden p-8 sm:p-12 lg:p-16 text-white shadow-[0_30px_70px_-30px_rgba(138,31,77,0.55)]"
-                    style="background:
-                        radial-gradient(60% 80% at 92% 0%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0) 65%),
-                        radial-gradient(55% 70% at 0% 100%, rgba(246,168,201,0.38) 0%, rgba(246,168,201,0) 70%),
-                        linear-gradient(135deg, #6f1740 0%, #a8235a 45%, #d6457f 100%);">
 
-                    <div class="relative z-10 max-w-3xl">
+                <div class="max-w-3xl mb-12" data-aos="fade-up">
+                    <span class="text-xs font-extrabold tracking-widest text-prevanta-700 uppercase">
+                        SISTEMATIKA PELAYANAN INTERAKTIF
+                    </span>
+                    <h2 class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 mt-2">
+                        Alur 5 Meja Standar Kemenkes RI
+                    </h2>
+                    <p class="mt-4 text-base text-stone-600">
+                        Pilih setiap tahapan meja di bawah ini untuk melihat detail aktivitas, kader penanggung jawab, serta perlengkapan yang digunakan.
+                    </p>
+                </div>
 
-                        <!-- 1000 HPK Tag -->
-                        <div
-                            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/25 text-xs font-semibold text-white mb-6">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>Kawal 1000 Hari Pertama Kehidupan (1000 HPK)</span>
+                <!-- Interactive 5-Meja Stepper Tabs -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8" data-aos="fade-up">
+                    <!-- Tab 1 -->
+                    <button type="button" id="meja-btn-1" onclick="switchMeja(1)" class="meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-800 text-white border-prevanta-800 shadow-md ring-2 ring-prevanta-800/30">
+                        <span class="meja-num-badge w-8 h-8 rounded-full bg-white/20 text-white font-extrabold text-sm flex items-center justify-center shrink-0">1</span>
+                        <div class="truncate">
+                            <span class="meja-sub-label block text-[10px] font-bold opacity-80 uppercase tracking-wider text-white">Tahap 1</span>
+                            <span class="block text-xs sm:text-sm font-bold truncate">Pendaftaran</span>
+                        </div>
+                    </button>
+
+                    <!-- Tab 2 -->
+                    <button type="button" id="meja-btn-2" onclick="switchMeja(2)" class="meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-50 text-stone-700 border-prevanta-200 hover:bg-prevanta-100">
+                        <span class="meja-num-badge w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-extrabold text-sm flex items-center justify-center shrink-0">2</span>
+                        <div class="truncate">
+                            <span class="meja-sub-label block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tahap 2</span>
+                            <span class="block text-xs sm:text-sm font-bold truncate">Penimbangan</span>
+                        </div>
+                    </button>
+
+                    <!-- Tab 3 -->
+                    <button type="button" id="meja-btn-3" onclick="switchMeja(3)" class="meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-50 text-stone-700 border-prevanta-200 hover:bg-prevanta-100">
+                        <span class="meja-num-badge w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-extrabold text-sm flex items-center justify-center shrink-0">3</span>
+                        <div class="truncate">
+                            <span class="meja-sub-label block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tahap 3</span>
+                            <span class="block text-xs sm:text-sm font-bold truncate">Pencatatan KMS</span>
+                        </div>
+                    </button>
+
+                    <!-- Tab 4 -->
+                    <button type="button" id="meja-btn-4" onclick="switchMeja(4)" class="meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-50 text-stone-700 border-prevanta-200 hover:bg-prevanta-100">
+                        <span class="meja-num-badge w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-extrabold text-sm flex items-center justify-center shrink-0">4</span>
+                        <div class="truncate">
+                            <span class="meja-sub-label block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tahap 4</span>
+                            <span class="block text-xs sm:text-sm font-bold truncate">Penyuluhan &amp; PMT</span>
+                        </div>
+                    </button>
+
+                    <!-- Tab 5 -->
+                    <button type="button" id="meja-btn-5" onclick="switchMeja(5)" class="meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-50 text-stone-700 border-prevanta-200 hover:bg-prevanta-100 col-span-2 sm:col-span-1">
+                        <span class="meja-num-badge w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-extrabold text-sm flex items-center justify-center shrink-0">5</span>
+                        <div class="truncate">
+                            <span class="meja-sub-label block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tahap 5</span>
+                            <span class="block text-xs sm:text-sm font-bold truncate">Pelayanan Medis</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Interactive Detail Card -->
+                <div id="meja-detail-card" class="bg-gradient-to-br from-prevanta-50/90 to-white rounded-3xl p-8 sm:p-10 border border-prevanta-200/80 warm-card-shadow" data-aos="fade-up">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        
+                        <!-- Left: Explanation & Checklist -->
+                        <div class="lg:col-span-7">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-prevanta-100 text-prevanta-800 text-xs font-bold uppercase mb-4" id="meja-badge">
+                                <i class="fa-solid fa-clipboard-check text-xs"></i>
+                                <span>Meja 1 &bull; Tahap Registrasi Awal</span>
+                            </div>
+
+                            <h3 class="font-headline text-2xl sm:text-3xl font-bold text-stone-900" id="meja-title">
+                                Pendaftaran &amp; Verifikasi Administrasi Warga
+                            </h3>
+
+                            <p class="mt-4 text-stone-600 text-sm sm:text-base leading-relaxed" id="meja-desc">
+                                Pada meja pertama, orang tua menyerahkan Buku KIA/KMS anak. Kader melakukan pencatatan identitas, memeriksa presensi kunjungan bulanan, dan memvalidasi Nomor Induk Kependudukan (NIK) serta Kartu Keluarga warga RW 03.
+                            </p>
+
+                            <!-- Interactive Action Steps Checklist -->
+                            <div class="mt-6 pt-6 border-t border-prevanta-200/60">
+                                <span class="block text-xs font-bold text-stone-800 uppercase tracking-wider mb-3">
+                                    Langkah-langkah di Meja Ini:
+                                </span>
+                                <ul class="space-y-2.5 text-xs sm:text-sm text-stone-700" id="meja-steps">
+                                    <li class="flex items-start gap-2.5">
+                                        <i class="fa-solid fa-circle-check text-prevanta-600 mt-1 text-sm"></i>
+                                        <span>Menyerahkan Buku KIA (Kesehatan Ibu dan Anak) kepada kader</span>
+                                    </li>
+                                    <li class="flex items-start gap-2.5">
+                                        <i class="fa-solid fa-circle-check text-prevanta-600 mt-1 text-sm"></i>
+                                        <span>Pemeriksaan presensi kehadiran balita wilayah RT 01 s/d RT 06</span>
+                                    </li>
+                                    <li class="flex items-start gap-2.5">
+                                        <i class="fa-solid fa-circle-check text-prevanta-600 mt-1 text-sm"></i>
+                                        <span>Pemberian nomor antrean penimbangan yang tertib &amp; teratur</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <!-- Big CTA Headline -->
-                        <h2
-                            class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.12] tracking-tight">
-                            Setiap Gram Sangat Berarti untuk Masa Depan Emas Si Kecil
-                        </h2>
+                        <!-- Right: Person In Charge & Tools Used -->
+                        <div class="lg:col-span-5 bg-white rounded-2xl p-6 sm:p-7 border border-prevanta-200/80 shadow-xs">
+                            <span class="block text-[11px] font-bold text-stone-400 uppercase tracking-wider mb-3">
+                                Kader Penanggung Jawab
+                            </span>
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-prevanta-100 text-prevanta-800 flex items-center justify-center text-2xl font-bold shadow-xs" id="meja-pic-icon">
+                                    <i class="fa-solid fa-clipboard-user"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-stone-900 text-base" id="meja-pic-name">Ibu Nurhayati</h4>
+                                    <span class="text-xs text-stone-500 block" id="meja-pic-role">Kader Meja 1 &bull; Pendaftaran</span>
+                                    <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Kader Aktif RW 03</span>
+                                </div>
+                            </div>
 
-                        <!-- CTA Subtitle -->
-                        <p class="mt-5 text-base sm:text-lg text-white/85 leading-relaxed max-w-xl">
-                            Gabung bersama 1.400+ Posyandu dan puluhan ribu orang tua di seluruh Indonesia. Mulai
-                            pencatatan digital hari ini tanpa biaya registrasi.
+                            <div class="mt-6 pt-5 border-t border-stone-100 space-y-3">
+                                <div>
+                                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Sarana &amp; Instrumen</span>
+                                    <span class="text-xs font-semibold text-stone-800 mt-0.5 block" id="meja-tools">Buku Registrasi Warga, Formulir KIA, Nomor Antrean Digital</span>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Hasil / Output Meja</span>
+                                    <span class="text-xs font-semibold text-prevanta-800 mt-0.5 block" id="meja-output">Data registrasi tercatat &amp; siap menuju Meja Penimbangan</span>
+                                </div>
+                            </div>
+
+                            <!-- Stepper Controls -->
+                            <div class="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between">
+                                <button type="button" id="prev-meja-btn" onclick="prevMeja()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition inline-flex items-center gap-1.5 disabled:opacity-40" disabled>
+                                    <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                                    <span>Sebelumnya</span>
+                                </button>
+                                <button type="button" id="next-meja-btn" onclick="nextMeja()" class="px-4 py-2 rounded-xl text-xs font-bold bg-prevanta-800 text-white hover:bg-prevanta-900 transition inline-flex items-center gap-1.5 shadow-xs">
+                                    <span>Meja Berikutnya</span>
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 5: TIM KADER & BIDAN DESA              -->
+        <!-- ============================================== -->
+        <section id="tim" class="py-18 lg:py-24 bg-[#FDF2F5] border-b border-prevanta-200/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-14" data-aos="fade-up">
+                    <div>
+                        <span class="text-xs font-extrabold tracking-widest text-prevanta-700 uppercase">
+                            DEDIKASI KESEHATAN
+                        </span>
+                        <h2 class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 mt-2">
+                            Tim Pelaksana Posyandu Jambu 77
+                        </h2>
+                    </div>
+                    <span class="text-xs font-bold text-prevanta-900 bg-white border border-prevanta-200 px-4 py-2 rounded-full w-fit shadow-xs">
+                        6 Personel Terlatih Siaga di RW 03 Sukamaju
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Person 1: Bidan Dewi -->
+                    <div class="bg-white rounded-3xl p-7 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition duration-300" data-aos="fade-up" data-aos-delay="50">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-prevanta-100 text-prevanta-800 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-user-doctor"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-prevanta-800 uppercase tracking-wider block">Penanggung Jawab Medis</span>
+                                    <h3 class="font-bold text-stone-900 text-base mt-0.5">Bdn. Dewi Anggraini, S.Tr.Keb</h3>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Bidan Desa Sukamaju yang mengawasi tindakan klinis, vaksinasi, pemeriksaan kehamilan, dan verifikasi status gizi balita.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-3.5 border-t border-stone-100 text-xs font-bold text-prevanta-800">
+                            SIPB Aktif &bull; Pustu Sukamaju
+                        </div>
+                    </div>
+
+                    <!-- Person 2: Ibu Siti Rahayu -->
+                    <div class="bg-white rounded-3xl p-7 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-hands-holding"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-emerald-800 uppercase tracking-wider block">Ketua Kader Posyandu</span>
+                                    <h3 class="font-bold text-stone-900 text-base mt-0.5">Ibu Siti Rahayu</h3>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Mengkoordinir jadwal posko, memantau kehadiran balita di RW 03, serta memimpin program pendampingan keluarga berisiko stunting.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-3.5 border-t border-stone-100 text-xs font-bold text-emerald-800">
+                            12 Tahun Dedikasi Kader
+                        </div>
+                    </div>
+
+                    <!-- Person 3: Ibu Nurhayati -->
+                    <div class="bg-white rounded-3xl p-7 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition duration-300" data-aos="fade-up" data-aos-delay="150">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-clipboard-user"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-stone-500 uppercase tracking-wider block">Kader Meja 1</span>
+                                    <h3 class="font-bold text-stone-900 text-base mt-0.5">Ibu Nurhayati</h3>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Registrasi berkas Buku KIA, validasi NIK dan Nomor Kartu Keluarga balita, serta pendataan kehadiran warga setiap bulan.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-3.5 border-t border-stone-100 text-xs font-semibold text-stone-500">
+                            Pendaftaran Warga &bull; RT 01-06
+                        </div>
+                    </div>
+
+                    <!-- Person 4: Ibu Endang -->
+                    <div class="bg-white rounded-3xl p-7 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-weight-scale"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-stone-500 uppercase tracking-wider block">Kader Meja 2</span>
+                                    <h3 class="font-bold text-stone-900 text-base mt-0.5">Ibu Endang</h3>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Penimbangan bayi presisi dengan baby scale terkalibrasi dan pengukuran panjang badan serta lingkar kepala balita.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-3.5 border-t border-stone-100 text-xs font-semibold text-stone-500">
+                            Antropometri Terstandar
+                        </div>
+                    </div>
+
+                    <!-- Person 5: Ibu Ratna -->
+                    <div class="bg-white rounded-3xl p-7 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition duration-300" data-aos="fade-up" data-aos-delay="250">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-prevanta-100 text-prevanta-900 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-laptop-medical"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-prevanta-800 uppercase tracking-wider block">Kader Meja 3 &bull; Operator</span>
+                                    <h3 class="font-bold text-stone-900 text-base mt-0.5">Ibu Ratna</h3>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Pengisian grafik KMS digital pada aplikasi Prevanta, evaluasi indikator Z-score, dan deteksi dini ke bidan penanggung.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-3.5 border-t border-stone-100 text-xs font-semibold text-prevanta-800 font-bold">
+                            Operator KMS Prevanta
+                        </div>
+                    </div>
+
+                    <!-- Person 6: Ibu Farida -->
+                    <div class="bg-white rounded-3xl p-7 border border-prevanta-200/80 warm-card-shadow flex flex-col justify-between hover:-translate-y-1 transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-utensils"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-stone-500 uppercase tracking-wider block">Kader Meja 4</span>
+                                    <h3 class="font-bold text-stone-900 text-base mt-0.5">Ibu Farida</h3>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                                Pengelolaan menu Pemberian Makanan Tambahan (PMT) protein hewani dan bimbingan edukasi pemberian makan bayi/anak (PMBA).
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-3.5 border-t border-stone-100 text-xs font-semibold text-stone-500">
+                            Konselor PMBA Tersertifikasi
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 6: LOKASI POSKO & CTA                  -->
+        <!-- ============================================== -->
+        <section id="lokasi" class="py-18 lg:py-24 bg-prevanta-900 text-white relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+                    <div class="lg:col-span-8" data-aos="fade-right">
+                        <span class="text-xs font-extrabold uppercase tracking-widest text-prevanta-300">
+                            JADWAL KUNJUNGAN POSKO
+                        </span>
+                        <h2 class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-2 tracking-tight">
+                            Hadirkan Buah Hati di Posyandu Jambu 77
+                        </h2>
+                        <p class="mt-4 text-sm sm:text-base text-prevanta-100/90 leading-relaxed max-w-2xl">
+                            Setiap sentimeter dan gram sangat berharga untuk masa depan emas anak. Kunjungi posko kami setiap bulan untuk pemantauan tumbuh kembang bebas stunting.
                         </p>
 
-                        <!-- CTA Action Button -->
-                        <div class="mt-9">
-                            <a href="{{ route('login') }}"
-                                class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-[#8a1f4d] font-bold text-sm sm:text-base shadow-lg shadow-black/10 hover:bg-pink-50 hover:-translate-y-0.5 active:translate-y-0 transition-all group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-                                <span>Masuk Sebagai Orang Tua</span>
-                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </a>
+                        <div class="mt-8 flex flex-wrap gap-6 text-xs sm:text-sm text-prevanta-100">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-prevanta-200">
+                                    <i class="fa-regular fa-calendar-check"></i>
+                                </span>
+                                <span><strong>Sabtu Pekan ke-2 &amp; ke-4</strong> (08.00 - 12.00 WIB)</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-prevanta-200">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </span>
+                                <span><strong>Balai Warga RW 03</strong>, Desa Sukamaju</span>
+                            </div>
                         </div>
-
-                        <!-- Hotline WhatsApp Info -->
-                        <div
-                            class="mt-10 pt-6 border-t border-white/20 flex items-start sm:items-center gap-3 text-sm text-white/85">
-                            <svg class="w-4 h-4 text-pink-200 flex-shrink-0 mt-0.5 sm:mt-0" fill="currentColor"
-                                viewBox="0 0 24 24" aria-hidden="true">
-                                <path
-                                    d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
-                            </svg>
-                            <span>Butuh bantuan instalasi di Posyandu Anda? Hubungi Layanan Hotline WhatsApp: <strong
-                                    class="text-white font-bold">0811-0121-TUMBUH</strong></span>
-                        </div>
-
                     </div>
+
+                    <div class="lg:col-span-4 flex flex-col items-start lg:items-end justify-center" data-aos="fade-left">
+                        <a href="{{ route('login') }}"
+                            class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-prevanta-900 font-extrabold text-sm uppercase tracking-wider shadow-xl hover:bg-prevanta-50 transition transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto">
+                            <span>MASUK KE PORTAL</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section>
+
     </main>
 
     <!-- ============================================== -->
-    <!-- FOOTER -->
+    <!-- FLOATING SCROLL TO TOP BUTTON                  -->
     <!-- ============================================== -->
-    <footer class="bg-white border-t border-rose-100/80 pt-14 pb-10">
+    <a href="#top" id="scroll-to-top"
+        class="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-prevanta-800 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-prevanta-900 hover:scale-110 active:scale-95"
+        aria-label="Kembali ke atas">
+        <i class="fa-solid fa-arrow-up text-sm"></i>
+    </a>
+
+    <!-- ============================================== -->
+    <!-- FOOTER                                         -->
+    <!-- ============================================== -->
+    <footer class="bg-prevanta-950 text-stone-300 border-t border-white/10 pt-16 pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
 
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-rose-100/60">
-
-                <!-- Col 1: Brand Info & Accreditation -->
-                <div class="md:col-span-5 flex flex-col items-start">
+                <!-- Col 1 -->
+                <div class="md:col-span-6 flex flex-col items-start">
                     <div class="flex items-center gap-3">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo Prevanta"
-                            class="w-10 h-10 object-contain">
-                        <div class="flex flex-col">
-                            <span class="text-xl font-extrabold text-[#9b2c45] leading-none">
-                                Prevanta
-                            </span>
-                            <span class="text-[11px] font-semibold text-gray-500 mt-1">
-                                 Jambu 77
-                            </span>
-                        </div>
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Prevanta" class="w-9 h-9 object-contain">
+                        <span class="text-xl font-bold text-white tracking-tight">Prevanta</span>
                     </div>
-
-                    <p class="mt-4 text-xs sm:text-sm text-gray-600 leading-relaxed max-w-sm">
-                        Pusat pemantauan tumbuh kembang balita, kesehatan ibu hamil, serta penyuluhan nutrisi terpadu
-                        berbasis kehangatan komunitas di Desa Sukamaju.
+                    <p class="mt-4 text-xs sm:text-sm text-stone-400 leading-relaxed max-w-md font-normal">
+                        Platform Posyandu Terpadu untuk pemantauan tumbuh kembang anak, grafik KMS digital standar WHO, serta pencegahan stunting di Desa Sukamaju.
                     </p>
-
-                    <!-- Accreditation Badge -->
-                    <div
-                        class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold shadow-xs">
-                        <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span>Posyandu Terakreditasi Aktif</span>
-                    </div>
                 </div>
 
-                <!-- Col 2: Lokasi Posko -->
-                <div class="md:col-span-4">
-                    <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">
-                        Lokasi Posko
-                    </h4>
-                    <div class="space-y-3 text-xs sm:text-sm text-gray-600">
-                        <div class="flex items-start gap-2.5">
-                            <svg class="w-4 h-4 text-[#9b2c45] flex-shrink-0 mt-0.5" fill="currentColor"
-                                viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <div>
-                                <strong class="text-gray-900 font-semibold block">Balai Warga RW 03</strong>
-                                <span>Jl. Kenanga Indah No. 12, Desa Sukamaju<br>Kecamatan Cikarang, Jawa Barat
-                                    17530</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2.5 pt-1">
-                            <svg class="w-4 h-4 text-[#9b2c45] flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <span>Buka: <strong>Sabtu Pekan ke-2 & ke-4</strong> (08.00 - 12.00 WIB)</span>
-                        </div>
+                <!-- Col 2 -->
+                <div class="md:col-span-6 flex flex-col md:items-end justify-between text-xs text-stone-400">
+                    <div class="space-y-1.5 text-left md:text-right">
+                        <strong class="text-white block text-sm">Balai Warga RW 03</strong>
+                        <p>Jl. Kenanga Indah No. 12, Desa Sukamaju, Cikarang, Jawa Barat 17530</p>
+                        <p class="text-prevanta-300 font-bold">Binaan Resmi: Puskesmas Pembantu Sukamaju</p>
                     </div>
-                </div>
 
-                <!-- Col 3: Back to Top & Management Info -->
-                <div class="md:col-span-3 flex flex-col items-start md:items-end justify-between">
-                    <a href="#top"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-50 text-[#9b2c45] border border-rose-200 text-xs font-bold hover:bg-rose-100 transition shadow-xs">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
+                    <a href="#top" class="mt-6 md:mt-0 inline-flex items-center gap-1.5 text-white font-bold hover:underline uppercase tracking-wider text-[11px]">
                         <span>Kembali ke Atas</span>
+                        <i class="fa-solid fa-arrow-up text-xs"></i>
                     </a>
-
-                    <div class="mt-6 md:mt-0 text-left md:text-right text-xs text-gray-500">
-                        <span class="block text-gray-400">Dikelola bersama oleh:</span>
-                        <span class="font-bold text-gray-800 block mt-0.5">Kader Kesehatan RW 03 & Puskesmas
-                            Sukamaju</span>
-                    </div>
                 </div>
 
             </div>
 
-            <!-- Bottom Copyright & Quick Tags -->
-            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-                <p class="text-center sm:text-left">
-                    &copy; 2024 Prevanta &bull; Posyandu Jambu 77 RW 03 Desa Sukamaju. Didukung oleh Sistem Pemantauan
-                    Tumbuh Kembang Posyandu.
+            <!-- Bottom Copyright -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500 font-medium">
+                <p>
+                    &copy; 2024–{{ date('Y') }} Prevanta &bull; Posyandu Jambu 77 RW 03 Desa Sukamaju. Seluruh hak cipta dilindungi.
                 </p>
-                <div class="flex items-center gap-4 text-gray-400 font-medium">
-                    <span class="hover:text-gray-600 transition">KMS Digital</span>
+                <div class="flex items-center gap-4 text-stone-400">
+                    <span>KMS Digital Standar WHO</span>
                     <span>&bull;</span>
-                    <span class="hover:text-gray-600 transition">Pencegahan Stunting</span>
-                    <span>&bull;</span>
-                    <span class="hover:text-gray-600 transition">KIA Ramah Anak</span>
+                    <span>Buku KIA Kemenkes</span>
                 </div>
             </div>
-
         </div>
     </footer>
 
-    <!-- Mobile Menu Toggle Script & Smooth Scrolling -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('mobile-menu-btn');
-            const menu = document.getElementById('mobile-menu');
+    <!-- AOS JS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+        integrity="sha512-A7AYk1fGKX6S2SsHyWMPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-            if (btn && menu) {
-                btn.addEventListener('click', () => {
-                    menu.classList.toggle('hidden');
-                });
+    <!-- Reliable Interactive Logic -->
+    <script>
+        // 1. Data Alur 5 Meja
+        const mejaData = {
+            1: {
+                badge: "Meja 1 &bull; Tahap Registrasi Awal",
+                title: "Pendaftaran &amp; Verifikasi Administrasi Warga",
+                desc: "Pada meja pertama, orang tua menyerahkan Buku KIA/KMS anak. Kader melakukan pencatatan identitas, memeriksa presensi kunjungan bulanan, dan memvalidasi Nomor Induk Kependudukan (NIK) serta Kartu Keluarga warga RW 03.",
+                steps: [
+                    "Menyerahkan Buku KIA (Kesehatan Ibu dan Anak) kepada kader",
+                    "Pemeriksaan presensi kehadiran balita wilayah RT 01 s/d RT 06",
+                    "Pemberian nomor antrean penimbangan yang tertib &amp; teratur"
+                ],
+                picName: "Ibu Nurhayati",
+                picRole: "Kader Meja 1 &bull; Pendaftaran",
+                picIcon: "fa-clipboard-user",
+                tools: "Buku Registrasi Warga, Formulir KIA, Nomor Antrean Digital",
+                output: "Data registrasi tercatat &amp; siap menuju Meja Penimbangan"
+            },
+            2: {
+                badge: "Meja 2 &bull; Antropometri Presisi",
+                title: "Penimbangan &amp; Pengukuran Fisik Standar Kemenkes",
+                desc: "Pemeriksaan fisik akurat menggunakan alat ukur antropometri digital terkalibrasi Kemenkes RI untuk memantau kenaikan berat badan dan pertambahan tinggi/panjang badan si kecil.",
+                steps: [
+                    "Penimbangan bayi dengan baby scale presisi (akurasi 5-10 gram)",
+                    "Pengukuran panjang badan dengan infantometer telentang untuk bayi &lt; 2 tahun",
+                    "Pengukuran tinggi badan balita dengan stadiometer tegak &amp; pengukuran LiLA"
+                ],
+                picName: "Ibu Endang",
+                picRole: "Kader Meja 2 &bull; Antropometri",
+                picIcon: "fa-weight-scale",
+                tools: "Infantometer Digital, Baby Scale, Stadiometer Presisi, Pita LiLA",
+                output: "Angka berat badan (kg) dan tinggi badan (cm) terverifikasi"
+            },
+            3: {
+                badge: "Meja 3 &bull; Prevanta Digital Engine",
+                title: "Pencatatan &amp; Plotting Grafik KMS Standar WHO",
+                desc: "Data fisik diinput langsung ke aplikasi Prevanta. Sistem menghitung Z-score baku WHO secara otomatis dan memplot kurva pertumbuhan (TB/U, BB/U) pada Buku KIA digital.",
+                steps: [
+                    "Input hasil penimbangan dan pengukuran ke portal digital Prevanta",
+                    "Plotting kurva KMS WHO secara otomatis (+3 SD, Median, hingga -3 SD)",
+                    "Deteksi otomatis status gizi: Gizi Baik, Berisiko, atau Waspada Stunting"
+                ],
+                picName: "Ibu Ratna",
+                picRole: "Kader Meja 3 &bull; Operator KMS",
+                picIcon: "fa-laptop-medical",
+                tools: "Aplikasi Web Prevanta, Z-Score Calculator WHO, Tablet Posyandu",
+                output: "Grafik KMS terbarukan &amp; analisis risiko tumbuh kembang real-time"
+            },
+            4: {
+                badge: "Meja 4 &bull; Intervensi Gizi &amp; Konseling",
+                title: "Pemberian PMT Bernutrisi &amp; Konseling Laktasi",
+                desc: "Ibu dan anak mendapatkan makanan tambahan bergizi tinggi protein hewani serta bimbingan pemberian makanan pendamping ASI (MPASI) yang disesuaikan dengan kurva KMS anak.",
+                steps: [
+                    "Konseling nutrisi berbasis status pertumbuhan yang baru diperoleh dari Meja 3",
+                    "Pembagian Pemberian Makanan Tambahan (PMT) kaya protein hewani telur/daging",
+                    "Edukasi laktasi ASI eksklusif dan variasi menu seimbang keluarga"
+                ],
+                picName: "Ibu Farida",
+                picRole: "Kader Meja 4 &bull; Konselor PMBA",
+                picIcon: "fa-utensils",
+                tools: "Paket PMT Higienis, Lembar Balik Konseling PMBA, Booklet Gizi Seimbang",
+                output: "Ibu memahami pola makan bernutrisi &amp; paket PMT diterima balita"
+            },
+            5: {
+                badge: "Meja 5 &bull; Supervisi Klinis Bidan",
+                title: "Layanan Medis, Imunisasi &amp; Konsultasi Bidan Desa",
+                desc: "Tahap evaluasi medis langsung bersama Bidan Desa Sukamaju: imunisasi wajib, pemberian kapsul Vitamin A &amp; obat cacing, pemeriksaan ibu hamil, dan rujukan Puskesmas jika diperlukan.",
+                steps: [
+                    "Pemberian vaksinasi dasar lengkap sesuai jadwal umur balita",
+                    "Distribusi vitamin A biru/merah (Februari &amp; Agustus) serta tablet tambah darah",
+                    "Pemeriksaan lingkar lengan ibu hamil &amp; penerbitan rujukan klinis bila diperlukan"
+                ],
+                picName: "Bdn. Dewi Anggraini, S.Tr.Keb",
+                picRole: "Penanggung Jawab Medis &bull; Bidan Desa",
+                picIcon: "fa-user-doctor",
+                tools: "Vaksin Coolbox, Spuit Steril, Kapsul Vitamin A, Tensimeter Digital",
+                output: "Imunisasi tercatat resmi di Buku KIA &amp; tervalidasi secara medis"
+            }
+        };
+
+        let currentMeja = 1;
+
+        // Fungsi Switch Meja (Dipanggil via onclick)
+        function switchMeja(mejaNum) {
+            currentMeja = parseInt(mejaNum);
+            const data = mejaData[currentMeja];
+            if (!data) return;
+
+            // Update isi text & badge
+            const badgeEl = document.getElementById('meja-badge');
+            const titleEl = document.getElementById('meja-title');
+            const descEl = document.getElementById('meja-desc');
+            const picNameEl = document.getElementById('meja-pic-name');
+            const picRoleEl = document.getElementById('meja-pic-role');
+            const picIconEl = document.getElementById('meja-pic-icon');
+            const toolsEl = document.getElementById('meja-tools');
+            const outputEl = document.getElementById('meja-output');
+            const stepsEl = document.getElementById('meja-steps');
+
+            if (badgeEl) badgeEl.innerHTML = `<i class="fa-solid fa-clipboard-check text-xs"></i> <span>${data.badge}</span>`;
+            if (titleEl) titleEl.innerHTML = data.title;
+            if (descEl) descEl.innerHTML = data.desc;
+            if (picNameEl) picNameEl.innerHTML = data.picName;
+            if (picRoleEl) picRoleEl.innerHTML = data.picRole;
+            if (picIconEl) picIconEl.innerHTML = `<i class="fa-solid ${data.picIcon}"></i>`;
+            if (toolsEl) toolsEl.innerHTML = data.tools;
+            if (outputEl) outputEl.innerHTML = data.output;
+
+            if (stepsEl) {
+                stepsEl.innerHTML = data.steps.map(s => `
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-check text-prevanta-600 mt-1 text-sm"></i>
+                        <span>${s}</span>
+                    </li>
+                `).join('');
+            }
+
+            // Update style tombol tab Meja 1 s/d 5
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`meja-btn-${i}`);
+                if (!btn) continue;
+                const circle = btn.querySelector('.meja-num-badge');
+                const subtitle = btn.querySelector('.meja-sub-label');
+
+                if (i === currentMeja) {
+                    btn.className = 'meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-800 text-white border-prevanta-800 shadow-md ring-2 ring-prevanta-800/30';
+                    if (circle) circle.className = 'meja-num-badge w-8 h-8 rounded-full bg-white/20 text-white font-extrabold text-sm flex items-center justify-center shrink-0';
+                    if (subtitle) subtitle.className = 'meja-sub-label block text-[10px] font-bold opacity-80 uppercase tracking-wider text-white';
+                } else {
+                    btn.className = 'meja-tab-btn px-4 py-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer bg-prevanta-50 text-stone-700 border-prevanta-200 hover:bg-prevanta-100';
+                    if (circle) circle.className = 'meja-num-badge w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-extrabold text-sm flex items-center justify-center shrink-0';
+                    if (subtitle) subtitle.className = 'meja-sub-label block text-[10px] font-bold text-stone-400 uppercase tracking-wider';
+                }
+            }
+
+            // Update tombol Prev / Next
+            const prevBtn = document.getElementById('prev-meja-btn');
+            const nextBtn = document.getElementById('next-meja-btn');
+            if (prevBtn) prevBtn.disabled = (currentMeja === 1);
+            if (nextBtn) {
+                if (currentMeja === 5) {
+                    nextBtn.innerHTML = '<span>Kembali ke Meja 1</span> <i class="fa-solid fa-rotate-left text-[10px]"></i>';
+                } else {
+                    nextBtn.innerHTML = '<span>Meja Berikutnya</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>';
+                }
+            }
+        }
+
+        function prevMeja() {
+            if (currentMeja > 1) switchMeja(currentMeja - 1);
+        }
+
+        function nextMeja() {
+            if (currentMeja < 5) {
+                switchMeja(currentMeja + 1);
+            } else {
+                switchMeja(1);
+            }
+        }
+
+        // 2. Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        // 4. Scroll To Top Visibility
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('scroll-to-top');
+            if (!btn) return;
+            if (window.scrollY > 350) {
+                btn.classList.remove('opacity-0', 'pointer-events-none');
+                btn.classList.add('opacity-100');
+            } else {
+                btn.classList.add('opacity-0', 'pointer-events-none');
+                btn.classList.remove('opacity-100');
+            }
+        });
+
+        // 5. Inisialisasi Aman AOS
+        window.addEventListener('load', function() {
+            try {
+                if (typeof AOS !== 'undefined') {
+                    AOS.init({
+                        duration: 700,
+                        easing: 'ease-out-cubic',
+                        once: true,
+                        offset: 40,
+                    });
+                }
+            } catch (err) {
+                console.warn('AOS initialization skipped:', err);
             }
         });
     </script>

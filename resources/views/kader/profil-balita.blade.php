@@ -167,8 +167,10 @@
         data-history-panel="anthropometry"
         aria-label="Riwayat pengukuran antropometri"
     >
-        @forelse ($measurementHistory as $measurement)
-            <article class="measurement-card measurement-card-{{ $measurement['tone'] }}">
+        @forelse ($measurementHistory as $index => $measurement)
+            <article class="measurement-card measurement-card-{{ $measurement['tone'] }} {{ $index >= 3 ? 'measurement-card-hidden' : '' }}"
+                @if ($index >= 3) style="display: none;" @endif
+            >
                 <div class="measurement-head">
                     <div class="measurement-title-wrap">
                         <span class="measurement-icon"><i class="fa-solid fa-ruler-horizontal"></i></span>
@@ -253,6 +255,15 @@
                 <p>Data antropometri anak akan tampil di sini setelah pemeriksaan pertama dicatat.</p>
             </div>
         @endforelse
+
+        @if ($measurementHistory->count() > 3)
+            <div class="toggle-history-wrap">
+                <button type="button" id="btnToggleMeasurementHistory" class="btn-toggle-more">
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <span>Tampilkan Semua Riwayat ({{ $measurementHistory->count() }} Pemeriksaan)</span>
+                </button>
+            </div>
+        @endif
     </section>
 
     <section
@@ -313,6 +324,32 @@ document.addEventListener('DOMContentLoaded', function () {
             activateTab(historyButtons, historyPanels, 'historyTarget', 'historyPanel', button.dataset.historyTarget);
         });
     });
+
+    const toggleBtn = document.getElementById('btnToggleMeasurementHistory');
+    if (toggleBtn) {
+        let isExpanded = false;
+        const hiddenCards = document.querySelectorAll('.measurement-card-hidden');
+        const totalCount = {{ $measurementHistory->count() }};
+
+        toggleBtn.addEventListener('click', function () {
+            isExpanded = !isExpanded;
+            hiddenCards.forEach(function (card) {
+                card.style.display = isExpanded ? 'block' : 'none';
+            });
+
+            const icon = toggleBtn.querySelector('i');
+            const text = toggleBtn.querySelector('span');
+
+            if (isExpanded) {
+                icon.className = 'fa-solid fa-chevron-up';
+                text.textContent = 'Tampilkan Lebih Sedikit (3 Terbaru)';
+            } else {
+                icon.className = 'fa-solid fa-chevron-down';
+                text.textContent = 'Tampilkan Semua Riwayat (' + totalCount + ' Pemeriksaan)';
+                document.getElementById('riwayat-pengukuran')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
 });
 </script>
 @endpush

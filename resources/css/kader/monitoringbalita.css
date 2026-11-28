@@ -1186,3 +1186,64 @@
     }
 
 }
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 24px 24px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #7C2740;
+    background: #fff;
+    border: 1.5px solid #e8d0d8;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.page-btn:hover {
+    background: #fdf0f4;
+    border-color: #c97090;
+    color: #5E1C31;
+}
+
+.page-btn-active {
+    background: #7C2740;
+    border-color: #7C2740;
+    color: #fff;
+    cursor: default;
+    pointer-events: none;
+}
+
+.page-btn-disabled {
+    color: #ccc;
+    border-color: #ede8ea;
+    background: #fafafa;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Tab as link (a tag) — same look as button tab */
+.tab {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}

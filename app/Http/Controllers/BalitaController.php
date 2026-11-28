@@ -11,10 +11,16 @@ use Illuminate\View\View;
 
 class BalitaController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $balita = Balita::with([
-            'orangTua.user',
+        $search = $request->input('search', '');
+        $gender = $request->input('gender', '');
+        $status = $request->input('status', '');
+
+        // ── Summary counts (always full dataset, unaffected by pagination) ──
+        $totalBalita = Balita::count(); // total semua balita terdaftar
+
+        $allBalita = Balita::with([
             'pengukuran' => function ($query) {
                 $query->whereHas('verifikasi', function ($q) {
                     $q->where('status', 'terverifikasi');
@@ -26,6 +32,61 @@ class BalitaController extends Controller
         $countPendek = 0;
         $countSangatPendek = 0;
 
+        $statusKeyMap = [];
+        foreach ($allBalita as $item) {
+            $pengukuran = $item->pengukuran->first();
+            $statusPertumbuhan = $pengukuran?->status_pertumbuhan;
+
+            $statusKey = match ($statusPertumbuhan) {
+                'sangat pendek' => 'danger',
+                'pendek'        => 'warning',
+                'normal'        => 'success',
+                default         => null,
+            };
+
+            $statusKeyMap[$item->id] = $statusKey;
+
+            match ($statusPertumbuhan) {
+                'sangat pendek' => $countSangatPendek++,
+                'pendek'        => $countPendek++,
+                'normal'        => $countNormal++,
+                default         => null,
+            };
+        }
+
+        // ── Filtered & paginated query ──
+        $query = Balita::with([
+            'orangTua.user',
+            'pengukuran' => function ($q) {
+                $q->whereHas('verifikasi', function ($v) {
+                    $v->where('status', 'terverifikasi');
+                })->latest('tanggal_pengukuran');
+            },
+        ]);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%");
+            });
+        }
+
+        if ($gender !== '') {
+            $query->where('jenis_kelamin', $gender);
+        }
+
+        if ($status !== '') {
+            // Filter by resolved status_key — requires post-query filtering
+            // We collect IDs whose status_key matches, then apply whereIn
+            $matchIds = collect($statusKeyMap)
+                ->filter(fn ($key) => $key === $status)
+                ->keys();
+            $query->whereIn('id', $matchIds);
+        }
+
+        $balita = $query->paginate(10)->withQueryString();
+
+        // Attach computed properties to each paginated item
         foreach ($balita as $item) {
             $pengukuran = $item->pengukuran->first();
             $item->latest_pengukuran = $pengukuran;
@@ -33,7 +94,6 @@ class BalitaController extends Controller
             if (! $pengukuran) {
                 $item->status_key = null;
                 $item->highlight_label = 'Belum Ada Data Terverifikasi';
-
                 continue;
             }
 
@@ -41,24 +101,21 @@ class BalitaController extends Controller
 
             [$item->status_key, $item->highlight_label] = match ($statusPertumbuhan) {
                 'sangat pendek' => ['danger', 'Perlu Rujukan'],
-                'pendek' => ['warning', 'Perlu Pemantauan'],
-                'normal' => ['success', 'Sesuai KMS'],
-                default => [null, 'Pemantauan Rutin'],
-            };
-
-            match ($statusPertumbuhan) {
-                'sangat pendek' => $countSangatPendek++,
-                'pendek' => $countPendek++,
-                'normal' => $countNormal++,
-                default => null,
+                'pendek'        => ['warning', 'Perlu Pemantauan'],
+                'normal'        => ['success', 'Sesuai KMS'],
+                default         => [null, 'Pemantauan Rutin'],
             };
         }
 
         return view('kader.monitoringbalita', compact(
             'balita',
+            'totalBalita',
             'countNormal',
             'countPendek',
-            'countSangatPendek'
+            'countSangatPendek',
+            'search',
+            'gender',
+            'status'
         ));
     }
 

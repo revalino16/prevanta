@@ -1506,3 +1506,43 @@
 .metric-meta strong.metric-zscore-red {
     color: #c83250;
 }
+
+
+/* =========================================================
+   TOGGLE MEASUREMENT HISTORY BUTTON
+   ========================================================= */
+
+.toggle-history-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 14px 0 6px;
+}
+
+.btn-toggle-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 1.5px solid #e8d0d8;
+    background: #fff;
+    color: var(--primary, #7C2740);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px -4px rgba(124, 39, 64, 0.15);
+    transition: all .2s ease;
+}
+
+.btn-toggle-more:hover {
+    background: #fdf0f4;
+    border-color: #c97090;
+    color: #5E1C31;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px -4px rgba(124, 39, 64, 0.25);
+}
+
+.btn-toggle-more i {
+    font-size: 12px;
+    transition: transform .2s ease;
+}
